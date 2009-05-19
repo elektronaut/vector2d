@@ -1,0 +1,2 @@
+Class for for easy handling of two-dimensional coordinates. It‘s forte is argument flexibility, 
+methods that take vectors accepts arguments in many forms. See Vector2d.new for details and examples.
