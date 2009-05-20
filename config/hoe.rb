@@ -1,10 +1,10 @@
-AUTHOR = 'Inge Jørgensen'  # can also be an array of Authors
-EMAIL = "inge@elektronaut.no"
-DESCRIPTION = "Simplistic ruby class for handling two-dimensional vectors. Useful for ie. working with images."
-GEM_NAME = 'vector2d' # what ppl will type to install your gem
-RUBYFORGE_PROJECT = 'vector2d' # The unix name for your project
-HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
-DOWNLOAD_PATH = "http://rubyforge.org/projects/#{RUBYFORGE_PROJECT}"
+AUTHOR            = 'Inge Jørgensen'
+EMAIL             = 'inge@elektronaut.no'
+DESCRIPTION       = "Vector2d allows for easy handling of two-dimensionals coordinates and vectors."
+GEM_NAME          = 'vector2d'
+RUBYFORGE_PROJECT = 'vector2d'
+HOMEPATH          = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
+DOWNLOAD_PATH     = "http://rubyforge.org/projects/#{RUBYFORGE_PROJECT}"
 
 @config_file = "~/.rubyforge/user-config.yml"
 @config = nil
