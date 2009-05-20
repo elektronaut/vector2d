@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
 	s.date = %q{2009-05-20}
 	s.description = %q{Vector2d allows for easy handling of two-dimensionals coordinates and vectors.}
 	s.email = %q{inge@melektronaut.no}
-	s.files = ["History.txt", "README.rdoc", "MIT-LICENSE", "lib/vector2d.rb"]
+	s.files = ["History.txt", "README.rdoc", "MIT-LICENSE.txt", "lib/vector2d.rb"]
 	s.has_rdoc = true
 	s.homepage = %q{http://github.com/elektronaut/Vector2d}
 	s.rdoc_options = ["--inline-source", "--charset=UTF-8"]
