@@ -34,7 +34,7 @@ Install from GitHub:
 
 == API Documentation
 
-Is available at http://vector2d.rubyforge.org/
+Is available at http://vector2d.rubyforge.org
 
 == Source code
 
