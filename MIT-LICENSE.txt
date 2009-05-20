@@ -1,13 +1,3 @@
-== Vector2d
-
-Vector2d allows for easy handling of two-dimensionals coordinates and vectors.
-It's very flexible, most methods accepts arguments as strings, arrays, hashes
-or Vector2d objects.
-
-== Licence
-
-(The MIT License)
-
 Copyright (c) 2006-2009 Inge Jørgensen
  
 Permission is hereby granted, free of charge, to any person
