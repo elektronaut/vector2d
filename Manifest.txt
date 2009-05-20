@@ -2,7 +2,7 @@ MIT-LICENSE.txt
 History.txt
 License.txt
 Manifest.txt
-README.txt
+README.rdoc
 Rakefile
 config/hoe.rb
 config/requirements.rb
