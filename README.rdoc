@@ -1,4 +1,4 @@
-== Vector2d
+= Vector2d
 
 Vector2d allows for easy handling of two-dimensionals coordinates and vectors.
 It's very flexible, most methods accepts arguments as strings, arrays, hashes
@@ -21,7 +21,7 @@ Install from GitHub:
 
   # These are equal
   v = Vector2d.new(50, 70)  
-  v = Vector2d.new('50x70') # These are equal
+  v = Vector2d.new('50x70')
 
   v.aspect_ratio # => 0.714285714285714
   v.length       # => 86.0232526704263
