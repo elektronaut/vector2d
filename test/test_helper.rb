@@ -1,2 +1,10 @@
+require 'rubygems'
 require 'test/unit'
-require File.dirname(__FILE__) + '/../lib/vector2d'
+require 'shoulda'
+
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+$LOAD_PATH.unshift(File.dirname(__FILE__))
+require 'vector2d'
+
+class Test::Unit::TestCase
+end

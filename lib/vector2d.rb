@@ -1,11 +1,7 @@
-$:.unshift File.dirname(__FILE__)
-
 # Vector2d allows for easy handling of two-dimensionals coordinates and vectors.
 # It's very flexible, most methods accepts arguments as strings, arrays, hashes
 # or Vector2d objects.
 class Vector2d
-
-	VERSION_STRING = [0, 5, 1].join('.') #:nodoc:
 
 	# X axis
 	attr_accessor :x
