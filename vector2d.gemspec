@@ -21,7 +21,8 @@ Gem::Specification.new do |s|
      "VERSION",
      "lib/vector2d.rb",
      "test/test_helper.rb",
-     "test/vector2d_test.rb"
+     "test/vector2d_test.rb",
+     "vector2d.gemspec"
   ]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/elektronaut/vector2d}
