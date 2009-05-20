@@ -4,6 +4,34 @@ Vector2d allows for easy handling of two-dimensionals coordinates and vectors.
 It's very flexible, most methods accepts arguments as strings, arrays, hashes
 or Vector2d objects.
 
+== Installation
+
+Install from RubyForge:
+
+  sudo gem install vector2d
+
+Install from GitHub:
+
+  gem sources -a http://gems.github.com
+  sudo gem install elektronaut-vector2d
+
+== Usage examples
+
+  require 'vector2d'
+
+  # These are equal
+  v = Vector2d.new(50, 70)  
+  v = Vector2d.new('50x70') # These are equal
+
+  v.aspect_ratio # => 0.714285714285714
+  v.length       # => 86.0232526704263
+
+  # Calculations work as expected
+  v * 2                   # => #<Vector2d:0x5d994 @y=140.0, @x=100.0>
+  v + Vector2d.new(20,30) # => #<Vector2d:0x59c54 @y=100.0, @x=70.0>
+
+  v.constrain_both(64, 64) # => #<Vector2d:0x47e28 @y=64.0, @x=45.7142857142857>
+
 == Licence
 
 (The MIT License)
