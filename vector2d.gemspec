@@ -2,8 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{vector2d}
-  s.version = "1.0.0"
-
+  s.version = "0.5.2"
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Inge J\303\270rgensen"]
   s.date = %q{2009-05-20}
