@@ -144,7 +144,7 @@ class Vector2d
 			scale = (scale.x<scale.y) ? scale.y : scale.x
 			self * scale
 		else
-			constrain_both(args)
+			constrain_both(vector_or_number)
 		end
 	end
 
