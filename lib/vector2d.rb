@@ -1,3 +1,5 @@
+require 'math'
+
 # Vector2d allows for easy handling of two-dimensionals coordinates and vectors.
 # It's very flexible, most methods accepts arguments as strings, arrays, hashes
 # or Vector2d objects.
@@ -53,9 +55,14 @@ class Vector2d
 
 	# Length of vector
 	def length
-		Math.sqrt((@x*@x)+(@y*@y))
+		Math.sqrt(length_squared)
 	end
-
+  
+  # Returns the length of this vector before square root. Allows for a faster check.
+  def length_squared
+    (@x * @x) + (@y * @y)
+  end
+  
 	# Set new length.
 	def length=(new_length)
 		v = self * (new_length/length)
@@ -72,6 +79,10 @@ class Vector2d
 		self.length = 1.0
 		self
 	end
+
+  def normalized?
+		self.length == 1.0
+  end
 
 	# Rounds coordinates to nearest integer.
 	def round
@@ -112,6 +123,38 @@ class Vector2d
 		v = Vector2d::new(vector_or_number)
 		Vector2d.new(@x-v.x, @y-v.y)
 	end
+
+  # return a new vector perpendicular to this one
+  def perpendicular
+		Vector2d.new(-@y, @x)
+    return new Vector2D(-y, x);
+  end
+    
+  # distance between two vectors
+  def distance(vector2)
+    Math.sqrt(distance_sq(vector2))
+  end
+
+  # Calculate squared distance between vectors. Faster than standard distance.
+  # param vector2 The other vector.
+  # returns the squared distance between the vectors.
+  def distance_sq(vector2)
+    dx = vector2.x - @x
+    dy = vector2.y - @y
+    dx * dx + dy * dy
+  end
+  
+  def self.dot_product(vector1, vector2)
+    one = vector1.normalizd? ? vector1 : vector1.normalize
+    two = vector2.normalizd? ? vector2 : vector2.normalize
+    one.x * two.x + one.y * two.y
+  end
+
+  def self.angle_between(vector1, vector2)
+    one = vector1.normalizd? ? vector1 : vector1.normalize
+    two = vector2.normalizd? ? vector2 : vector2.normalize
+    Math.acos(self.dot_product(one, two))
+  end
 
 	# Constrain/expand so that both coordinates fit within (the square implied by) another vector.
 	# This is useful for resizing images to fit a certain size while keeping aspect ratio.
