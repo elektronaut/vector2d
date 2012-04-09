@@ -1,5 +1,3 @@
-require 'math'
-
 # Vector2d allows for easy handling of two-dimensionals coordinates and vectors.
 # It's very flexible, most methods accepts arguments as strings, arrays, hashes
 # or Vector2d objects.
@@ -121,13 +119,12 @@ class Vector2d
 	# Subtract vectors. If args is a single Numeric, it will be subtracted from both axis.
 	def -(*vector_or_number)
 		v = Vector2d::new(vector_or_number)
-		Vector2d.new(@x-v.x, @y-v.y)
+    Vector2d.new(@x-v.x, @y-v.y)
 	end
 
   # return a new vector perpendicular to this one
   def perpendicular
-		Vector2d.new(-@y, @x)
-    return new Vector2D(-y, x);
+    Vector2d.new(-@y, @x)
   end
     
   # distance between two vectors
@@ -144,15 +141,17 @@ class Vector2d
     dx * dx + dy * dy
   end
   
+  # dot product of two vectors
   def self.dot_product(vector1, vector2)
-    one = vector1.normalizd? ? vector1 : vector1.normalize
-    two = vector2.normalizd? ? vector2 : vector2.normalize
+    one = vector1.normalized? ? vector1 : vector1.normalize
+    two = vector2.normalized? ? vector2 : vector2.normalize
     one.x * two.x + one.y * two.y
   end
 
+  # angle between two vectors in radians
   def self.angle_between(vector1, vector2)
-    one = vector1.normalizd? ? vector1 : vector1.normalize
-    two = vector2.normalizd? ? vector2 : vector2.normalize
+    one = vector1.normalized? ? vector1 : vector1.normalize
+    two = vector2.normalized? ? vector2 : vector2.normalize
     Math.acos(self.dot_product(one, two))
   end
 
