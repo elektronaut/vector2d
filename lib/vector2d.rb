@@ -141,11 +141,41 @@ class Vector2d
     dx * dx + dy * dy
   end
   
+  # angle of this vector
+  def angle
+    Math.atan2(@y, @x)
+  end
+
+  # sets the length under the given value. Nothing is done if 
+  # the vector is already shorter.
+  def truncate(max)
+	  length = Math.min(max, length)
+    self
+  end
+
+  # Makes the vector face the opposite way.
+  def reverse
+    @x = -@x
+    @y = -@y
+    self
+  end
+  
+  # dot product of this vector and another vector
+  def dot_product(vector2)
+    self.class.dot_product(self, vector2)
+  end
+
+  def cross_product(vector2)
+    self.class.cross_product(self, vector2)
+  end
+
+  def self.cross_product(vector1, vector2)
+    @x * vector2.y - @y * vector2.x
+  end
+
   # dot product of two vectors
   def self.dot_product(vector1, vector2)
-    one = vector1.normalized? ? vector1 : vector1.normalize
-    two = vector2.normalized? ? vector2 : vector2.normalize
-    one.x * two.x + one.y * two.y
+    vector1.x * vector2.x + vector1.y * vector2.y
   end
 
   # angle between two vectors in radians
