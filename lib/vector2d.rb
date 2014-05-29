@@ -29,10 +29,16 @@ class Vector2d
       elsif args[0].kind_of?(Vector2d)
         args = [args[0].x, args[0].y]
       elsif args[0].kind_of?(Hash)
-        args[0] = args[0][:x]  if args[0][:x]
-        args[0] = args[0]["x"] if args[0]["x"]
-        args[1] = args[0][:y]  if args[0][:y]
-        args[1] = args[0]["y"] if args[0]["y"]
+        if args[0].has_key?(:y)
+          args[1] = args[0][:y]
+        elsif args[0].has_key?("y")
+          args[1] = args[0]["y"]
+        end
+        if args[0].has_key?(:x)
+          args[0] = args[0][:x]
+        elsif args[0].has_key?("x")
+          args[0] = args[0]["x"]
+        end
       else
         args = [args[0], args[0]]
       end
@@ -81,6 +87,7 @@ class Vector2d
   end
 
   def normalized?
+    self.length == 1.0
   end
 
   # Rounds coordinates to nearest integer.
@@ -150,7 +157,7 @@ class Vector2d
   # sets the length under the given value. Nothing is done if
   # the vector is already shorter.
   def truncate(max)
-    length = Math.min(max, length)
+    self.length = [max, self.length].min
     self
   end
 
@@ -178,7 +185,7 @@ class Vector2d
 
   # cross product of two vectors
   def self.cross_product(vector1, vector2)
-    @x * vector2.y - @y * vector2.x
+    vector1.x * vector2.y - vector1.y * vector2.x
   end
 
   # dot product of two vectors
