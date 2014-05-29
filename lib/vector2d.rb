@@ -42,7 +42,7 @@ class Vector2d
 
   # Compares two vectors.
   def ==(comp)
-    ( comp.x == @x && comp.y == y )
+    comp.x == @x && comp.y == y
   end
 
   # Returns a string representation of the vector.
@@ -55,7 +55,12 @@ class Vector2d
 
   # Length of vector
   def length
-    Math.sqrt((@x*@x)+(@y*@y))
+    Math.sqrt(length_squared)
+  end
+
+  # Returns the length of this vector before square root. Allows for a faster check.
+  def length_squared
+    @x * @x + @y * @y
   end
 
   # Set new length.
@@ -73,6 +78,9 @@ class Vector2d
   def normalize!
     self.length = 1.0
     self
+  end
+
+  def normalized?
   end
 
   # Rounds coordinates to nearest integer.
@@ -113,6 +121,76 @@ class Vector2d
   def -(*vector_or_number)
     v = Vector2d::new(vector_or_number)
     Vector2d.new(@x-v.x, @y-v.y)
+  end
+
+  # return a new vector perpendicular to this one
+  def perpendicular
+    Vector2d.new(-@y, @x)
+  end
+
+  # distance between two vectors
+  def distance(vector2)
+    Math.sqrt(distance_sq(vector2))
+  end
+
+  # Calculate squared distance between vectors. Faster than standard distance.
+  # param vector2 The other vector.
+  # returns the squared distance between the vectors.
+  def distance_sq(vector2)
+    dx = vector2.x - @x
+    dy = vector2.y - @y
+    dx * dx + dy * dy
+  end
+
+  # angle of this vector
+  def angle
+    Math.atan2(@y, @x)
+  end
+
+  # sets the length under the given value. Nothing is done if
+  # the vector is already shorter.
+  def truncate(max)
+    length = Math.min(max, length)
+    self
+  end
+
+  # Makes the vector face the opposite way.
+  def reverse
+    @x = -@x
+    @y = -@y
+    self
+  end
+
+  # dot product of this vector and another vector
+  def dot_product(vector2)
+    self.class.dot_product(self, vector2)
+  end
+
+  # cross product of this vector and another vector
+  def cross_product(vector2)
+    self.class.cross_product(self, vector2)
+  end
+
+  # angle in radians between this vector and another
+  def angle_between(vector2)
+    self.class.angle_between(self, vector2)
+  end
+
+  # cross product of two vectors
+  def self.cross_product(vector1, vector2)
+    @x * vector2.y - @y * vector2.x
+  end
+
+  # dot product of two vectors
+  def self.dot_product(vector1, vector2)
+    vector1.x * vector2.x + vector1.y * vector2.y
+  end
+
+  # angle between two vectors in radians
+  def self.angle_between(vector1, vector2)
+    one = vector1.normalized? ? vector1 : vector1.normalize
+    two = vector2.normalized? ? vector2 : vector2.normalize
+    Math.acos(self.dot_product(one, two))
   end
 
   # Constrain/expand so that both coordinates fit within (the square implied by) another vector.
