@@ -3,42 +3,25 @@
 # Instead, edit Jeweler::Tasks in Rakefile, and run 'rake gemspec'
 # -*- encoding: utf-8 -*-
 
+$:.push File.expand_path("../lib", __FILE__)
+require "vector2d/version"
+
 Gem::Specification.new do |s|
-  s.name = "vector2d"
-  s.version = "1.1.1"
+  s.name        = %q{vector2d}
+  s.version     = Vector2d::VERSION
+  s.authors     = ["Inge Jørgensen"]
+  s.email       = ["inge@elektronaut.no"]
+  s.homepage    = %q{http://github.com/elektronaut/vector2d}
+  s.summary     = %q{Library for handling two-dimensional vectors}
+  s.description = %q{Vector2d allows for easy handling of two-dimensionals coordinates and vectors}
+  s.license     = "MIT"
 
-  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Inge J\u{f8}rgensen"]
-  s.date = "2012-04-09"
-  s.email = "inge@elektronaut.no"
-  s.extra_rdoc_files = [
-    "LICENSE",
-    "README.rdoc"
-  ]
-  s.files = [
-    ".document",
-    "LICENSE",
-    "README.rdoc",
-    "Rakefile",
-    "VERSION",
-    "lib/vector2d.rb",
-    "test/test_helper.rb",
-    "test/vector2d_test.rb",
-    "vector2d.gemspec"
-  ]
-  s.homepage = "http://github.com/elektronaut/vector2d"
+  s.files         = `git ls-files`.split("\n")
+  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
+  s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
-  s.rubyforge_project = "vector2d"
-  s.rubygems_version = "1.8.10"
-  s.summary = "Vector2d allows for easy handling of two-dimensionals coordinates and vectors"
 
-  if s.respond_to? :specification_version then
-    s.specification_version = 3
-
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-    else
-    end
-  else
-  end
+  # specify any dependencies here; for example:
+  s.add_development_dependency "rake", "~> 10.3"
+  s.add_development_dependency "rspec", "~> 2.1"
 end
-

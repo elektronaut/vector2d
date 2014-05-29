@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Vector2d allows for easy handling of two-dimensionals coordinates and vectors.
 # It's very flexible, most methods accepts arguments as strings, arrays, hashes
 # or Vector2d objects.
@@ -79,7 +81,6 @@ class Vector2d
   end
 
   def normalized?
-    self.length == 1.0
   end
 
   # Rounds coordinates to nearest integer.
