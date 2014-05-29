@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Vector2d allows for easy handling of two-dimensionals coordinates and vectors.
 # It's very flexible, most methods accepts arguments as strings, arrays, hashes
 # or Vector2d objects.
@@ -135,7 +137,7 @@ class Vector2d
 	# Constrain/expand so that one of the coordinates fit within (the square implied by) another vector.
 	#
 	# == Example
-	#  
+	#
 	#   my_image = Vector2d.new("320x200")  # Creates a new vector object
 	#   my_image.constrain_one(100, 100)    # Returns a new vector: x=160, y=100
 	def constrain_one( *vector_or_number )

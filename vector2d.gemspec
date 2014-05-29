@@ -3,49 +3,26 @@
 # Instead, edit Jeweler::Tasks in Rakefile, and run the gemspec command
 # -*- encoding: utf-8 -*-
 
+$:.push File.expand_path("../lib", __FILE__)
+require "vector2d/version"
+
 Gem::Specification.new do |s|
-  s.name = %q{vector2d}
-  s.version = "1.0.1"
+  s.name        = %q{vector2d}
+  s.version     = Vector2d::VERSION
+  s.authors     = ["Inge Jørgensen"]
+  s.email       = ["inge@elektronaut.no"]
+  s.homepage    = %q{http://github.com/elektronaut/vector2d}
+  s.summary     = %q{Library for handling two-dimensional vectors}
+  s.description = %q{Vector2d allows for easy handling of two-dimensionals coordinates and vectors}
+  s.license     = "MIT"
 
-  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Inge J\303\270rgensen"]
-  s.date = %q{2009-10-30}
-  s.email = %q{inge@elektronaut.no}
-  s.extra_rdoc_files = [
-    "LICENSE",
-     "README.rdoc"
-  ]
-  s.files = [
-    ".document",
-     ".gitignore",
-     "LICENSE",
-     "README.rdoc",
-     "Rakefile",
-     "VERSION",
-     "lib/vector2d.rb",
-     "test/test_helper.rb",
-     "test/vector2d_test.rb",
-     "vector2d.gemspec"
-  ]
-  s.homepage = %q{http://github.com/elektronaut/vector2d}
-  s.rdoc_options = ["--charset=UTF-8"]
+  s.files         = `git ls-files`.split("\n")
+  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
+  s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
-  s.rubyforge_project = %q{vector2d}
-  s.rubygems_version = %q{1.3.5}
-  s.summary = %q{Vector2d allows for easy handling of two-dimensionals coordinates and vectors}
-  s.test_files = [
-    "test/test_helper.rb",
-     "test/vector2d_test.rb"
-  ]
 
-  if s.respond_to? :specification_version then
-    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
-    s.specification_version = 3
-
-    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-    else
-    end
-  else
-  end
+  # specify any dependencies here; for example:
+  s.add_development_dependency "rake", "~> 10.3"
+  s.add_development_dependency "rspec", "~> 2.1"
 end
 
