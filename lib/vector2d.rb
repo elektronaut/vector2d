@@ -23,10 +23,7 @@ class Vector2d
     end
   end
 
-  # X axis
-  attr_accessor :x
-  # Y axis
-  attr_accessor :y
+  attr_reader :x, :y
 
   # Creates a new vector.
   # The following examples are all valid:
@@ -80,7 +77,7 @@ class Vector2d
 
   # Compares two vectors.
   def ==(comp)
-    comp.x == @x && comp.y == y
+    comp.x == x && comp.y == y
   end
 
   # Returns a string representation of the vector.
@@ -88,7 +85,7 @@ class Vector2d
   # Example:
   #   Vector2d.new( 150, 100 ).to_s  # "150x100"
   def to_s
-    "#{@x}x#{@y}"
+    "#{x}x#{y}"
   end
 
   # Length of vector
@@ -98,24 +95,16 @@ class Vector2d
 
   # Returns the length of this vector before square root. Allows for a faster check.
   def length_squared
-    @x * @x + @y * @y
+    x * x + y * y
   end
 
-  # Set new length.
-  def length=(new_length)
-    v = self * (new_length/length)
-    @x, @y = v.x, v.y
+  def resize(new_length)
+    self * (new_length / self.length)
   end
 
   # Returns a normalized (length = 1.0) version of the vector.
   def normalize
-    self.dup.normalize!
-  end
-
-  # In-place form of Vector2d.normalize.
-  def normalize!
-    self.length = 1.0
-    self
+    resize(1.0)
   end
 
   def normalized?
@@ -124,47 +113,41 @@ class Vector2d
 
   # Rounds coordinates to nearest integer.
   def round
-    self.dup.round!
-  end
-
-  # In-place form of Vector2d.round.
-  def round!
-    @x, @y = @x.round, @y.round
-    self
+    self.class.new(x.round, y.round)
   end
 
   # Returns the aspect ratio of the vector.
   def aspect_ratio
-    (@x/@y).abs
+    (x/y).abs
   end
 
   # Multiply vectors. If args is a single Numeric, both axis will be multiplied.
   def *(*vector_or_number)
     v = Vector2d::new(vector_or_number)
-    Vector2d.new(@x*v.x, @y*v.y)
+    Vector2d.new(x * v.x, y * v.y)
   end
 
   # Divide vectors. If args is a single Numeric, both axis will be divided.
   def /(*vector_or_number)
     v = Vector2d::new(vector_or_number)
-    Vector2d.new(@x/v.x, @y/v.y)
+    Vector2d.new(x / v.x, y / v.y)
   end
 
   # Add vectors. If args is a single Numeric, it will be added to both axis.
   def +(*vector_or_number)
     v = Vector2d::new(vector_or_number)
-    Vector2d.new(@x+v.x, @y+v.y)
+    Vector2d.new(x + v.x, y + v.y)
   end
 
   # Subtract vectors. If args is a single Numeric, it will be subtracted from both axis.
   def -(*vector_or_number)
     v = Vector2d::new(vector_or_number)
-    Vector2d.new(@x-v.x, @y-v.y)
+    Vector2d.new(x - v.x, y - v.y)
   end
 
   # Return a new vector perpendicular to this one
   def perpendicular
-    Vector2d.new(-@y, @x)
+    Vector2d.new(-y, x)
   end
 
   # Calculates distance between two vectors
@@ -176,28 +159,24 @@ class Vector2d
   # param vector2 The other vector.
   # returns the squared distance between the vectors.
   def distance_sq(vector2)
-    dx = vector2.x - @x
-    dy = vector2.y - @y
+    dx = vector2.x - x
+    dy = vector2.y - y
     dx * dx + dy * dy
   end
 
   # Angle of this vector
   def angle
-    Math.atan2(@y, @x)
+    Math.atan2(y, x)
   end
 
   # Sets the length under the given value. Nothing is done if
   # the vector is already shorter.
   def truncate(max)
-    self.length = [max, self.length].min
-    self
+    resize([max, self.length].min)
   end
 
-  # Makes the vector face the opposite way.
   def reverse
-    @x = -@x
-    @y = -@y
-    self
+    self.class.new(-x, -y)
   end
 
   # Dot product of this vector and another vector
@@ -231,7 +210,7 @@ class Vector2d
   # Either axis will be disregarded if zero or nil (see the last example). This is a feature, not a bug. ;)
   def constrain_both(*vector_or_number)
     scale = Vector2d::new(vector_or_number) / self
-    (self * ((scale.y==0||(scale.x>0&&scale.x<scale.y)) ? scale.x : scale.y))
+    self * ((scale.y == 0 || (scale.x > 0 && scale.x < scale.y)) ? scale.x : scale.y)
   end
 
   # Constrain/expand so that one of the coordinates fit within (the square implied by) another vector.
@@ -240,10 +219,10 @@ class Vector2d
   #
   #   my_image = Vector2d.new("320x200")  # Creates a new vector object
   #   my_image.constrain_one(100, 100)    # Returns a new vector: x=160, y=100
-  def constrain_one( *vector_or_number )
+  def constrain_one(*vector_or_number)
     scale = Vector2d::new(vector_or_number) / self
     if (scale.x > 0 && scale.y > 0)
-      scale = (scale.x<scale.y) ? scale.y : scale.x
+      scale = (scale.x < scale.y) ? scale.y : scale.x
       self * scale
     else
       constrain_both(vector_or_number)

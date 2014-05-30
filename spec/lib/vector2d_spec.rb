@@ -113,12 +113,12 @@ describe Vector2d do
     end
   end
 
-  describe "#length=" do
+  describe "#resize" do
+    subject(:resized) { vector.resize(2.0) }
     it "modifies the vector length" do
-      vector.length = 2.0
-      expect(vector.length).to be_within(0.0001).of(2.0)
-      expect(vector.x).to be_within(0.0001).of(1.1094)
-      expect(vector.y).to be_within(0.0001).of(1.6641)
+      expect(resized.length).to be_within(0.0001).of(2.0)
+      expect(resized.x).to be_within(0.0001).of(1.1094)
+      expect(resized.y).to be_within(0.0001).of(1.6641)
     end
   end
 
@@ -129,25 +129,10 @@ describe Vector2d do
     end
   end
 
-  describe "#normalize!" do
-    it "normalizes the vector in place" do
-      vector.normalize!
-      expect(vector).to eq(vector.normalize)
-    end
-  end
-
   describe "#round" do
     subject(:vector) { Vector2d.new(2.3, 3.6) }
     it "rounds the vector" do
       expect(vector.round).to eq(Vector2d.new(2, 4))
-    end
-  end
-
-  describe "#round!" do
-    subject(:vector) { Vector2d.new(2.3, 3.6) }
-    it "rounds the vector in place" do
-      vector.round!
-      expect(vector).to eq(Vector2d.new(2, 4))
     end
   end
 
@@ -234,6 +219,12 @@ describe Vector2d do
   describe "#angle" do
     it "returns the angle" do
       expect(vector.angle).to be_within(0.0001).of(0.9827)
+    end
+  end
+
+  describe "#aspect_ratio" do
+    it "returns the aspect_ratio" do
+      expect(vector.aspect_ratio).to be_within(0.0001).of(0.6667)
     end
   end
 
