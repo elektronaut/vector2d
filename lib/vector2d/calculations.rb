@@ -23,26 +23,22 @@ class Vector2d
 
     # Multiplies vectors
     def *(other)
-      v, _ = coerce(other)
-      self.class.new(x * v.x, y * v.y)
+      calculate_each(:*, other)
     end
 
     # Divides vectors
     def /(other)
-      v, _ = coerce(other)
-      self.class.new(x / v.x, y / v.y)
+      calculate_each(:/, other)
     end
 
     # Adds vectors
     def +(other)
-      v, _ = coerce(other)
-      self.class.new(x + v.x, y + v.y)
+      calculate_each(:+, other)
     end
 
     # Subtracts vectors
     def -(other)
-      v, _ = coerce(other)
-      self.class.new(x - v.x, y - v.y)
+      calculate_each(:-, other)
     end
 
     # Calculates the distance between two vectors
@@ -74,6 +70,16 @@ class Vector2d
     def angle_between(other)
       v, _ = coerce(other)
       self.class.angle_between(self, v)
+    end
+
+    private
+
+    def calculate_each(method, other)
+      v, _ = coerce(other)
+      self.class.new(
+        x.send(method, v.x),
+        y.send(method, v.y)
+      )
     end
   end
 end
