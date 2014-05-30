@@ -1,39 +1,35 @@
-= Vector2d
+# Vector2d [![Build Status](https://travis-ci.org/elektronaut/vector2d.png)](https://travis-ci.org/elektronaut/vector2d) [![Code Climate](https://codeclimate.com/github/elektronaut/vector2d.png)](https://codeclimate.com/github/elektronaut/vector2d)
 
 Vector2d allows for easy handling of two-dimensionals coordinates and vectors.
 It's very flexible, most methods accepts arguments as strings, arrays, hashes
 or Vector2d objects.
 
-== Installation
+## Installation
 
-  gem install vector2d
+    gem install vector2d
 
-== Usage examples
+## Usage examples
 
-  require 'vector2d'
+    require 'vector2d'
 
-  # These are equal
-  v = Vector2d.new(50, 70)
-  v = Vector2d.new('50x70')
+    # These are equal
+    v = Vector2d.new(50, 70)
+    v = Vector2d.new('50x70')
 
-  v.aspect_ratio # => 0.714285714285714
-  v.length       # => 86.0232526704263
+    v.aspect_ratio # => 0.714285714285714
+    v.length       # => 86.0232526704263
 
-  # Calculations work as expected
-  v * 2                   # => #<Vector2d:0x5d994 @y=140.0, @x=100.0>
-  v + Vector2d.new(20,30) # => #<Vector2d:0x59c54 @y=100.0, @x=70.0>
+    # Calculations work as expected
+    v * 2                   # => #<Vector2d:0x5d994 @y=140.0, @x=100.0>
+    v + Vector2d.new(20,30) # => #<Vector2d:0x59c54 @y=100.0, @x=70.0>
 
-  v.constrain_both(64, 64) # => #<Vector2d:0x47e28 @y=64.0, @x=45.7142857142857>
+    v.constrain_both(64, 64) # => #<Vector2d:0x47e28 @y=64.0, @x=45.7142857142857>
 
-== API Documentation
+## API Documentation
 
-Is available at http://rdoc.info/github/elektronaut/vector2d
+Is available at [RDoc.info](http://rdoc.info/github/elektronaut/vector2d)
 
-== Source code
-
-Is available at http://github.com/elektronaut/vector2d
-
-== Licence
+## Licence
 
 (The MIT License)
 
