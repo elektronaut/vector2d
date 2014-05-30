@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'spec_helper'
 
 describe Vector2d do
@@ -10,44 +12,49 @@ describe Vector2d do
     end
   end
 
-  describe "new" do
+  describe ".parse" do
+    context "with fixnum argument" do
+      subject(:vector) { Vector2d.parse(2) }
+      it_behaves_like "a vector constructor", [2, 2]
+    end
+
     context "with two arguments, fixnum" do
-      subject(:vector) { Vector2d.new(1, 2) }
+      subject(:vector) { Vector2d.parse(1, 2) }
       it_behaves_like "a vector constructor", [1, 2]
     end
 
     context "with two arguments, float" do
-      subject(:vector) { Vector2d.new(1.0, 2.0) }
+      subject(:vector) { Vector2d.parse(1.0, 2.0) }
       it_behaves_like "a vector constructor", [1.0, 2.0]
     end
 
     context "with string argument, fixnum" do
-      subject(:vector) { Vector2d.new("1x2") }
+      subject(:vector) { Vector2d.parse("1x2") }
       it_behaves_like "a vector constructor", [1, 2]
     end
 
     context "with string argument, float" do
-      subject(:vector) { Vector2d.new("1.0x2.0") }
+      subject(:vector) { Vector2d.parse("1.0x2.0") }
       it_behaves_like "a vector constructor", [1.0, 2.0]
     end
 
     context "with array argument" do
-      subject(:vector) { Vector2d.new([1, 2]) }
+      subject(:vector) { Vector2d.parse([1, 2]) }
       it_behaves_like "a vector constructor", [1, 2]
     end
 
     context "with hash argument, symbol keys" do
-      subject(:vector) { Vector2d.new({:x => 1, :y => 2}) }
+      subject(:vector) { Vector2d.parse({:x => 1, :y => 2}) }
       it_behaves_like "a vector constructor", [1, 2]
     end
 
     context "with hash argument, string keys" do
-      subject(:vector) { Vector2d.new({'x' => 1, 'y' => 2}) }
+      subject(:vector) { Vector2d.parse({'x' => 1, 'y' => 2}) }
       it_behaves_like "a vector constructor", [1, 2]
     end
 
     context "with vector argument" do
-      subject(:vector) { Vector2d.new(Vector2d.new(1, 2)) }
+      subject(:vector) { Vector2d.parse(Vector2d.new(1, 2)) }
       it_behaves_like "a vector constructor", [1, 2]
     end
   end
@@ -95,9 +102,24 @@ describe Vector2d do
     end
   end
 
+  describe "#inspect" do
+    it "renders a string representation" do
+      expect(vector.inspect).to eq("Vector2d(2,3)")
+    end
+  end
+
   describe "#to_s" do
-    it "renders a string" do
-      expect(vector.to_s).to eq('2.0x3.0')
+    context "when fixnum" do
+      subject(:vector) { Vector2d.new(2, 3) }
+      it "renders a string" do
+        expect(vector.to_s).to eq('2x3')
+      end
+    end
+    context "when float" do
+      subject(:vector) { Vector2d.new(2.0, 3.0) }
+      it "renders a string" do
+        expect(vector.to_s).to eq('2.0x3.0')
+      end
     end
   end
 
