@@ -28,30 +28,42 @@ class Vector2d
     #   Vector2d.parse({"x" => 150.0, "y" => 100.0})
     #   Vector2d.parse(Vector2d.new(150, 100))
     def parse(arg, second_arg=nil)
-      return self.new(arg, second_arg) if !second_arg.nil?
-
-      case arg
-      when Vector2d
-        arg
-      when Array
-        self.parse(*arg)
-      when Numeric
-        self.new(arg, arg)
-      when /^[\s]*[\d\.]*[\s]*x[\s]*[\d\.]*[\s]*$/
-        self.new(*arg.split("x").map(&:to_f))
-      when Hash
-        parse_hash(arg.dup)
+      if second_arg.nil?
+        parse_single_arg(arg)
       else
-        raise ArgumentError, "unsupported argument type #{arg.class}"
+        self.new(arg, second_arg)
       end
     end
 
     private
 
+    def parse_single_arg(arg)
+      case arg
+      when Vector2d
+        arg
+      when Array
+        self.parse(*arg)
+      when String
+        parse_str(arg)
+      when Hash
+        parse_hash(arg.dup)
+      else
+        self.new(arg, arg)
+      end
+    end
+
     def parse_hash(hash)
       hash[:x] ||= hash['x'] if hash.has_key?('x')
       hash[:y] ||= hash['y'] if hash.has_key?('y')
       self.new(hash[:x], hash[:y])
+    end
+
+    def parse_str(str)
+      if str =~ /^[\s]*[\d\.]*[\s]*x[\s]*[\d\.]*[\s]*$/
+        self.new(*str.split("x").map(&:to_f))
+      else
+        raise ArgumentError, "not a valid string input"
+      end
     end
   end
 
