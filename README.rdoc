@@ -27,7 +27,7 @@ or Vector2d objects.
 
 == API Documentation
 
-Is available at http://vector2d.rubyforge.org
+Is available at http://rdoc.info/github/elektronaut/vector2d
 
 == Source code
 
