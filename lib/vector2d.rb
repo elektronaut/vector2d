@@ -75,6 +75,19 @@ class Vector2d
     @x, @y = [@x, @y].map(&:to_f)
   end
 
+  def coerce(other)
+    case other
+    when Vector2d
+      [other, self]
+    when Array
+      [Vector2d.new(other[0], other[1]), self]
+    when Numeric
+      [Vector2d.new(other, other), self]
+    else
+      raise TypeError, "#{self.class} can't be coerced into #{other.class}"
+    end
+  end
+
   # Compares two vectors.
   def ==(comp)
     comp.x == x && comp.y == y
@@ -122,27 +135,27 @@ class Vector2d
   end
 
   # Multiply vectors. If args is a single Numeric, both axis will be multiplied.
-  def *(*vector_or_number)
-    v = Vector2d::new(vector_or_number)
-    Vector2d.new(x * v.x, y * v.y)
+  def *(other)
+    v, _ = coerce(other)
+    self.class.new(x * v.x, y * v.y)
   end
 
   # Divide vectors. If args is a single Numeric, both axis will be divided.
-  def /(*vector_or_number)
-    v = Vector2d::new(vector_or_number)
-    Vector2d.new(x / v.x, y / v.y)
+  def /(other)
+    v, _ = coerce(other)
+    self.class.new(x / v.x, y / v.y)
   end
 
   # Add vectors. If args is a single Numeric, it will be added to both axis.
-  def +(*vector_or_number)
-    v = Vector2d::new(vector_or_number)
-    Vector2d.new(x + v.x, y + v.y)
+  def +(other)
+    v, _ = coerce(other)
+    self.class.new(x + v.x, y + v.y)
   end
 
   # Subtract vectors. If args is a single Numeric, it will be subtracted from both axis.
-  def -(*vector_or_number)
-    v = Vector2d::new(vector_or_number)
-    Vector2d.new(x - v.x, y - v.y)
+  def -(other)
+    v, _ = coerce(other)
+    self.class.new(x - v.x, y - v.y)
   end
 
   # Return a new vector perpendicular to this one
@@ -151,16 +164,17 @@ class Vector2d
   end
 
   # Calculates distance between two vectors
-  def distance(vector2)
-    Math.sqrt(distance_sq(vector2))
+  def distance(other)
+    Math.sqrt(distance_sq(other))
   end
 
   # Calculate squared distance between vectors. Faster than standard distance.
   # param vector2 The other vector.
   # returns the squared distance between the vectors.
-  def distance_sq(vector2)
-    dx = vector2.x - x
-    dy = vector2.y - y
+  def distance_sq(other)
+    v, _ = coerce(other)
+    dx = v.x - x
+    dy = v.y - y
     dx * dx + dy * dy
   end
 
@@ -180,18 +194,21 @@ class Vector2d
   end
 
   # Dot product of this vector and another vector
-  def dot_product(vector2)
-    self.class.dot_product(self, vector2)
+  def dot_product(other)
+    v, _ = coerce(other)
+    self.class.dot_product(self, v)
   end
 
   # Cross product of this vector and another vector
-  def cross_product(vector2)
-    self.class.cross_product(self, vector2)
+  def cross_product(other)
+    v, _ = coerce(other)
+    self.class.cross_product(self, v)
   end
 
   # Angle in radians between this vector and another
-  def angle_between(vector2)
-    self.class.angle_between(self, vector2)
+  def angle_between(other)
+    v, _ = coerce(other)
+    self.class.angle_between(self, v)
   end
 
   # Constrain/expand so that both coordinates fit within (the square implied by) another vector.
@@ -208,8 +225,9 @@ class Vector2d
   # == Note
   #
   # Either axis will be disregarded if zero or nil (see the last example). This is a feature, not a bug. ;)
-  def constrain_both(*vector_or_number)
-    scale = Vector2d::new(vector_or_number) / self
+  def constrain_both(other)
+    v, _ = coerce(other)
+    scale = v / self
     self * ((scale.y == 0 || (scale.x > 0 && scale.x < scale.y)) ? scale.x : scale.y)
   end
 
@@ -219,8 +237,9 @@ class Vector2d
   #
   #   my_image = Vector2d.new("320x200")  # Creates a new vector object
   #   my_image.constrain_one(100, 100)    # Returns a new vector: x=160, y=100
-  def constrain_one(*vector_or_number)
-    scale = Vector2d::new(vector_or_number) / self
+  def constrain_one(other)
+    v, _ = coerce(other)
+    scale = v / self
     if (scale.x > 0 && scale.y > 0)
       scale = (scale.x < scale.y) ? scale.y : scale.x
       self * scale
