@@ -22,6 +22,11 @@ class Vector2d
       [x, y]
     end
 
+    # Convert to hash
+    def to_hash
+      { x: x, y: y }
+    end
+
     # Convert to integer
     def to_i
       self.class.new(x.to_i, y.to_i)

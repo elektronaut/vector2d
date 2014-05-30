@@ -25,19 +25,19 @@ class Vector2d
     # Examples:
     #
     #   constraint = Vector2d.new(5, 5)
-    #   Vector2d.new(20, 10).fit(constraint) # => Vector2d(10, 5)
-    #   Vector2d.new(10, 20).fit(constraint) # => Vector2d(5, 10)
+    #   Vector2d.new(20, 10).fit_either(constraint) # => Vector2d(10, 5)
+    #   Vector2d.new(10, 20).fit_either(constraint) # => Vector2d(5, 10)
     #
-    def fit_one(other)
+    def fit_either(other)
       v, _ = coerce(other)
       scale = v.to_f / self
       if (scale.x > 0 && scale.y > 0)
         scale = (scale.x < scale.y) ? scale.y : scale.x
         self * scale
       else
-        constrain_both(v)
+        fit(v)
       end
     end
-    alias_method :constrain_one, :fit_one
+    alias_method :constrain_one, :fit_either
   end
 end

@@ -24,7 +24,7 @@ class Vector2d
     #   Vector2d.parse("150x100")
     #   Vector2d.parse("150.0x100.0")
     #   Vector2d.parse([150,100})
-    #   Vector2d.parse({:x => 150, :y => 100})
+    #   Vector2d.parse({x: 150, y: 100})
     #   Vector2d.parse({"x" => 150.0, "y" => 100.0})
     #   Vector2d.parse(Vector2d.new(150, 100))
     def parse(arg, second_arg=nil)
@@ -75,6 +75,6 @@ class Vector2d
 
   # Compare two vectors
   def ==(comp)
-    comp.x == x && comp.y == y
+    comp.x === x && comp.y === y
   end
 end

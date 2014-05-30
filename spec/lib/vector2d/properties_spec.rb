@@ -1,0 +1,43 @@
+# encoding: utf-8
+
+require 'spec_helper'
+
+describe Vector2d::Properties do
+  subject(:vector) { Vector2d.new(2, 3) }
+
+  describe "#angle" do
+    it "returns the angle" do
+      expect(vector.angle).to be_within(0.0001).of(0.9827)
+    end
+  end
+
+  describe "#aspect_ratio" do
+    it "returns the aspect_ratio" do
+      expect(vector.aspect_ratio).to be_within(0.0001).of(0.6667)
+    end
+  end
+
+  describe "#length" do
+    it "calculates the length" do
+      expect(vector.length).to be_within(0.0001).of(3.6055)
+    end
+  end
+
+  describe "#length_squared" do
+    it "calculates the squared length" do
+      expect(vector.length_squared).to be_within(0.0001).of(13.0)
+    end
+  end
+
+  describe "#normalized?" do
+    subject { vector.normalized? }
+    context "when vector is normalized" do
+      let(:vector) { Vector2d.new(2, 3).normalize }
+      it { should be_true }
+    end
+    context "when vector isn't normalized" do
+      let(:vector) { Vector2d.new(2, 3) }
+      it { should be_false }
+    end
+  end
+end
