@@ -1,57 +1,29 @@
 # Vector2d [![Build Status](https://travis-ci.org/elektronaut/vector2d.png)](https://travis-ci.org/elektronaut/vector2d) [![Code Climate](https://codeclimate.com/github/elektronaut/vector2d.png)](https://codeclimate.com/github/elektronaut/vector2d)
 
-Vector2d allows for easy handling of two-dimensionals coordinates and vectors.
-It's very flexible, most methods accepts arguments as strings, arrays, hashes
-or Vector2d objects.
+Vector2d handles two-dimensional coordinates and vectors.
+Vectors are immutable, meaning this is a purely functional library.
 
-## Installation
-
-    gem install vector2d
-
-## Usage examples
+## Quick example
 
     require 'vector2d'
 
-    # These are equal
-    v = Vector2d.new(50, 70)
-    v = Vector2d.new('50x70')
+    vector = Vector2d(50, 70)
 
-    v.aspect_ratio # => 0.714285714285714
-    v.length       # => 86.0232526704263
+    vector.aspect_ratio        # => 0.714285714285714
+    vector.length              # => 86.0232526704263
 
-    # Calculations work as expected
-    v * 2                   # => #<Vector2d:0x5d994 @y=140.0, @x=100.0>
-    v + Vector2d.new(20,30) # => #<Vector2d:0x59c54 @y=100.0, @x=70.0>
+    vector * 2                 # => Vector2d(140,100)
+    vector + Vector2d(20, 30)  # => Vector2d(100,70)
 
-    v.constrain_both(64, 64) # => #<Vector2d:0x47e28 @y=64.0, @x=45.7142857142857>
+    vector.fit(Vector(64, 64)) # => Vector2d(64,45)
 
-## API Documentation
+    Vector2d.parse([50, 70])   # => Vector2d(50,70)
+    Vector2d.parse("50x70")    # => Vector2d(50,70)
 
-Is available at [RDoc.info](http://rdoc.info/github/elektronaut/vector2d)
+## Documentation
 
-## Licence
+[API documentation](http://rdoc.info/github/elektronaut/vector2d)
 
-(The MIT License)
+## License
 
-Copyright (c) 2006 Inge Jørgensen
-
-Permission is hereby granted, free of charge, to any person
-obtaining a copy of this software and associated documentation
-files (the "Software"), to deal in the Software without
-restriction, including without limitation the rights to use,
-copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following
-conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-OTHER DEALINGS IN THE SOFTWARE.
+Vector2d is released under the [MIT License](http://www.opensource.org/licenses/MIT).

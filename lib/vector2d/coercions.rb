@@ -13,33 +13,50 @@ class Vector2d
       end
     end
 
+    # Renders vector as a pretty string.
+    #
+    #   Vector2d(2, 3).inspect # => "Vector2d(2,3)"
+    #
     def inspect
       "Vector2d(#{x},#{y})"
     end
 
-    # Convert to array
+    # Converts vector to array.
+    #
+    #   Vector2d(2, 3).to_a # => [2,3]
+    #
     def to_a
       [x, y]
     end
 
-    # Convert to hash
+    # Converts vector to hash.
+    #
+    #   Vector2d(2, 3).to_hash # => {x: 2, y: 3}
+    #
     def to_hash
       { x: x, y: y }
     end
 
-    # Convert to integer
-    def to_i
+    # Converts vector to fixnums.
+    #
+    #   Vector2d(2.0, 3.0).to_i_vector # => Vector2d(2,3)
+    #
+    def to_i_vector
       self.class.new(x.to_i, y.to_i)
     end
 
-    # Convert to float
-    def to_f
+    # Converts vector to floats.
+    #
+    #   Vector2d(2, 3).to_f_vector # => Vector2d(2.0,3.0)
+    #
+    def to_f_vector
       self.class.new(x.to_f, y.to_f)
     end
 
-    # Convert to string
+    # Converts vector to string.
     #
     #   Vector2d.new(150, 100).to_s # => "150x100"
+    #
     def to_s
       "#{x}x#{y}"
     end

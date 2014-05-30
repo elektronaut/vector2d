@@ -26,7 +26,7 @@ class Vector2d
     #   Vector2d.parse([150,100})
     #   Vector2d.parse({x: 150, y: 100})
     #   Vector2d.parse({"x" => 150.0, "y" => 100.0})
-    #   Vector2d.parse(Vector2d.new(150, 100))
+    #   Vector2d.parse(Vector2d(150, 100))
     def parse(arg, second_arg=nil)
       if second_arg.nil?
         parse_single_arg(arg)
@@ -73,12 +73,20 @@ class Vector2d
     @x, @y = x, y
   end
 
-  # Compare two vectors
+  # Compares two vectors
+  #
+  #   Vector2d(2, 3) == Vector2d(2, 3) # => true
+  #   Vector2d(2, 3) == Vector2d(1, 0) # => false
+  #
   def ==(comp)
     comp.x === x && comp.y === y
   end
 end
 
+# Instantiates a Vector2d
+#
+#   Vector2d(2, 3) # => Vector2d(2,3)
+#
 def Vector2d(*args)
   Vector2d.parse(*args)
 end

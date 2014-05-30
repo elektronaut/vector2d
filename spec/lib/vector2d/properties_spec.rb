@@ -23,9 +23,9 @@ describe Vector2d::Properties do
     end
   end
 
-  describe "#length_squared" do
+  describe "#squared_length" do
     it "calculates the squared length" do
-      expect(vector.length_squared).to be_within(0.0001).of(13.0)
+      expect(vector.squared_length).to eq(13)
     end
   end
 

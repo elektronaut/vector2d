@@ -17,9 +17,9 @@ describe Vector2d::Coercions do
     end
   end
 
-  describe "#to_f" do
+  describe "#to_f_vector" do
     it "returns a float vector" do
-      expect(vector.to_f).to eq(Vector2d.new(2.0, 3.0))
+      expect(vector.to_f_vector).to eq(Vector2d.new(2.0, 3.0))
     end
   end
 
@@ -32,7 +32,7 @@ describe Vector2d::Coercions do
   describe "#to_i" do
     subject(:vector) { Vector2d.new(2.0, 3.0) }
     it "returns a fixnum vector" do
-      expect(vector.to_f).to eq(Vector2d.new(2, 3))
+      expect(vector.to_i_vector).to eq(Vector2d.new(2, 3))
     end
   end
 

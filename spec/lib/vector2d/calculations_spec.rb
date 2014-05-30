@@ -103,10 +103,10 @@ describe Vector2d::Calculations do
     end
   end
 
-  describe "#distance_sq" do
+  describe "#squared_distance" do
     let(:comp) { Vector2d.new(5, 6) }
     it "returns the squared distance between two vectors" do
-      expect(vector.distance_sq(comp)).to be_within(0.0001).of(18.0)
+      expect(vector.squared_distance(comp)).to eq(18)
     end
   end
 
