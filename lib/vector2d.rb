@@ -78,3 +78,7 @@ class Vector2d
     comp.x === x && comp.y === y
   end
 end
+
+def Vector2d(*args)
+  Vector2d.parse(*args)
+end

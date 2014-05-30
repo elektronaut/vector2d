@@ -12,6 +12,12 @@ describe Vector2d do
     end
   end
 
+  describe "helper method" do
+    it "creates a vector" do
+      expect(Vector2d(2, 3)).to eq(Vector2d.new(2, 3))
+    end
+  end
+
   describe ".parse" do
     context "with fixnum argument" do
       subject(:vector) { Vector2d.parse(2) }
