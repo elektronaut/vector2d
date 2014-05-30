@@ -9,7 +9,7 @@ describe Vector2d::Calculations do
     let(:v1) { Vector2d.new(2, 3) }
     let(:v2) { Vector2d.new(4, 5) }
     it "calculates the cross product between two vectors" do
-      expect(Vector2d.cross_product(v1, v2)).to be_within(0.0001).of(-2.0)
+      expect(Vector2d.cross_product(v1, v2)).to eq(-2.0)
     end
   end
 
@@ -17,7 +17,7 @@ describe Vector2d::Calculations do
     let(:v1) { Vector2d.new(2, 3) }
     let(:v2) { Vector2d.new(4, 5) }
     it "calculates the dot product between two vectors" do
-      expect(Vector2d.dot_product(v1, v2)).to be_within(0.0001).of(23.0)
+      expect(Vector2d.dot_product(v1, v2)).to eq(23)
     end
   end
 
