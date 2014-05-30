@@ -4,6 +4,24 @@
 # It's very flexible, most methods accepts arguments as strings, arrays, hashes
 # or Vector2d objects.
 class Vector2d
+  class << self
+    # Calculates cross product of two vectors
+    def cross_product(vector1, vector2)
+      vector1.x * vector2.y - vector1.y * vector2.x
+    end
+
+    # Calculates dot product of two vectors
+    def dot_product(vector1, vector2)
+      vector1.x * vector2.x + vector1.y * vector2.y
+    end
+
+    # Calculates angle between two vectors in radians
+    def angle_between(vector1, vector2)
+      one = vector1.normalized? ? vector1 : vector1.normalize
+      two = vector2.normalized? ? vector2 : vector2.normalize
+      Math.acos(self.dot_product(one, two))
+    end
+  end
 
   # X axis
   attr_accessor :x
@@ -23,27 +41,41 @@ class Vector2d
   #   Vector2d.new(Vector2d.new(150, 100))
   def initialize(*args)
     args.flatten!
-    if (args.length == 1)
-      if (args[0].kind_of?(String) && args[0].match(/^[\s]*[\d\.]*[\s]*x[\s]*[\d\.]*[\s]*$/))
-        args = args[0].split("x")
-      elsif args[0].kind_of?(Vector2d)
-        args = [args[0].x, args[0].y]
-      elsif args[0].kind_of?(Hash)
-        if args[0].has_key?(:y)
-          args[1] = args[0][:y]
-        elsif args[0].has_key?("y")
-          args[1] = args[0]["y"]
+
+    if args.length == 2
+      @x, @y = *args
+    elsif args.length == 1
+      case args.first
+      when Vector2d
+        @x, @y = args.first.x, args.first.y
+      when Numeric
+        @x = args.first
+        @y = args.first
+      when Hash
+        if args.first.has_key?(:x)
+          @x = args.first[:x]
+        elsif args.first.has_key?("x")
+          @x = args.first["x"]
         end
-        if args[0].has_key?(:x)
-          args[0] = args[0][:x]
-        elsif args[0].has_key?("x")
-          args[0] = args[0]["x"]
+        if args.first.has_key?(:y)
+          @y = args.first[:y]
+        elsif args.first.has_key?("y")
+          @y = args.first["y"]
         end
+      when /^[\s]*[\d\.]*[\s]*x[\s]*[\d\.]*[\s]*$/
+        @x, @y = args.first.split("x").map(&:to_f)
       else
-        args = [args[0], args[0]]
+        raise ArgumentError, "unsupported argument type #{args.first.class}"
       end
+    else
+      raise ArgumentError, "wrong number of arguments (#{args.length} for 1..2)"
     end
-    @x, @y = args[0].to_f, args[1].to_f
+
+    unless @x.is_a?(Numeric) && @y.is_a?(Numeric)
+      raise ArgumentError, "unsupported argument type (#{@x.class}, #{@y.class})"
+    end
+
+    @x, @y = [@x, @y].map(&:to_f)
   end
 
   # Compares two vectors.
@@ -130,12 +162,12 @@ class Vector2d
     Vector2d.new(@x-v.x, @y-v.y)
   end
 
-  # return a new vector perpendicular to this one
+  # Return a new vector perpendicular to this one
   def perpendicular
     Vector2d.new(-@y, @x)
   end
 
-  # distance between two vectors
+  # Calculates distance between two vectors
   def distance(vector2)
     Math.sqrt(distance_sq(vector2))
   end
@@ -149,12 +181,12 @@ class Vector2d
     dx * dx + dy * dy
   end
 
-  # angle of this vector
+  # Angle of this vector
   def angle
     Math.atan2(@y, @x)
   end
 
-  # sets the length under the given value. Nothing is done if
+  # Sets the length under the given value. Nothing is done if
   # the vector is already shorter.
   def truncate(max)
     self.length = [max, self.length].min
@@ -168,36 +200,19 @@ class Vector2d
     self
   end
 
-  # dot product of this vector and another vector
+  # Dot product of this vector and another vector
   def dot_product(vector2)
     self.class.dot_product(self, vector2)
   end
 
-  # cross product of this vector and another vector
+  # Cross product of this vector and another vector
   def cross_product(vector2)
     self.class.cross_product(self, vector2)
   end
 
-  # angle in radians between this vector and another
+  # Angle in radians between this vector and another
   def angle_between(vector2)
     self.class.angle_between(self, vector2)
-  end
-
-  # cross product of two vectors
-  def self.cross_product(vector1, vector2)
-    vector1.x * vector2.y - vector1.y * vector2.x
-  end
-
-  # dot product of two vectors
-  def self.dot_product(vector1, vector2)
-    vector1.x * vector2.x + vector1.y * vector2.y
-  end
-
-  # angle between two vectors in radians
-  def self.angle_between(vector1, vector2)
-    one = vector1.normalized? ? vector1 : vector1.normalize
-    two = vector2.normalized? ? vector2 : vector2.normalize
-    Math.acos(self.dot_product(one, two))
   end
 
   # Constrain/expand so that both coordinates fit within (the square implied by) another vector.
