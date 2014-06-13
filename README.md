@@ -28,4 +28,6 @@ Vector2d.parse("50x70")    # => Vector2d(50,70)
 
 ## License
 
+Copyright (c) 2006-2014 Inge Jørgensen
+
 Vector2d is released under the [MIT License](http://www.opensource.org/licenses/MIT).
