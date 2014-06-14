@@ -4,7 +4,7 @@ class Vector2d
   module Properties
     # Angle of vector.
     #
-    #   Vector(2, 3).angle # => 0.9827..
+    #   Vector2d(2, 3).angle # => 0.9827..
     #
     def angle
       Math.atan2(y, x)
@@ -12,7 +12,7 @@ class Vector2d
 
     # Aspect ratio of vector.
     #
-    #   Vector(2, 3).aspect_ratio # => 0.6667..
+    #   Vector2d(2, 3).aspect_ratio # => 0.6667..
     #
     def aspect_ratio
       (x.to_f / y.to_f).abs
@@ -20,7 +20,7 @@ class Vector2d
 
     # Length of vector.
     #
-    #   Vector(2, 3).length # => 3.6055..
+    #   Vector2d(2, 3).length # => 3.6055..
     #
     def length
       Math.sqrt(squared_length)
@@ -28,7 +28,7 @@ class Vector2d
 
     # Squared length of vector.
     #
-    #   Vector(2, 3).squared_length # => 13
+    #   Vector2d(2, 3).squared_length # => 13
     #
     def squared_length
       x * x + y * y
@@ -36,8 +36,8 @@ class Vector2d
 
     # Is this a normalized vector?
     #
-    #   Vector(0, 1).normalized? # => true
-    #   Vector(2, 3).normalized? # => false
+    #   Vector2d(0, 1).normalized? # => true
+    #   Vector2d(2, 3).normalized? # => false
     #
     def normalized?
       self.length.to_f == 1.0
