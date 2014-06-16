@@ -5,6 +5,20 @@ require 'spec_helper'
 describe Vector2d::Transformations do
   subject(:vector) { Vector2d.new(2, 3) }
 
+  describe "#ceil" do
+    subject(:vector) { Vector2d.new(2.3, 3.3) }
+    it "rounds the vector up" do
+      expect(vector.ceil).to eq(Vector2d.new(3, 4))
+    end
+  end
+
+  describe "#floor" do
+    subject(:vector) { Vector2d.new(2.7, 3.6) }
+    it "rounds the vector down" do
+      expect(vector.floor).to eq(Vector2d.new(2, 3))
+    end
+  end
+
   describe "#normalize" do
     it "normalizes the vector" do
       expect(vector.normalize.x).to be_within(0.0001).of(0.5547)

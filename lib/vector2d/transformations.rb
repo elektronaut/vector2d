@@ -2,6 +2,22 @@
 
 class Vector2d
   module Transformations
+    # Rounds vector to up nearest integer.
+    #
+    #   Vector2d(2.4, 3.6).ceil # => Vector2d(3,4)
+    #
+    def ceil
+      self.class.new(x.ceil, y.ceil)
+    end
+
+    # Rounds vector to up nearest integer.
+    #
+    #   Vector2d(2.4, 3.6).floor # => Vector2d(2,3)
+    #
+    def floor
+      self.class.new(x.floor, y.floor)
+    end
+
     # Normalizes the vector.
     #
     #   vector = Vector2d(2, 3)
