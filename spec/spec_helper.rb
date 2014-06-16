@@ -1,3 +1,6 @@
 # encoding: utf-8
 
-require 'vector2d'
+require "codeclimate-test-reporter"
+CodeClimate::TestReporter.start
+
+require "vector2d"

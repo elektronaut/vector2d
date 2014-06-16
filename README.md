@@ -1,4 +1,4 @@
-# Vector2d [![Build Status](https://travis-ci.org/elektronaut/vector2d.png)](https://travis-ci.org/elektronaut/vector2d) [![Code Climate](https://codeclimate.com/github/elektronaut/vector2d.png)](https://codeclimate.com/github/elektronaut/vector2d)
+# Vector2d [![Build Status](https://travis-ci.org/elektronaut/vector2d.png)](https://travis-ci.org/elektronaut/vector2d) [![Code Climate](https://codeclimate.com/github/elektronaut/vector2d.png)](https://codeclimate.com/github/elektronaut/vector2d) [![Code Climate](https://codeclimate.com/github/elektronaut/vector2d/coverage.png)](https://codeclimate.com/github/elektronaut/vector2d)
 
 Vector2d handles two-dimensional coordinates and vectors.
 Vectors are immutable, meaning this is a purely functional library.
