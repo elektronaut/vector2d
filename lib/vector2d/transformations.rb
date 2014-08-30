@@ -52,12 +52,21 @@ class Vector2d
       self.class.new(-x, -y)
     end
 
+    # Rotates the vector
+    #
+    #   Vector2d(1, 0).rotate(Math:PI/2) => Vector2d(1,0)
+    #
+    def rotate(angle)
+      Vector2d.new(x * Math.cos(angle) - y * Math.sin(angle), x * Math.sin(angle) + y * Math.cos(angle))
+    end
+
     # Rounds vector to nearest integer.
     #
     #   Vector2d(2.4, 3.6).round # => Vector2d(2,4)
+    #   Vector2d(2.4444, 3.666).round(2) # => Vector2d(2.44, 3.67)
     #
-    def round
-      self.class.new(x.round, y.round)
+    def round(digits=0)
+      self.class.new(x.round(digits), y.round(digits))
     end
 
     # Truncates to max length if vector is longer than max.

@@ -47,10 +47,21 @@ describe Vector2d::Transformations do
     end
   end
 
+  describe "#rotate" do
+    let(:vector) { Vector2d.new(1, 0) }
+    it "rotates the vector" do
+      expect(vector.rotate(Math::PI).round(1)).to eq(Vector2d.new(-1, 0))
+      expect(vector.rotate(Math::PI/2).round(1)).to eq(Vector2d.new(0, 1))
+      expect(vector.rotate(-Math::PI/2).round(1)).to eq(Vector2d.new(0, -1))
+      expect(vector.rotate(Math::PI/4).round(3)).to eq(Vector2d.new(0.707, 0.707))
+    end
+  end
+
   describe "#round" do
-    subject(:vector) { Vector2d.new(2.3, 3.6) }
+    subject(:vector) { Vector2d.new(2.3333, 3.666) }
     it "rounds the vector" do
       expect(vector.round).to eq(Vector2d.new(2, 4))
+      expect(vector.round(2)).to eq (Vector2d.new(2.33, 3.67))
     end
   end
 
@@ -68,4 +79,6 @@ describe Vector2d::Transformations do
       end
     end
   end
+
+
 end
