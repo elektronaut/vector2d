@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    vector2d (2.0.2)
+    vector2d (2.1.0)
 
 GEM
   remote: http://rubygems.org/
