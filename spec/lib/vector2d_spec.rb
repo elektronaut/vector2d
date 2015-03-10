@@ -70,17 +70,17 @@ describe Vector2d do
 
     context "with both arguments equal" do
       let(:comp) { Vector2d.new(2, 3) }
-      it { should be_true }
+      it { is_expected.to eq(true) }
     end
 
     context "with x differing" do
       let(:comp) { Vector2d.new(3, 3) }
-      it { should be_false }
+      it { is_expected.to eq(false) }
     end
 
     context "with y differing" do
       let(:comp) { Vector2d.new(2, 4) }
-      it { should be_false }
+      it { is_expected.to eq(false) }
     end
   end
 end
