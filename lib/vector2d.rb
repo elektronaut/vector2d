@@ -1,5 +1,19 @@
 # encoding: utf-8
 
+require "contracts"
+
+class Vector2d
+  include Contracts
+  VectorLike = Or[
+    [Num, Num],
+    { x: Num, y: Num },
+    { 'x' => Num, 'y' => Num },
+    Num,
+    String,
+    Vector2d
+  ]
+end
+
 require 'vector2d/calculations'
 require 'vector2d/coercions'
 require 'vector2d/fitting'
@@ -27,6 +41,7 @@ class Vector2d
     #   Vector2d.parse({x: 150, y: 100})
     #   Vector2d.parse({"x" => 150.0, "y" => 100.0})
     #   Vector2d.parse(Vector2d(150, 100))
+    Contract VectorLike => Vector2d
     def parse(arg, second_arg=nil)
       if second_arg.nil?
         parse_single_arg(arg)
@@ -37,6 +52,7 @@ class Vector2d
 
     private
 
+    Contract VectorLike => Vector2d
     def parse_single_arg(arg)
       case arg
       when Vector2d
@@ -52,12 +68,14 @@ class Vector2d
       end
     end
 
+    Contract Hash => Vector2d
     def parse_hash(hash)
       hash[:x] ||= hash['x'] if hash.has_key?('x')
       hash[:y] ||= hash['y'] if hash.has_key?('y')
       self.new(hash[:x], hash[:y])
     end
 
+    Contract String => Vector2d
     def parse_str(str)
       if str =~ /^[\s]*[\d\.]*[\s]*x[\s]*[\d\.]*[\s]*$/
         self.new(*str.split("x").map(&:to_f))
@@ -78,6 +96,7 @@ class Vector2d
   #   Vector2d(2, 3) == Vector2d(2, 3) # => true
   #   Vector2d(2, 3) == Vector2d(1, 0) # => false
   #
+  Contract Vector2d => Bool
   def ==(comp)
     comp.x === x && comp.y === y
   end
