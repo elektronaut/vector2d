@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    vector2d (2.1.0)
+    vector2d (2.2.0)
       contracts
 
 GEM
