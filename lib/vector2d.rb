@@ -41,8 +41,8 @@ class Vector2d
     #   Vector2d.parse({x: 150, y: 100})
     #   Vector2d.parse({"x" => 150.0, "y" => 100.0})
     #   Vector2d.parse(Vector2d(150, 100))
-    Contract VectorLike => Vector2d
-    def parse(arg, second_arg=nil)
+    Contract VectorLike, Maybe[Num] => Vector2d
+    def parse(arg, second_arg = nil)
       if second_arg.nil?
         parse_single_arg(arg)
       else
