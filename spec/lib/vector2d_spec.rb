@@ -34,6 +34,16 @@ describe Vector2d do
       it_behaves_like "a parsed vector", [1.0, 2.0]
     end
 
+    context "with string argument, first omitted" do
+      subject(:vector) { Vector2d.parse("x200") }
+      it_behaves_like "a parsed vector", [0, 200]
+    end
+
+    context "with string argument, second omitted" do
+      subject(:vector) { Vector2d.parse("200x") }
+      it_behaves_like "a parsed vector", [200, 0]
+    end
+
     context "with string argument, fixnum" do
       subject(:vector) { Vector2d.parse("1x2") }
       it_behaves_like "a parsed vector", [1, 2]

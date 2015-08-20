@@ -78,9 +78,10 @@ class Vector2d
     Contract String => Vector2d
     def parse_str(str)
       if str =~ /^[\s]*[\d\.]*[\s]*x[\s]*[\d\.]*[\s]*$/
-        self.new(*str.split("x").map(&:to_f))
+        x, y = str.split("x")
+        new(x.to_f, y.to_f)
       else
-        raise ArgumentError, "not a valid string input"
+        fail ArgumentError, "not a valid string input"
       end
     end
   end
