@@ -3,9 +3,7 @@ addons:
     repo_token: bf65d5faaf8dc80d0d58f2e7c663323734237c0a3e91cba16b1c556a98b0971e
 language: ruby
 rvm:
-  - 1.9.3
-  - 2.0.0
-  - 2.1.2
   - 2.2.2
+  - 2.3.0
 script:
   - bundle exec rspec spec
