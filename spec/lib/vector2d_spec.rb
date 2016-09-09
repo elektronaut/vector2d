@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-require 'spec_helper'
+require "spec_helper"
 
 describe Vector2d do
   subject(:vector) { Vector2d.new(2, 3) }
@@ -60,12 +60,12 @@ describe Vector2d do
     end
 
     context "with hash argument, symbol keys" do
-      subject(:vector) { Vector2d.parse({:x => 1, :y => 2}) }
+      subject(:vector) { Vector2d.parse(x: 1, y: 2) }
       it_behaves_like "a parsed vector", [1, 2]
     end
 
     context "with hash argument, string keys" do
-      subject(:vector) { Vector2d.parse({'x' => 1, 'y' => 2}) }
+      subject(:vector) { Vector2d.parse("x" => 1, "y" => 2) }
       it_behaves_like "a parsed vector", [1, 2]
     end
 

@@ -48,7 +48,7 @@ class Vector2d
     #
     Contract Num => Vector2d
     def resize(new_length)
-      self * (new_length / self.length)
+      self * (new_length / length)
     end
 
     # Reverses the vector.
@@ -78,7 +78,7 @@ class Vector2d
     #   Vector2d(2.4444, 3.666).round(2) # => Vector2d(2.44, 3.67)
     #
     Contract Or[None, Num] => Vector2d
-    def round(digits=0)
+    def round(digits = 0)
       self.class.new(x.round(digits), y.round(digits))
     end
 
@@ -90,7 +90,7 @@ class Vector2d
     #
     Contract Num => Vector2d
     def truncate(max)
-      resize([max, self.length].min)
+      resize([max, length].min)
     end
   end
 end

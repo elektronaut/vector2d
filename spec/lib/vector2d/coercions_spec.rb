@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-require 'spec_helper'
+require "spec_helper"
 
 describe Vector2d::Coercions do
   subject(:vector) { Vector2d.new(2, 3) }
@@ -26,7 +26,7 @@ describe Vector2d::Coercions do
 
   describe "#to_hash" do
     it "returns a hash" do
-      expect(vector.to_hash).to eq({x: 2, y: 3})
+      expect(vector.to_hash).to eq(x: 2, y: 3)
     end
   end
 
@@ -42,13 +42,13 @@ describe Vector2d::Coercions do
     context "when fixnum" do
       subject(:vector) { Vector2d.new(2, 3) }
       it "renders a string" do
-        expect(vector.to_s).to eq('2x3')
+        expect(vector.to_s).to eq("2x3")
       end
     end
     context "when float" do
       subject(:vector) { Vector2d.new(2.0, 3.0) }
       it "renders a string" do
-        expect(vector.to_s).to eq('2.0x3.0')
+        expect(vector.to_s).to eq("2.0x3.0")
       end
     end
   end

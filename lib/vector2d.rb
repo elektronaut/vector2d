@@ -7,19 +7,19 @@ class Vector2d
   VectorLike = Or[
     [Num, Num],
     { x: Num, y: Num },
-    { 'x' => Num, 'y' => Num },
+    { "x" => Num, "y" => Num },
     Num,
     String,
     Vector2d
   ]
 end
 
-require 'vector2d/calculations'
-require 'vector2d/coercions'
-require 'vector2d/fitting'
-require 'vector2d/properties'
-require 'vector2d/transformations'
-require 'vector2d/version'
+require "vector2d/calculations"
+require "vector2d/coercions"
+require "vector2d/fitting"
+require "vector2d/properties"
+require "vector2d/transformations"
+require "vector2d/version"
 
 class Vector2d
   extend Vector2d::Calculations::ClassMethods
@@ -46,7 +46,7 @@ class Vector2d
       if second_arg.nil?
         parse_single_arg(arg)
       else
-        self.new(arg, second_arg)
+        new(arg, second_arg)
       end
     end
 
@@ -58,21 +58,21 @@ class Vector2d
       when Vector2d
         arg
       when Array
-        self.parse(*arg)
+        parse(*arg)
       when String
         parse_str(arg)
       when Hash
         parse_hash(arg.dup)
       else
-        self.new(arg, arg)
+        new(arg, arg)
       end
     end
 
     Contract Hash => Vector2d
     def parse_hash(hash)
-      hash[:x] ||= hash['x'] if hash.has_key?('x')
-      hash[:y] ||= hash['y'] if hash.has_key?('y')
-      self.new(hash[:x], hash[:y])
+      hash[:x] ||= hash["x"] if hash.key?("x")
+      hash[:y] ||= hash["y"] if hash.key?("y")
+      new(hash[:x], hash[:y])
     end
 
     Contract String => Vector2d
@@ -81,7 +81,7 @@ class Vector2d
         x, y = str.split("x")
         new(x.to_f, y.to_f)
       else
-        fail ArgumentError, "not a valid string input"
+        raise ArgumentError, "not a valid string input"
       end
     end
   end
@@ -89,7 +89,8 @@ class Vector2d
   attr_reader :x, :y
 
   def initialize(x, y)
-    @x, @y = x, y
+    @x = x
+    @y = y
   end
 
   # Compares two vectors
@@ -98,8 +99,8 @@ class Vector2d
   #   Vector2d(2, 3) == Vector2d(1, 0) # => false
   #
   Contract Vector2d => Bool
-  def ==(comp)
-    comp.x === x && comp.y === y
+  def ==(other)
+    other.x == x && other.y == y
   end
 end
 

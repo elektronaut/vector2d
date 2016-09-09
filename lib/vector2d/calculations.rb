@@ -39,7 +39,7 @@ class Vector2d
       def angle_between(vector1, vector2)
         one = vector1.normalized? ? vector1 : vector1.normalize
         two = vector2.normalized? ? vector2 : vector2.normalize
-        Math.acos(self.dot_product(one, two))
+        Math.acos(dot_product(one, two))
       end
     end
 
@@ -102,7 +102,7 @@ class Vector2d
     #
     Contract VectorLike => Num
     def squared_distance(other)
-      v, _ = coerce(other)
+      v, = coerce(other)
       dx = v.x - x
       dy = v.y - y
       dx * dx + dy * dy
@@ -116,7 +116,7 @@ class Vector2d
     #
     Contract VectorLike => Num
     def dot_product(other)
-      v, _ = coerce(other)
+      v, = coerce(other)
       self.class.dot_product(self, v)
     end
 
@@ -128,7 +128,7 @@ class Vector2d
     #
     Contract VectorLike => Num
     def cross_product(other)
-      v, _ = coerce(other)
+      v, = coerce(other)
       self.class.cross_product(self, v)
     end
 
@@ -140,14 +140,14 @@ class Vector2d
     #
     Contract VectorLike => Num
     def angle_between(other)
-      v, _ = coerce(other)
+      v, = coerce(other)
       self.class.angle_between(self, v)
     end
 
     private
 
     def calculate_each(method, other)
-      v, _ = coerce(other)
+      v, = coerce(other)
       self.class.new(
         x.send(method, v.x),
         y.send(method, v.y)
