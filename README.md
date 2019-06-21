@@ -1,4 +1,11 @@
-# Vector2d [![Build Status](https://travis-ci.org/elektronaut/vector2d.png)](https://travis-ci.org/elektronaut/vector2d) [![Code Climate](https://codeclimate.com/github/elektronaut/vector2d.png)](https://codeclimate.com/github/elektronaut/vector2d) [![Code Climate](https://codeclimate.com/github/elektronaut/vector2d/coverage.png)](https://codeclimate.com/github/elektronaut/vector2d)
+[![Version](https://img.shields.io/gem/v/vector2d.svg?style=flat)](https://rubygems.org/gems/vector2d)
+[![Build Status](https://travis-ci.org/elektronaut/vector2d.svg?branch=master)](https://travis-ci.org/elektronaut/vector2d)
+[![Code Climate](https://codeclimate.com/github/elektronaut/vector2d/badges/gpa.svg)](https://codeclimate.com/github/elektronaut/vector2d)
+[![Code Climate](https://codeclimate.com/github/elektronaut/vector2d/badges/coverage.svg)](https://codeclimate.com/github/elektronaut/vector2d)
+[![Inline docs](http://inch-ci.org/github/elektronaut/vector2d.svg)](http://inch-ci.org/github/elektronaut/vector2d)
+[![Security](https://hakiri.io/github/elektronaut/vector2d/master.svg)](https://hakiri.io/github/elektronaut/vector2d/master)
+
+# Vector2d
 
 Vector2d handles two-dimensional coordinates and vectors.
 Vectors are immutable, meaning this is a purely functional library.
@@ -28,6 +35,6 @@ Vector2d.parse("50x70")    # => Vector2d(50,70)
 
 ## License
 
-Copyright (c) 2006-2014 Inge Jørgensen
+Copyright (c) 2006-2019 Inge Jørgensen
 
 Vector2d is released under the [MIT License](http://www.opensource.org/licenses/MIT).
