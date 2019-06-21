@@ -33,8 +33,8 @@ describe Vector2d::Coercions do
   describe "#to_i_vector" do
     subject(:vector) { Vector2d.new(2.0, 3.0) }
     it "returns a fixnum vector" do
-      expect(vector.to_i_vector.x).to be_a(Fixnum)
-      expect(vector.to_i_vector.y).to be_a(Fixnum)
+      expect(vector.to_i_vector.x).to be_a(Integer)
+      expect(vector.to_i_vector.y).to be_a(Integer)
     end
   end
 

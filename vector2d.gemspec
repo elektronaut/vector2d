@@ -22,10 +22,10 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.required_ruby_version = '>= 1.9.2'
+  s.required_ruby_version = ">= 2.4.0"
 
   # specify any dependencies here; for example:
-  s.add_development_dependency "rake", "~> 10.3"
-  s.add_development_dependency "rspec", "~> 3.2"
-  s.add_dependency "contracts", "~> 0.9.0"
+  s.add_development_dependency "rake"
+  s.add_development_dependency "rspec", "~> 3.8"
+  s.add_dependency "contracts", "~> 0.16.0"
 end

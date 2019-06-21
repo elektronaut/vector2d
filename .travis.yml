@@ -1,11 +1,13 @@
-addons:
-  code_climate:
-    repo_token: bf65d5faaf8dc80d0d58f2e7c663323734237c0a3e91cba16b1c556a98b0971e
 language: ruby
+sudo: false
+cache: bundler
+dist: bionic
 rvm:
-  - 1.9.3
-  - 2.0.0
-  - 2.1.2
-  - 2.2.2
+  - 2.4.5
+  - 2.6.3
+env:
+  - RAILS_ENV=test
 script:
   - bundle exec rspec spec
+after_script:
+  - CODECLIMATE_REPO_TOKEN=bf65d5faaf8dc80d0d58f2e7c663323734237c0a3e91cba16b1c556a98b0971e bundle exec codeclimate-test-reporter
