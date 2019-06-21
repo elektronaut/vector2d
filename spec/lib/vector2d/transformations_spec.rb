@@ -1,4 +1,4 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
 require "spec_helper"
 
@@ -7,6 +7,7 @@ describe Vector2d::Transformations do
 
   describe "#ceil" do
     subject(:vector) { Vector2d.new(2.3, 3.3) }
+
     it "rounds the vector up" do
       expect(vector.ceil).to eq(Vector2d.new(3, 4))
     end
@@ -14,16 +15,17 @@ describe Vector2d::Transformations do
 
   describe "#floor" do
     subject(:vector) { Vector2d.new(2.7, 3.6) }
+
     it "rounds the vector down" do
       expect(vector.floor).to eq(Vector2d.new(2, 3))
     end
   end
 
   describe "#normalize" do
-    it "normalizes the vector" do
-      expect(vector.normalize.x).to be_within(0.0001).of(0.5547)
-      expect(vector.normalize.y).to be_within(0.0001).of(0.8320)
-    end
+    subject { vector.normalize }
+
+    its(:x) { is_expected.to be_within(0.0001).of(0.5547) }
+    its(:y) { is_expected.to be_within(0.0001).of(0.8320) }
   end
 
   describe "#perpendicular" do
@@ -34,9 +36,16 @@ describe Vector2d::Transformations do
 
   describe "#resize" do
     subject(:resized) { vector.resize(2.0) }
+
     it "modifies the vector length" do
       expect(resized.length).to be_within(0.0001).of(2.0)
+    end
+
+    it "modifies the x property" do
       expect(resized.x).to be_within(0.0001).of(1.1094)
+    end
+
+    it "modifies the y property" do
       expect(resized.y).to be_within(0.0001).of(1.6641)
     end
   end
@@ -48,34 +57,63 @@ describe Vector2d::Transformations do
   end
 
   describe "#rotate" do
+    subject { vector.rotate(rotation).round(3) }
+
     let(:vector) { Vector2d.new(1, 0) }
-    it "rotates the vector" do
-      expect(vector.rotate(Math::PI).round(1)).to eq(Vector2d.new(-1, 0))
-      expect(vector.rotate(Math::PI / 2).round(1)).to eq(Vector2d.new(0, 1))
-      expect(vector.rotate(-Math::PI / 2).round(1)).to eq(Vector2d.new(0, -1))
-      expect(
-        vector.rotate(Math::PI / 4).round(3)
-      ).to eq(Vector2d.new(0.707, 0.707))
+
+    context "when roating by PI" do
+      let(:rotation) { Math::PI }
+
+      it { is_expected.to eq(Vector2d.new(-1, 0)) }
+    end
+
+    context "when roating by PI/2" do
+      let(:rotation) { Math::PI / 2 }
+
+      it { is_expected.to eq(Vector2d.new(0, 1)) }
+    end
+
+    context "when roating by -PI/2" do
+      let(:rotation) { -Math::PI / 2 }
+
+      it { is_expected.to eq(Vector2d.new(0, -1)) }
+    end
+
+    context "when roating by PI/4" do
+      let(:rotation) { Math::PI / 4 }
+
+      it { is_expected.to eq(Vector2d.new(0.707, 0.707)) }
     end
   end
 
   describe "#round" do
-    subject(:vector) { Vector2d.new(2.3333, 3.666) }
-    it "rounds the vector" do
-      expect(vector.round).to eq(Vector2d.new(2, 4))
-      expect(vector.round(2)).to eq Vector2d.new(2.33, 3.67)
+    let(:vector) { Vector2d.new(2.3333, 3.666) }
+
+    context "without argument" do
+      subject { vector.round }
+
+      it { is_expected.to eq(Vector2d.new(2, 4)) }
+    end
+
+    context "with precision" do
+      subject { vector.round(2) }
+
+      it { is_expected.to eq(Vector2d.new(2.33, 3.67)) }
     end
   end
 
   describe "#truncate" do
     context "when argument is longer than length" do
       let(:arg) { 5.0 }
+
       it "does not change the length" do
         expect(vector.truncate(arg).length).to be_within(0.0001).of(3.6055)
       end
     end
+
     context "when argument is shorter than length" do
       let(:arg) { 2.5 }
+
       it "changes the length" do
         expect(vector.truncate(arg).length).to be_within(0.0001).of(arg)
       end

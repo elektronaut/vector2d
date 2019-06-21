@@ -1,9 +1,10 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
 require "contracts"
 
 class Vector2d
   include Contracts
+
   VectorLike = Or[
     [Num, Num],
     { x: Num, y: Num },
@@ -54,18 +55,12 @@ class Vector2d
 
     Contract VectorLike => Vector2d
     def parse_single_arg(arg)
-      case arg
-      when Vector2d
-        arg
-      when Array
-        parse(*arg)
-      when String
-        parse_str(arg)
-      when Hash
-        parse_hash(arg.dup)
-      else
-        new(arg, arg)
-      end
+      return arg if arg.is_a?(Vector2d)
+      return parse(*arg) if arg.is_a?(Array)
+      return parse_str(arg) if arg.is_a?(String)
+      return parse_hash(arg.dup) if arg.is_a?(Hash)
+
+      new(arg, arg)
     end
 
     Contract Hash => Vector2d
@@ -77,12 +72,12 @@ class Vector2d
 
     Contract String => Vector2d
     def parse_str(str)
-      if str =~ /^[\s]*[\d\.]*[\s]*x[\s]*[\d\.]*[\s]*$/
-        x, y = str.split("x")
-        new(x.to_f, y.to_f)
-      else
+      unless /^[\s]*[\d\.]*[\s]*x[\s]*[\d\.]*[\s]*$/.match?(str)
         raise ArgumentError, "not a valid string input"
       end
+
+      x, y = str.split("x")
+      new(x.to_f, y.to_f)
     end
   end
 

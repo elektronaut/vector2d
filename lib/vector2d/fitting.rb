@@ -1,4 +1,4 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
 class Vector2d
   module Fitting
@@ -33,7 +33,11 @@ class Vector2d
       v, = coerce(other)
       scale = v.to_f_vector / self
       self * (
-        scale.y.zero? || (scale.x > 0 && scale.x < scale.y) ? scale.x : scale.y
+        if scale.y.zero? || (scale.x.positive? && scale.x < scale.y)
+          scale.x
+        else
+          scale.y
+        end
       )
     end
     alias constrain_both fit
@@ -49,7 +53,7 @@ class Vector2d
     def fit_either(other)
       v, = coerce(other)
       scale = v.to_f_vector / self
-      if scale.x > 0 && scale.y > 0
+      if scale.x.positive? && scale.y.positive?
         scale = scale.x < scale.y ? scale.y : scale.x
         self * scale
       else

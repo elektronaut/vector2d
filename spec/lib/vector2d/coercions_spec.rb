@@ -1,4 +1,4 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
 require "spec_helper"
 
@@ -18,10 +18,10 @@ describe Vector2d::Coercions do
   end
 
   describe "#to_f_vector" do
-    it "returns a float vector" do
-      expect(vector.to_f_vector.x).to be_a(Float)
-      expect(vector.to_f_vector.y).to be_a(Float)
-    end
+    subject { vector.to_f_vector }
+
+    its(:x) { is_expected.to be_a(Float) }
+    its(:y) { is_expected.to be_a(Float) }
   end
 
   describe "#to_hash" do
@@ -31,22 +31,26 @@ describe Vector2d::Coercions do
   end
 
   describe "#to_i_vector" do
-    subject(:vector) { Vector2d.new(2.0, 3.0) }
-    it "returns a fixnum vector" do
-      expect(vector.to_i_vector.x).to be_a(Integer)
-      expect(vector.to_i_vector.y).to be_a(Integer)
-    end
+    subject { vector.to_i_vector }
+
+    let(:vector) { Vector2d.new(2.0, 3.0) }
+
+    its(:x) { is_expected.to be_a(Integer) }
+    its(:y) { is_expected.to be_a(Integer) }
   end
 
   describe "#to_s" do
     context "when fixnum" do
       subject(:vector) { Vector2d.new(2, 3) }
+
       it "renders a string" do
         expect(vector.to_s).to eq("2x3")
       end
     end
+
     context "when float" do
       subject(:vector) { Vector2d.new(2.0, 3.0) }
+
       it "renders a string" do
         expect(vector.to_s).to eq("2.0x3.0")
       end
