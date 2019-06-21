@@ -47,7 +47,7 @@ class Vector2d
     #
     Contract None => Bool
     def normalized?
-      self.length.to_f == 1.0
+      length.to_f == 1.0
     end
   end
 end

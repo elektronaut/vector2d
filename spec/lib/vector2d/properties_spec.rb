@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-require 'spec_helper'
+require "spec_helper"
 
 describe Vector2d::Properties do
   subject(:vector) { Vector2d.new(2, 3) }

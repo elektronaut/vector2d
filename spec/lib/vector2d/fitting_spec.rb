@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-require 'spec_helper'
+require "spec_helper"
 
 describe Vector2d::Fitting do
   let(:original) { Vector2d.new(300, 300) }

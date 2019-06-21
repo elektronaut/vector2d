@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-require 'spec_helper'
+require "spec_helper"
 
 describe Vector2d::Calculations do
   subject(:vector) { Vector2d.new(2, 3) }
@@ -92,7 +92,9 @@ describe Vector2d::Calculations do
   describe "#cross_product" do
     let(:comp) { Vector2d.new(3, 4) }
     it "calulates the cross product" do
-      expect(vector.cross_product(comp)).to eq(Vector2d.cross_product(vector, comp))
+      expect(
+        vector.cross_product(comp)
+      ).to eq(Vector2d.cross_product(vector, comp))
     end
   end
 
@@ -120,7 +122,9 @@ describe Vector2d::Calculations do
   describe "#angle_between" do
     let(:comp) { Vector2d.new(3, 4) }
     it "calculates the angle between vectors" do
-      expect(vector.angle_between(comp)).to eq(Vector2d.angle_between(vector, comp))
+      expect(
+        vector.angle_between(comp)
+      ).to eq(Vector2d.angle_between(vector, comp))
     end
   end
 end
