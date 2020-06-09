@@ -19,7 +19,7 @@ class Vector2d
     #
     Contract None => Num
     def aspect_ratio
-      (x.to_f / y.to_f).abs
+      (x.to_f / y).abs
     end
 
     # Length of vector.

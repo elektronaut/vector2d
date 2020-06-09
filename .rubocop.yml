@@ -1,9 +1,10 @@
 require: rubocop-rspec
 
 AllCops:
+  NewCops: enable
   TargetRubyVersion: 2.4
 
-StringLiterals:
+Style/StringLiterals:
   EnforcedStyle: double_quotes
 
 Style/Documentation:
@@ -17,7 +18,7 @@ Metrics/BlockLength:
 Naming/MethodName:
   Enabled: false
 
-Naming/UncommunicativeMethodParamName:
+Naming/MethodParameterName:
   AllowedNames:
     - "x"
     - "y"

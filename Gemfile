@@ -4,6 +4,8 @@ source "https://rubygems.org"
 
 gemspec
 
-group :test do
-  gem "codeclimate-test-reporter", require: false
+group :development, :test do
+  gem "rubocop", require: false
+  gem "rubocop-rails", require: false
+  gem "rubocop-rspec", require: false
 end
