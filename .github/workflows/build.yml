@@ -1,0 +1,54 @@
+env:
+  RUBY_VERSION: 2.7
+  CC_TEST_REPORTER_ID: bf65d5faaf8dc80d0d58f2e7c663323734237c0a3e91cba16b1c556a98b0971e
+
+name: Build
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+jobs:
+  rubocop-test:
+    name: Rubocop
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+      - name: Install Rubocop
+        run: gem install rubocop rubocop-rails rubocop-rspec
+      - name: Check code
+        run: rubocop
+
+  rspec-test:
+    name: RSpec
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+      - name: Ruby gem cache
+        uses: actions/cache@v1
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+      - name: Install Ruby gems
+        run: |
+          gem install bundler
+          bundle config path vendor/bundle
+          bundle install
+      - name: Run tests
+        run: bundle exec rspec
+      - name: Send results to Code Climate
+        uses: paambaati/codeclimate-action@v2.6.0
+        if: ${{ env.CC_TEST_REPORTER_ID }}
+        env:
+          CC_TEST_REPORTER_ID: ${{ env.CC_TEST_REPORTER_ID }}
+        with:
+          coverageCommand: ls

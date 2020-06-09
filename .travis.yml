@@ -5,7 +5,6 @@ dist: bionic
 rvm:
   - 2.4.5
   - 2.6.3
+  - 2.7.1
 script:
   - bundle exec rspec spec
-after_script:
-  - CODECLIMATE_REPO_TOKEN=bf65d5faaf8dc80d0d58f2e7c663323734237c0a3e91cba16b1c556a98b0971e bundle exec codeclimate-test-reporter

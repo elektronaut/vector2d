@@ -1,5 +1,5 @@
 [![Version](https://img.shields.io/gem/v/vector2d.svg?style=flat)](https://rubygems.org/gems/vector2d)
-[![Build Status](https://travis-ci.org/elektronaut/vector2d.svg?branch=master)](https://travis-ci.org/elektronaut/vector2d)
+![Build](https://github.com/elektronaut/vector2d/workflows/Build/badge.svg)
 [![Code Climate](https://codeclimate.com/github/elektronaut/vector2d/badges/gpa.svg)](https://codeclimate.com/github/elektronaut/vector2d)
 [![Code Climate](https://codeclimate.com/github/elektronaut/vector2d/badges/coverage.svg)](https://codeclimate.com/github/elektronaut/vector2d)
 [![Inline docs](http://inch-ci.org/github/elektronaut/vector2d.svg)](http://inch-ci.org/github/elektronaut/vector2d)
