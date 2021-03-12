@@ -1,5 +1,5 @@
 env:
-  RUBY_VERSION: 2.7
+  RUBY_VERSION: 3.0
   CC_TEST_REPORTER_ID: bf65d5faaf8dc80d0d58f2e7c663323734237c0a3e91cba16b1c556a98b0971e
 
 name: Build
@@ -26,11 +26,14 @@ jobs:
   rspec-test:
     name: RSpec
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby: ['2.7', '3.0']
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-ruby@v1
         with:
-          ruby-version: ${{ env.RUBY_VERSION }}
+          ruby-version: ${{ matrix.ruby }}
       - name: Ruby gem cache
         uses: actions/cache@v1
         with:
