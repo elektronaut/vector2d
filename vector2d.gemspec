@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
                     .map { |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.required_ruby_version = ">= 2.4.0"
+  s.required_ruby_version = ">= 2.7.0"
 
   # specify any dependencies here; for example:
   s.add_development_dependency "rake"
