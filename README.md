@@ -2,8 +2,6 @@
 ![Build](https://github.com/elektronaut/vector2d/workflows/Build/badge.svg)
 [![Code Climate](https://codeclimate.com/github/elektronaut/vector2d/badges/gpa.svg)](https://codeclimate.com/github/elektronaut/vector2d)
 [![Code Climate](https://codeclimate.com/github/elektronaut/vector2d/badges/coverage.svg)](https://codeclimate.com/github/elektronaut/vector2d)
-[![Inline docs](http://inch-ci.org/github/elektronaut/vector2d.svg)](http://inch-ci.org/github/elektronaut/vector2d)
-[![Security](https://hakiri.io/github/elektronaut/vector2d/master.svg)](https://hakiri.io/github/elektronaut/vector2d/master)
 
 # Vector2d
 
@@ -31,7 +29,7 @@ Vector2d.parse("50x70")    # => Vector2d(50,70)
 
 ## Documentation
 
-[API documentation](http://rdoc.info/github/elektronaut/vector2d)
+[API documentation](https://rdoc.info/github/elektronaut/vector2d/main)
 
 ## License
 
