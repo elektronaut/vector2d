@@ -95,19 +95,19 @@ describe Vector2d do
     context "with both arguments equal" do
       let(:comp) { described_class.new(2, 3) }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context "with x differing" do
       let(:comp) { described_class.new(3, 3) }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context "with y differing" do
       let(:comp) { described_class.new(2, 4) }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 end

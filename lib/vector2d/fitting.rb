@@ -54,7 +54,7 @@ class Vector2d
       v, = coerce(other)
       scale = v.to_f_vector / self
       if scale.x.positive? && scale.y.positive?
-        scale = scale.x < scale.y ? scale.y : scale.x
+        scale = [scale.x, scale.y].max
         self * scale
       else
         fit(v)

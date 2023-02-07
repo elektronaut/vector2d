@@ -37,7 +37,7 @@ class Vector2d
     #
     Contract None => Num
     def squared_length
-      x * x + y * y
+      (x * x) + (y * y)
     end
 
     # Is this a normalized vector?

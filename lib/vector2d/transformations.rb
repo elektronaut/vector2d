@@ -67,8 +67,8 @@ class Vector2d
     Contract Num => Vector2d
     def rotate(angle)
       Vector2d.new(
-        x * Math.cos(angle) - y * Math.sin(angle),
-        x * Math.sin(angle) + y * Math.cos(angle)
+        (x * Math.cos(angle)) - (y * Math.sin(angle)),
+        (x * Math.sin(angle)) + (y * Math.cos(angle))
       )
     end
 

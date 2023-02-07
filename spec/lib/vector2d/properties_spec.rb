@@ -35,13 +35,13 @@ describe Vector2d::Properties do
     context "when vector is normalized" do
       let(:vector) { Vector2d.new(2, 3).normalize }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context "when vector isn't normalized" do
       let(:vector) { Vector2d.new(2, 3) }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 end

@@ -15,7 +15,7 @@ class Vector2d
       #
       Contract Vector2d, Vector2d => Num
       def cross_product(vector1, vector2)
-        vector1.x * vector2.y - vector1.y * vector2.x
+        (vector1.x * vector2.y) - (vector1.y * vector2.x)
       end
 
       # Calculates dot product of two vectors.
@@ -26,7 +26,7 @@ class Vector2d
       #
       Contract Vector2d, Vector2d => Num
       def dot_product(vector1, vector2)
-        vector1.x * vector2.x + vector1.y * vector2.y
+        (vector1.x * vector2.x) + (vector1.y * vector2.y)
       end
 
       # Calculates angle between two vectors in radians.
@@ -105,7 +105,7 @@ class Vector2d
       v, = coerce(other)
       dx = v.x - x
       dy = v.y - y
-      dx * dx + dy * dy
+      (dx * dx) + (dy * dy)
     end
 
     # Dot product of this vector and another vector.
