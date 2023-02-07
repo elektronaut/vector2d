@@ -2,8 +2,6 @@
 
 class Vector2d
   module Fitting
-    include Contracts
-
     # Scales down the given vector unless it fits inside.
     #
     #   vector = Vector2d(20, 20)
@@ -11,7 +9,6 @@ class Vector2d
     #   vector.contain(Vector2d(40, 20)) # => Vector2d(20,10)
     #   vector.contain(Vector2d(20, 40)) # => Vector2d(10,20)
     #
-    Contract VectorLike => Vector2d
     def contain(other)
       v, = coerce(other)
       v.x > x || v.y > y ? other.fit(self) : other
@@ -28,7 +25,6 @@ class Vector2d
     # Note: Either axis will be disregarded if zero or nil. This is a
     # feature, not a bug.
     #
-    Contract VectorLike => Vector2d
     def fit(other)
       v, = coerce(other)
       scale = v.to_f_vector / self
@@ -49,7 +45,6 @@ class Vector2d
     #   Vector2d(20, 10).fit_either(constraint) # => Vector2d(10,5)
     #   Vector2d(10, 20).fit_either(constraint) # => Vector2d(5,10)
     #
-    Contract VectorLike => Vector2d
     def fit_either(other)
       v, = coerce(other)
       scale = v.to_f_vector / self

@@ -2,9 +2,6 @@
 
 class Vector2d
   module Coercions
-    include Contracts
-
-    Contract VectorLike => [Vector2d, Vector2d]
     def coerce(other)
       case other
       when Vector2d
@@ -20,7 +17,6 @@ class Vector2d
     #
     #   Vector2d(2, 3).inspect # => "Vector2d(2,3)"
     #
-    Contract None => String
     def inspect
       "Vector2d(#{x},#{y})"
     end
@@ -29,7 +25,6 @@ class Vector2d
     #
     #   Vector2d(2, 3).to_a # => [2,3]
     #
-    Contract None => [Num, Num]
     def to_a
       [x, y]
     end
@@ -38,7 +33,6 @@ class Vector2d
     #
     #   Vector2d(2, 3).to_hash # => {x: 2, y: 3}
     #
-    Contract None => Hash
     def to_hash
       { x: x, y: y }
     end
@@ -47,7 +41,6 @@ class Vector2d
     #
     #   Vector2d(2.0, 3.0).to_i_vector # => Vector2d(2,3)
     #
-    Contract None => Vector2d
     def to_i_vector
       self.class.new(x.to_i, y.to_i)
     end
@@ -56,7 +49,6 @@ class Vector2d
     #
     #   Vector2d(2, 3).to_f_vector # => Vector2d(2.0,3.0)
     #
-    Contract None => Vector2d
     def to_f_vector
       self.class.new(x.to_f, y.to_f)
     end
@@ -65,7 +57,6 @@ class Vector2d
     #
     #   Vector2d.new(150, 100).to_s # => "150x100"
     #
-    Contract None => String
     def to_s
       "#{x}x#{y}"
     end

@@ -22,7 +22,5 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = ">= 2.7.0"
 
-  # specify any dependencies here; for example:
-  s.add_dependency "contracts", "~> 0.17.0"
   s.metadata["rubygems_mfa_required"] = "true"
 end
