@@ -24,3 +24,6 @@ Naming/MethodParameterName:
   AllowedNames:
     - "x"
     - "y"
+
+RSpec/IndexedLet:
+  Enabled: false
