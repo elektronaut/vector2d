@@ -1,7 +1,5 @@
 [![Version](https://img.shields.io/gem/v/vector2d.svg?style=flat)](https://rubygems.org/gems/vector2d)
 ![Build](https://github.com/elektronaut/vector2d/workflows/Build/badge.svg)
-[![Code Climate](https://codeclimate.com/github/elektronaut/vector2d/badges/gpa.svg)](https://codeclimate.com/github/elektronaut/vector2d)
-[![Code Climate](https://codeclimate.com/github/elektronaut/vector2d/badges/coverage.svg)](https://codeclimate.com/github/elektronaut/vector2d)
 
 # Vector2d
 
@@ -33,6 +31,6 @@ Vector2d.parse("50x70")    # => Vector2d(50,70)
 
 ## License
 
-Copyright (c) 2006-2019 Inge Jørgensen
+Copyright (c) 2006-2025 Inge Jørgensen
 
 Vector2d is released under the [MIT License](http://www.opensource.org/licenses/MIT).
