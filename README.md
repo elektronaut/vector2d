@@ -29,7 +29,7 @@ Vector2d.parse("50x70")    # => Vector2d(50,70)
 
 ## Documentation
 
-[API documentation](https://rdoc.info/github/elektronaut/vector2d/main)
+[API documentation](https://rubydoc.info/gems/vector2d)
 
 ## License
 
