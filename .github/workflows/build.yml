@@ -16,10 +16,10 @@ jobs:
     name: Rubocop
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v6
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.4
+          ruby-version: "4.0"
           bundler-cache: true
       - name: Check code
         run: bundle exec rubocop
@@ -29,9 +29,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: ['3.4']
+        ruby: ["3.3", "3.4", "4.0"]
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v6
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
@@ -56,9 +56,9 @@ jobs:
     if: ${{ needs.release-please.outputs.release_created }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.4"
+          ruby-version: "4.0"
           bundler-cache: true
       - uses: rubygems/release-gem@v1

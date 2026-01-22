@@ -65,7 +65,7 @@ GEM
     simplecov-html (0.10.2)
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
-    unicode-emoji (4.1.0)
+    unicode-emoji (4.2.0)
 
 PLATFORMS
   arm64-darwin-23
@@ -82,4 +82,4 @@ DEPENDENCIES
   vector2d!
 
 BUNDLED WITH
-   4.0.1
+  4.0.4
