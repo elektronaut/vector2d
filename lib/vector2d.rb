@@ -81,6 +81,6 @@ end
 #
 #   Vector2d(2, 3) # => Vector2d(2,3)
 #
-def Vector2d(*args)
-  Vector2d.parse(*args)
+def Vector2d(*)
+  Vector2d.parse(*)
 end
