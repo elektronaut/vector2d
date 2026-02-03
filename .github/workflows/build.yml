@@ -39,6 +39,18 @@ jobs:
       - name: Run tests
         run: bundle exec rspec
 
+  automerge:
+    name: "Auto-merge Dependabot"
+    needs: [rubocop-test, rspec-test]
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable auto-merge
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   release-please:
     needs: [rubocop-test, rspec-test]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
