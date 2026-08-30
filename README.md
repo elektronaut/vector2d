@@ -1,5 +1,5 @@
 [![Version](https://img.shields.io/gem/v/vector2d.svg?style=flat)](https://rubygems.org/gems/vector2d)
-![Build](https://github.com/elektronaut/vector2d/workflows/Build/badge.svg)
+[![Build](https://github.com/elektronaut/vector2d/actions/workflows/build.yml/badge.svg)](https://github.com/elektronaut/vector2d/actions/workflows/build.yml)
 
 # Vector2d
 
@@ -29,8 +29,14 @@ Vector2d.parse("50x70")    # => Vector2d(50,70)
 
 [API documentation](https://rubydoc.info/gems/vector2d)
 
+## Contributing
+
+Bug reports and pull requests are welcome on
+[GitHub](https://github.com/elektronaut/vector2d). See
+[CONTRIBUTING.md](CONTRIBUTING.md) for how to run the tests and how
+commits are formatted, and note that this project ships with a
+[code of conduct](CODE_OF_CONDUCT.md).
+
 ## License
 
-Copyright (c) 2006-2025 Inge Jørgensen
-
-Vector2d is released under the [MIT License](http://www.opensource.org/licenses/MIT).
+Released under the [MIT License](LICENSE).

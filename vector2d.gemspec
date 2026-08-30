@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.version     = Vector2d::VERSION
   s.authors     = ["Inge Jørgensen"]
   s.email       = ["inge@elektronaut.no"]
-  s.homepage    = "http://github.com/elektronaut/vector2d"
+  s.homepage    = "https://github.com/elektronaut/vector2d"
   s.summary     = "Library for handling two-dimensional vectors"
   s.description = "Vector2d allows for easy handling of two-dimensional " \
                   "coordinates and vectors"
@@ -22,5 +22,10 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = ">= 3.2.0"
 
-  s.metadata["rubygems_mfa_required"] = "true"
+  s.metadata = {
+    "bug_tracker_uri" => "https://github.com/elektronaut/vector2d/issues",
+    "documentation_uri" => "https://www.rubydoc.info/gems/vector2d",
+    "rubygems_mfa_required" => "true",
+    "source_code_uri" => "https://github.com/elektronaut/vector2d"
+  }
 end
