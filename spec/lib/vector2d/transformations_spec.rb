@@ -13,6 +13,23 @@ describe Vector2d::Transformations do
     end
   end
 
+  describe "#clamp" do
+    subject(:vector) { Vector2d.new(2, 8) }
+
+    it "clamps each axis" do
+      expect(vector.clamp(Vector2d.new(3, 3), Vector2d.new(6, 6)))
+        .to eq(Vector2d.new(3, 6))
+    end
+
+    it "coerces the bounds" do
+      expect(vector.clamp(3, 6)).to eq(Vector2d.new(3, 6))
+    end
+
+    it "leaves a vector within the bounds alone" do
+      expect(vector.clamp(0, 10)).to eq(vector)
+    end
+  end
+
   describe "#floor" do
     subject(:vector) { Vector2d.new(2.7, 3.6) }
 

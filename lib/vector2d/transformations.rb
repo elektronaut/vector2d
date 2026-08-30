@@ -10,6 +10,19 @@ class Vector2d
       self.class.new(x.ceil, y.ceil)
     end
 
+    # Clamps the vector between two others, one axis at a time.
+    # The bounds are coerced, so scalars work too.
+    #
+    #   vector = Vector2d(2, 8)
+    #   vector.clamp(Vector2d(3, 3), Vector2d(6, 6)) # => Vector2d(3,6)
+    #   vector.clamp(3, 6)                           # => Vector2d(3,6)
+    #
+    def clamp(min, max)
+      min_v, = coerce(min)
+      max_v, = coerce(max)
+      self.class.new(x.clamp(min_v.x, max_v.x), y.clamp(min_v.y, max_v.y))
+    end
+
     # Rounds vector to up nearest integer.
     #
     #   Vector2d(2.4, 3.6).floor # => Vector2d(2,3)
