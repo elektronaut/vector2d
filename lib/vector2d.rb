@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require "vector2d/calculations"
-require "vector2d/coercions"
-require "vector2d/fitting"
-require "vector2d/properties"
-require "vector2d/transformations"
-require "vector2d/version"
+require_relative "vector2d/calculations"
+require_relative "vector2d/coercions"
+require_relative "vector2d/fitting"
+require_relative "vector2d/properties"
+require_relative "vector2d/transformations"
+require_relative "vector2d/version"
 
 class Vector2d
   extend Vector2d::Calculations::ClassMethods
