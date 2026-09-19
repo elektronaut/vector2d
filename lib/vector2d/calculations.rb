@@ -17,7 +17,7 @@ class Vector2d
       #
       #   v1 = Vector2d(2, 1)
       #   v2 = Vector2d(2, 3)
-      #   Vector2d.dot_product(v1, v2) # => 10
+      #   Vector2d.dot_product(v1, v2) # => 7
       #
       def dot_product(vector1, vector2)
         (vector1.x * vector2.x) + (vector1.y * vector2.y)
@@ -191,7 +191,7 @@ class Vector2d
     #
     #   v1 = Vector2d(2, 1)
     #   v2 = Vector2d(2, 3)
-    #   v1.dot_product(v2) # => 10
+    #   v1.dot_product(v2) # => 7
     #
     def dot_product(other)
       v = to_vector(other)

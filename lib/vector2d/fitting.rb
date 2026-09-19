@@ -6,20 +6,20 @@ class Vector2d
     # aspect ratio.
     #
     #   vector = Vector2d(20, 10)
-    #   vector.fit(Vector2d(10, 10)) # => Vector2d(10,5)
-    #   vector.fit(Vector2d(20, 20)) # => Vector2d(20,10)
-    #   vector.fit(Vector2d(40, 40)) # => Vector2d(40,20)
+    #   vector.fit(Vector2d(10, 10)) # => Vector2d(10.0,5.0)
+    #   vector.fit(Vector2d(20, 20)) # => Vector2d(20.0,10.0)
+    #   vector.fit(Vector2d(40, 40)) # => Vector2d(40.0,20.0)
     #
     # Pass <tt>upscale: false</tt> to scale down only, leaving a vector
     # that already fits unchanged.
     #
     #   vector.fit(Vector2d(40, 40), upscale: false) # => Vector2d(20,10)
-    #   vector.fit(Vector2d(10, 10), upscale: false) # => Vector2d(10,5)
+    #   vector.fit(Vector2d(10, 10), upscale: false) # => Vector2d(10.0,5.0)
     #
     # The constraint applies to the magnitude of each coordinate, and
     # the vector keeps its direction.
     #
-    #   Vector2d(-20, 10).fit(Vector2d(5, 5)) # => Vector2d(-5,2.5)
+    #   Vector2d(-20, 10).fit(Vector2d(5, 5)) # => Vector2d(-5.0,2.5)
     #
     # Note: Either axis will be disregarded if zero or nil. This is a
     # feature, not a bug. A constraint that is zero on both axes leaves
@@ -40,8 +40,8 @@ class Vector2d
     # constraint, #cover scales until it contains the constraint.
     #
     #   constraint = Vector2d(5, 5)
-    #   Vector2d(20, 10).cover(constraint) # => Vector2d(10,5)
-    #   Vector2d(10, 20).cover(constraint) # => Vector2d(5,10)
+    #   Vector2d(20, 10).cover(constraint) # => Vector2d(10.0,5.0)
+    #   Vector2d(10, 20).cover(constraint) # => Vector2d(5.0,10.0)
     #
     # Pass <tt>upscale: false</tt> to scale down only, leaving a vector
     # that already covers the constraint unchanged.
@@ -52,12 +52,12 @@ class Vector2d
     # As in #fit, coordinates are constrained by magnitude and the
     # vector keeps its direction.
     #
-    #   Vector2d(-20, 10).cover(constraint) # => Vector2d(-10,5)
+    #   Vector2d(-20, 10).cover(constraint) # => Vector2d(-10.0,5.0)
     #
     # Note: Either axis will be disregarded if zero or nil, as in #fit.
     # This is a feature, not a bug.
     #
-    #   Vector2d(0, 10).cover(constraint) # => Vector2d(0,5)
+    #   Vector2d(0, 10).cover(constraint) # => Vector2d(0.0,5.0)
     #   Vector2d(20, 10).cover(Vector2d(0, 0)) # => Vector2d(20,10)
     #
     # The zero vector has no direction, and is returned unchanged.
@@ -75,13 +75,13 @@ class Vector2d
     #
     #   vector = Vector2d(20, 20)
     #   vector.contain(Vector2d(10, 10)) # => Vector2d(10,10)
-    #   vector.contain(Vector2d(40, 20)) # => Vector2d(20,10)
-    #   vector.contain(Vector2d(20, 40)) # => Vector2d(10,20)
+    #   vector.contain(Vector2d(40, 20)) # => Vector2d(20.0,10.0)
+    #   vector.contain(Vector2d(20, 40)) # => Vector2d(10.0,20.0)
     #
     # Coordinates are compared by magnitude, so negative vectors are
     # scaled the same way and keep their direction.
     #
-    #   vector.contain(Vector2d(-40, 20)) # => Vector2d(-20,10)
+    #   vector.contain(Vector2d(-40, 20)) # => Vector2d(-20.0,10.0)
     #
     # An axis that is zero is unconstrained, as in #fit, so the zero
     # vector contains anything.

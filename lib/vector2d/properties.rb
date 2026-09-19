@@ -12,7 +12,7 @@ class Vector2d
 
     # Aspect ratio of vector.
     #
-    #   Vector2d(2, 3).aspect_ratio # => 0.6667..
+    #   Vector2d(2, 3).aspect_ratio # => 0.6666..
     #
     # A vector without height has no aspect ratio, so ArgumentError is
     # raised.
