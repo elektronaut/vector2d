@@ -204,4 +204,68 @@ describe Vector2d do
       it { is_expected.to be(false) }
     end
   end
+
+  describe "#eql?" do
+    subject { vector.eql?(comp) }
+
+    context "with both arguments equal" do
+      let(:comp) { described_class.new(2, 3) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "with x differing" do
+      let(:comp) { described_class.new(3, 3) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "with y differing" do
+      let(:comp) { described_class.new(2, 4) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "with coordinates of a different type" do
+      let(:comp) { described_class.new(2.0, 3.0) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "with a subclass" do
+      let(:comp) { Class.new(described_class).new(2, 3) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "with a non-vector" do
+      let(:comp) { [2, 3] }
+
+      it { is_expected.to be(false) }
+    end
+  end
+
+  describe "#hash" do
+    subject { vector.hash }
+
+    context "with an equal vector" do
+      it { is_expected.to eq(described_class.new(2, 3).hash) }
+    end
+
+    context "with a differing vector" do
+      it { is_expected.not_to eq(described_class.new(3, 2).hash) }
+    end
+
+    context "with coordinates of a different type" do
+      it { is_expected.not_to eq(described_class.new(2.0, 3.0).hash) }
+    end
+
+    it "makes vectors usable as hash keys" do
+      expect({ vector => :value }[described_class.new(2, 3)]).to be(:value)
+    end
+
+    it "deduplicates equal vectors in arrays" do
+      expect([vector] | [described_class.new(2, 3)]).to eq([vector])
+    end
+  end
 end
