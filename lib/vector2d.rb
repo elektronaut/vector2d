@@ -56,7 +56,7 @@ class Vector2d
     #   Vector2d.parse(150.0, 100.0)
     #   Vector2d.parse("150x100")
     #   Vector2d.parse("150.0x100.0")
-    #   Vector2d.parse([150,100})
+    #   Vector2d.parse([150,100])
     #   Vector2d.parse({x: 150, y: 100})
     #   Vector2d.parse({"x" => 150.0, "y" => 100.0})
     #   Vector2d.parse(Vector2d(150, 100))
