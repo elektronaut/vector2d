@@ -11,7 +11,7 @@ class Vector2d
     #
     def contain(other)
       v, = coerce(other)
-      v.x > x || v.y > y ? other.fit(self) : other
+      v.x > x || v.y > y ? v.fit_vector(self) : v
     end
 
     # Scales the vector to fit inside another vector, retaining the
@@ -27,14 +27,7 @@ class Vector2d
     #
     def fit(other)
       v, = coerce(other)
-      scale = v.to_f_vector / self
-      self * (
-        if scale.y.zero? || (scale.x.positive? && scale.x < scale.y)
-          scale.x
-        else
-          scale.y
-        end
-      )
+      fit_vector(v)
     end
     alias constrain_both fit
 
@@ -49,12 +42,25 @@ class Vector2d
       v, = coerce(other)
       scale = v.to_f_vector / self
       if scale.x.positive? && scale.y.positive?
-        scale = [scale.x, scale.y].max
-        self * scale
+        self * [scale.x, scale.y].max
       else
-        fit(v)
+        fit_vector(v)
       end
     end
     alias constrain_one fit_either
+
+    protected
+
+    # Scales the vector to fit inside an already coerced vector.
+    def fit_vector(other)
+      scale = other.to_f_vector / self
+      self * (
+        if scale.y.zero? || (scale.x.positive? && scale.x < scale.y)
+          scale.x
+        else
+          scale.y
+        end
+      )
+    end
   end
 end
