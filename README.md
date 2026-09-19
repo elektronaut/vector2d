@@ -25,6 +25,23 @@ Vector2d.parse([50, 70])   # => Vector2d(50,70)
 Vector2d.parse("50x70")    # => Vector2d(50,70)
 ```
 
+## Parsing
+
+`Vector2d.parse` takes numbers, arrays, hashes, strings and other
+vectors. Strings are written as `"50x70"` or `"50,70"`; the separator
+is case insensitive and whitespace is ignored. Coordinates can be
+signed, and they keep their type.
+
+```ruby
+Vector2d.parse("50x70")   # => Vector2d(50,70)
+Vector2d.parse("50.0x70") # => Vector2d(50.0,70)
+Vector2d.parse("-50X70")  # => Vector2d(-50,70)
+Vector2d.parse("50, 70")  # => Vector2d(50,70)
+Vector2d.parse("x70")     # => Vector2d(0,70)
+```
+
+Anything else raises `ArgumentError`.
+
 ## Documentation
 
 [API documentation](https://rubydoc.info/gems/vector2d)
