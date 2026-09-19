@@ -16,7 +16,7 @@ class Vector2d
     #   Vector2d(2, 3).inspect # => "Vector2d(2,3)"
     #
     def inspect
-      "Vector2d(#{x},#{y})"
+      "#{self.class}(#{x},#{y})"
     end
 
     # Converts vector to array.
