@@ -43,5 +43,19 @@ describe Vector2d::Properties do
 
       it { is_expected.to be(false) }
     end
+
+    context "when vector is barely longer than a unit vector" do
+      let(:vector) { Vector2d.new(1 + 1e-9, 0) }
+
+      it { is_expected.to be(false) }
+    end
+
+    it "is true for any normalized vector" do
+      vectors = (1..50).flat_map do |x|
+        (1..50).map { |y| Vector2d.new(x, y).normalize }
+      end
+
+      expect(vectors).to all(be_normalized)
+    end
   end
 end
