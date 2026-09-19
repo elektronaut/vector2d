@@ -20,7 +20,9 @@ describe Vector2d::Coercions do
 
     context "when the other operand isn't parseable" do
       it "raises a TypeError" do
-        expect { vector.coerce(Object.new) }.to raise_error(TypeError)
+        expect { vector.coerce(Object.new) }.to(
+          raise_error(TypeError, "Object can't be coerced into Vector2d")
+        )
       end
     end
   end

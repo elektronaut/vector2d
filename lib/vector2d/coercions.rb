@@ -67,7 +67,7 @@ class Vector2d
       when Vector2d, Array, Numeric, String, Hash
         Vector2d.parse(other)
       else
-        raise TypeError, "#{self.class} can't be coerced into #{other.class}"
+        raise TypeError, "#{other.class} can't be coerced into #{self.class}"
       end
     end
   end
