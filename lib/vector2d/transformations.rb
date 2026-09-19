@@ -2,7 +2,7 @@
 
 class Vector2d
   module Transformations
-    # Rounds vector to up nearest integer.
+    # Rounds vector up to nearest integer.
     #
     #   Vector2d(2.4, 3.6).ceil # => Vector2d(3,4)
     #
@@ -39,7 +39,7 @@ class Vector2d
     end
     alias truncate clamp_length
 
-    # Rounds vector to up nearest integer.
+    # Rounds vector down to nearest integer.
     #
     #   Vector2d(2.4, 3.6).floor # => Vector2d(2,3)
     #
