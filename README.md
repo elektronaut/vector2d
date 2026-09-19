@@ -13,13 +13,13 @@ require 'vector2d'
 
 vector = Vector2d(50, 70)
 
-vector.aspect_ratio        # => 0.714285714285714
-vector.length              # => 86.0232526704263
+vector.aspect_ratio        # => 0.7142857142857143
+vector.length              # => 86.02325267042627
 
 vector * 2                 # => Vector2d(100,140)
 vector + Vector2d(20, 30)  # => Vector2d(70,100)
 
-vector.fit(Vector2d(64, 64)) # => Vector2d(64,45)
+vector.fit(Vector2d(64, 64)) # => Vector2d(45.714285714285715,64.0)
 
 Vector2d.parse([50, 70])   # => Vector2d(50,70)
 Vector2d.parse("50x70")    # => Vector2d(50,70)
