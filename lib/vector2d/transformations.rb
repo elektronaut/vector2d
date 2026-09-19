@@ -23,6 +23,22 @@ class Vector2d
       self.class.new(x.clamp(min_v.x, max_v.x), y.clamp(min_v.y, max_v.y))
     end
 
+    # Clamps the length of the vector, scaling it down if it is longer
+    # than max.
+    #
+    #   vector = Vector2d(2.0, 3.0)
+    #   vector.clamp_length(5.0) # => Vector2d(2.0, 3.0)
+    #   vector.clamp_length(1.0) # => Vector2d(0.5547.., 0.8320..)
+    #
+    # The zero vector has no direction, and is returned unchanged.
+    #
+    #   Vector2d(0, 0).clamp_length(1.0) # => Vector2d(0,0)
+    #
+    def clamp_length(max)
+      resize([max, length].min)
+    end
+    alias truncate clamp_length
+
     # Rounds vector to up nearest integer.
     #
     #   Vector2d(2.4, 3.6).floor # => Vector2d(2,3)
@@ -93,20 +109,6 @@ class Vector2d
     #
     def round(digits = 0)
       self.class.new(x.round(digits), y.round(digits))
-    end
-
-    # Truncates to max length if vector is longer than max.
-    #
-    #   vector = Vector2d(2.0, 3.0)
-    #   vector.truncate(5.0) # => Vector2d(2.0, 3.0)
-    #   vector.truncate(1.0) # => Vector2d(0.5547.., 0.8320..)
-    #
-    # The zero vector has no direction, and is returned unchanged.
-    #
-    #   Vector2d(0, 0).truncate(1.0) # => Vector2d(0,0)
-    #
-    def truncate(max)
-      resize([max, length].min)
     end
   end
 end

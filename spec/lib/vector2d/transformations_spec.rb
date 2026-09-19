@@ -143,12 +143,12 @@ describe Vector2d::Transformations do
     end
   end
 
-  describe "#truncate" do
+  describe "#clamp_length" do
     context "when argument is longer than length" do
       let(:arg) { 5.0 }
 
       it "does not change the length" do
-        expect(vector.truncate(arg).length).to be_within(0.0001).of(3.6055)
+        expect(vector.clamp_length(arg).length).to be_within(0.0001).of(3.6055)
       end
     end
 
@@ -156,7 +156,7 @@ describe Vector2d::Transformations do
       let(:arg) { 2.5 }
 
       it "changes the length" do
-        expect(vector.truncate(arg).length).to be_within(0.0001).of(arg)
+        expect(vector.clamp_length(arg).length).to be_within(0.0001).of(arg)
       end
     end
 
@@ -164,8 +164,14 @@ describe Vector2d::Transformations do
       subject(:vector) { Vector2d.new(0, 0) }
 
       it "returns the zero vector" do
-        expect(vector.truncate(5.0)).to eq(Vector2d.new(0, 0))
+        expect(vector.clamp_length(5.0)).to eq(Vector2d.new(0, 0))
       end
+    end
+  end
+
+  describe "#truncate" do
+    it "is an alias of #clamp_length" do
+      expect(vector.truncate(2.5).length).to be_within(0.0001).of(2.5)
     end
   end
 end
