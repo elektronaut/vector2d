@@ -256,11 +256,11 @@ class Vector2d
     # The zero vector has no direction, and there is nothing to project
     # onto. The zero vector is returned.
     #
-    #   v1.project(Vector2d(0, 0)) # => Vector2d(0,0)
+    #   v1.project(Vector2d(0, 0)) # => Vector2d(0.0,0.0)
     #
     def project(other)
       v = to_vector(other)
-      return self.class.new(0, 0) if v.zero?
+      return self.class.new(0.0, 0.0) if v.zero?
 
       scale = dot_product(v).to_f / v.length_squared
       self.class.new(v.x * scale, v.y * scale)
@@ -275,7 +275,7 @@ class Vector2d
     #
     # The zero vector has no direction, and nothing is projected away.
     #
-    #   v1.reject(Vector2d(0, 0)) # => Vector2d(2,3)
+    #   v1.reject(Vector2d(0, 0)) # => Vector2d(2.0,3.0)
     #
     def reject(other)
       self - project(other)
