@@ -16,6 +16,7 @@ describe Vector2d do
   it_behaves_like "a class preserving method", :to_f_vector
 
   it_behaves_like "a class preserving method", :fit, 10
+  it_behaves_like "a class preserving method", :cover, 10
   it_behaves_like "a class preserving method", :fit_either, 10
 
   it_behaves_like "a class preserving method", :ceil
