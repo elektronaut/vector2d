@@ -34,6 +34,15 @@ class Vector2d
       (x * x) + (y * y)
     end
 
+    # Is this the zero vector?
+    #
+    #   Vector2d(0, 0).zero? # => true
+    #   Vector2d(2, 3).zero? # => false
+    #
+    def zero?
+      squared_length.zero?
+    end
+
     # Is this a normalized vector?
     #
     #   Vector2d(0, 1).normalized? # => true

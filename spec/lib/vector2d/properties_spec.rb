@@ -29,6 +29,22 @@ describe Vector2d::Properties do
     end
   end
 
+  describe "#zero?" do
+    subject { vector.zero? }
+
+    context "when vector is the zero vector" do
+      let(:vector) { Vector2d.new(0, 0) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when vector isn't the zero vector" do
+      let(:vector) { Vector2d.new(2, 3) }
+
+      it { is_expected.to be(false) }
+    end
+  end
+
   describe "#normalized?" do
     subject { vector.normalized? }
 
