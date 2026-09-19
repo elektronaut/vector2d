@@ -11,7 +11,7 @@ class Vector2d
     #
     def contain(other)
       v, = coerce(other)
-      v.x > x || v.y > y ? other.fit(self) : other
+      v.x > x || v.y > y ? v.fit(self) : v
     end
 
     # Scales the vector to fit inside another vector, retaining the

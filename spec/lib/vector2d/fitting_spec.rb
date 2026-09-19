@@ -28,6 +28,35 @@ describe Vector2d::Fitting do
       its(:x) { is_expected.to eq(225) }
       its(:y) { is_expected.to eq(300) }
     end
+
+    context "when the argument is an array" do
+      let(:comp) { [400, 300] }
+
+      its(:x) { is_expected.to eq(300) }
+      its(:y) { is_expected.to eq(225) }
+    end
+
+    context "when the argument is a string" do
+      let(:comp) { "400x300" }
+
+      its(:x) { is_expected.to eq(300) }
+      its(:y) { is_expected.to eq(225) }
+    end
+
+    context "when the argument is a hash" do
+      let(:comp) { { x: 400, y: 300 } }
+
+      its(:x) { is_expected.to eq(300) }
+      its(:y) { is_expected.to eq(225) }
+    end
+
+    context "when the coerced argument already fits" do
+      let(:comp) { [150, 100] }
+
+      it { is_expected.to be_a(Vector2d) }
+      its(:x) { is_expected.to eq(150) }
+      its(:y) { is_expected.to eq(100) }
+    end
   end
 
   describe "#fit" do
