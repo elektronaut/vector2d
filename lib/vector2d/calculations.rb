@@ -23,16 +23,17 @@ class Vector2d
         (vector1.x * vector2.x) + (vector1.y * vector2.y)
       end
 
-      # Calculates angle between two vectors in radians.
+      # Calculates the signed angle between two vectors in radians,
+      # in the range -PI..PI. The angle is positive when the second
+      # vector is counterclockwise from the first.
       #
       #   v1 = Vector2d(2, 3)
       #   v2 = Vector2d(4, 5)
-      #   Vector2d.angle_between(v1, v2) # => 0.0867..
+      #   Vector2d.angle_between(v1, v2) # => -0.0867..
       #
       def angle_between(vector1, vector2)
-        one = vector1.normalized? ? vector1 : vector1.normalize
-        two = vector2.normalized? ? vector2 : vector2.normalize
-        Math.acos(dot_product(one, two))
+        Math.atan2(cross_product(vector1, vector2),
+                   dot_product(vector1, vector2))
       end
     end
 
@@ -117,11 +118,12 @@ class Vector2d
       self.class.cross_product(self, v)
     end
 
-    # Angle in radians between this vector and another vector.
+    # Signed angle in radians between this vector and another vector,
+    # in the range -PI..PI.
     #
     #   v1 = Vector2d(2, 3)
     #   v2 = Vector2d(4, 5)
-    #   v1.angle_between(v2) # => 0.0867..
+    #   v1.angle_between(v2) # => -0.0867..
     #
     def angle_between(other)
       v, = coerce(other)
