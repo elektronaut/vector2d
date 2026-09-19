@@ -25,7 +25,13 @@ class Vector2d
     # Note: Either axis will be disregarded if zero or nil. This is a
     # feature, not a bug.
     #
+    # The zero vector has no direction, and is returned unchanged.
+    #
+    #   Vector2d(0, 0).fit(Vector2d(10, 10)) # => Vector2d(0,0)
+    #
     def fit(other)
+      return self if zero?
+
       v = to_vector(other)
       fit_vector(v)
     end
@@ -38,10 +44,21 @@ class Vector2d
     #   Vector2d(20, 10).fit_either(constraint) # => Vector2d(10,5)
     #   Vector2d(10, 20).fit_either(constraint) # => Vector2d(5,10)
     #
+    # Note: Either axis will be disregarded if zero or nil, as in #fit.
+    # This is a feature, not a bug.
+    #
+    #   Vector2d(0, 10).fit_either(constraint) # => Vector2d(0,5)
+    #
+    # The zero vector has no direction, and is returned unchanged.
+    #
+    #   Vector2d(0, 0).fit_either(Vector2d(5, 5)) # => Vector2d(0,0)
+    #
     def fit_either(other)
+      return self if zero?
+
       v = to_vector(other)
       scale = v.to_f_vector / self
-      if scale.x.positive? && scale.y.positive?
+      if [scale.x, scale.y].all? { |s| s.positive? && s.finite? }
         self * [scale.x, scale.y].max
       else
         fit_vector(v)

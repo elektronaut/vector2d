@@ -75,6 +75,33 @@ describe Vector2d::Fitting do
       its(:x) { is_expected.to eq(150) }
       its(:y) { is_expected.to eq(150) }
     end
+
+    context "with the zero vector" do
+      let(:original) { Vector2d.new(0, 0) }
+      let(:comp) { Vector2d.new(5, 5) }
+
+      it "returns the zero vector" do
+        expect(vector).to eq(Vector2d.new(0, 0))
+      end
+    end
+
+    context "when the x axis is zero" do
+      let(:original) { Vector2d.new(0, 5) }
+      let(:comp) { Vector2d.new(10, 2) }
+
+      it "disregards the zero axis" do
+        expect(vector).to eq(Vector2d.new(0.0, 2.0))
+      end
+    end
+
+    context "when the y axis is zero" do
+      let(:original) { Vector2d.new(5, 0) }
+      let(:comp) { Vector2d.new(2, 10) }
+
+      it "disregards the zero axis" do
+        expect(vector).to eq(Vector2d.new(2.0, 0.0))
+      end
+    end
   end
 
   describe "#fit_either" do
@@ -102,6 +129,41 @@ describe Vector2d::Fitting do
 
       its(:x) { is_expected.to eq(-150) }
       its(:y) { is_expected.to eq(150) }
+    end
+
+    context "with the zero vector" do
+      let(:original) { Vector2d.new(0, 0) }
+      let(:comp) { Vector2d.new(5, 5) }
+
+      it "returns the zero vector" do
+        expect(vector).to eq(Vector2d.new(0, 0))
+      end
+    end
+
+    context "when the x axis is zero" do
+      let(:original) { Vector2d.new(0, 5) }
+      let(:comp) { Vector2d.new(10, 2) }
+
+      it "disregards the zero axis" do
+        expect(vector).to eq(Vector2d.new(0.0, 2.0))
+      end
+
+      it "matches #fit" do
+        expect(vector).to eq(original.fit(comp))
+      end
+    end
+
+    context "when the y axis is zero" do
+      let(:original) { Vector2d.new(5, 0) }
+      let(:comp) { Vector2d.new(2, 10) }
+
+      it "disregards the zero axis" do
+        expect(vector).to eq(Vector2d.new(2.0, 0.0))
+      end
+
+      it "matches #fit" do
+        expect(vector).to eq(original.fit(comp))
+      end
     end
   end
 end
