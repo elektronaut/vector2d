@@ -10,7 +10,7 @@ class Vector2d
     #   vector.contain(Vector2d(20, 40)) # => Vector2d(10,20)
     #
     def contain(other)
-      v, = coerce(other)
+      v = to_vector(other)
       v.x > x || v.y > y ? v.fit_vector(self) : v
     end
 
@@ -26,7 +26,7 @@ class Vector2d
     # feature, not a bug.
     #
     def fit(other)
-      v, = coerce(other)
+      v = to_vector(other)
       fit_vector(v)
     end
     alias constrain_both fit
@@ -39,7 +39,7 @@ class Vector2d
     #   Vector2d(10, 20).fit_either(constraint) # => Vector2d(5,10)
     #
     def fit_either(other)
-      v, = coerce(other)
+      v = to_vector(other)
       scale = v.to_f_vector / self
       if scale.x.positive? && scale.y.positive?
         self * [scale.x, scale.y].max

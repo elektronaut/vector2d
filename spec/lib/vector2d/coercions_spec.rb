@@ -5,6 +5,26 @@ require "spec_helper"
 describe Vector2d::Coercions do
   subject(:vector) { Vector2d.new(2, 3) }
 
+  describe "#coerce" do
+    it "returns the other operand as a vector, followed by itself" do
+      expect(vector.coerce(4)).to eq([Vector2d.new(4, 4), vector])
+    end
+
+    it "makes a vector the right hand operand of a scalar" do
+      expect(2 * vector).to eq(Vector2d.new(4, 6))
+    end
+
+    it "retains the operand order of the original expression" do
+      expect(10 - vector).to eq(Vector2d.new(8, 7))
+    end
+
+    context "when the other operand isn't parseable" do
+      it "raises a TypeError" do
+        expect { vector.coerce(Object.new) }.to raise_error(TypeError)
+      end
+    end
+  end
+
   describe "#inspect" do
     it "renders a string representation" do
       expect(vector.inspect).to eq("Vector2d(2,3)")
