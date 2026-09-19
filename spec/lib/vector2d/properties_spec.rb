@@ -101,6 +101,127 @@ describe Vector2d::Properties do
     end
   end
 
+  describe "#parallel?" do
+    subject { vector.parallel?(other) }
+
+    context "when the other vector points the same way" do
+      let(:other) { Vector2d.new(4, 6) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when the other vector points the opposite way" do
+      let(:other) { Vector2d.new(-4, -6) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when the vectors aren't parallel" do
+      let(:other) { Vector2d.new(3, 2) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "with the zero vector" do
+      let(:other) { Vector2d.new(0, 0) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when both vectors are zero" do
+      let(:vector) { Vector2d.new(0, 0) }
+      let(:other) { Vector2d.new(0, 0) }
+
+      it { is_expected.to be(true) }
+    end
+
+    it "coerces the argument" do
+      expect(vector.parallel?("4x6")).to be(true)
+    end
+
+    it "is true for any vector and a multiple of it" do
+      vectors = (1..50).flat_map do |x|
+        (1..50).map { |y| Vector2d.new(x, y) }
+      end
+
+      expect(vectors).to all(satisfy { |v| v.parallel?(v * 3.7) })
+    end
+
+    context "with large vectors" do
+      let(:vector) { Vector2d.new(1.3e8, 7.7e8) }
+
+      it "is true for a multiple of itself" do
+        expect(vector.parallel?(vector * Math::PI)).to be(true)
+      end
+
+      it "is false for a vector that is barely off" do
+        expect(vector.parallel?(Vector2d.new(1.3e8, 7.7e8 + 1))).to be(false)
+      end
+    end
+  end
+
+  describe "#perpendicular_to?" do
+    subject { vector.perpendicular_to?(other) }
+
+    context "when the other vector is perpendicular" do
+      let(:other) { Vector2d.new(-3, 2) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when the other vector is perpendicular the other way" do
+      let(:other) { Vector2d.new(3, -2) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when the vectors aren't perpendicular" do
+      let(:other) { Vector2d.new(3, 2) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "with the zero vector" do
+      let(:other) { Vector2d.new(0, 0) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when both vectors are zero" do
+      let(:vector) { Vector2d.new(0, 0) }
+      let(:other) { Vector2d.new(0, 0) }
+
+      it { is_expected.to be(true) }
+    end
+
+    it "coerces the argument" do
+      expect(vector.perpendicular_to?("-3x2")).to be(true)
+    end
+
+    it "is true for any vector rotated a quarter turn" do
+      vectors = (1..50).flat_map do |x|
+        (1..50).map { |y| Vector2d.new(x, y) }
+      end
+
+      expect(vectors)
+        .to all(satisfy { |v| v.perpendicular_to?(v.rotate(Math::PI / 2)) })
+    end
+
+    context "with large vectors" do
+      let(:vector) { Vector2d.new(1.3e8, 7.7e8) }
+
+      it "is true for a quarter turn" do
+        expect(vector.perpendicular_to?(vector.rotate(Math::PI / 2)))
+          .to be(true)
+      end
+
+      it "is false for a vector that is barely off" do
+        expect(vector.perpendicular_to?(Vector2d.new(-7.7e8, 1.3e8 + 1)))
+          .to be(false)
+      end
+    end
+  end
+
   describe "#to_polar" do
     it "returns the length first" do
       expect(vector.to_polar.first).to be_within(0.0001).of(3.6055)
