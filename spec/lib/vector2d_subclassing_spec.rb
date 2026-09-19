@@ -11,6 +11,9 @@ describe Vector2d do
   it_behaves_like "a class preserving method", :/, 2
   it_behaves_like "a class preserving method", :+, 2
   it_behaves_like "a class preserving method", :-, 2
+  it_behaves_like "a class preserving method", :project, 2
+  it_behaves_like "a class preserving method", :reflect, 2
+  it_behaves_like "a class preserving method", :reject, 2
 
   it_behaves_like "a class preserving method", :to_i_vector
   it_behaves_like "a class preserving method", :to_f_vector

@@ -238,6 +238,81 @@ class Vector2d
       angle_to(other).abs
     end
 
+    # Vector projection of this vector onto another vector. The
+    # argument is coerced, so scalars work too.
+    #
+    #   v1 = Vector2d(2, 3)
+    #   v2 = Vector2d(4, 0)
+    #   v1.project(v2) # => Vector2d(2.0,0.0)
+    #
+    # The zero vector has no direction, and there is nothing to project
+    # onto. The zero vector is returned.
+    #
+    #   v1.project(Vector2d(0, 0)) # => Vector2d(0,0)
+    #
+    def project(other)
+      v = to_vector(other)
+      return self.class.new(0, 0) if v.zero?
+
+      scale = dot_product(v).to_f / v.length_squared
+      self.class.new(v.x * scale, v.y * scale)
+    end
+
+    # Vector rejection of this vector from another vector, the component
+    # left over when the projection is subtracted.
+    #
+    #   v1 = Vector2d(2, 3)
+    #   v2 = Vector2d(4, 0)
+    #   v1.reject(v2) # => Vector2d(0.0,3.0)
+    #
+    # The zero vector has no direction, and nothing is projected away.
+    #
+    #   v1.reject(Vector2d(0, 0)) # => Vector2d(2,3)
+    #
+    def reject(other)
+      self - project(other)
+    end
+
+    # Scalar projection of this vector onto another vector, the signed
+    # length of the projection. It is negative when the vectors point in
+    # opposite directions.
+    #
+    #   v1 = Vector2d(2, 3)
+    #   v2 = Vector2d(4, 0)
+    #   v1.scalar_projection(v2)              # => 2.0
+    #   v1.scalar_projection(Vector2d(-4, 0)) # => -2.0
+    #
+    # The zero vector has no direction, and there is nothing to project
+    # onto. The scalar projection is zero.
+    #
+    #   v1.scalar_projection(Vector2d(0, 0)) # => 0.0
+    #
+    def scalar_projection(other)
+      v = to_vector(other)
+      return 0.0 if v.zero?
+
+      dot_product(v) / v.length
+    end
+
+    # Reflects this vector about the line perpendicular to the normal,
+    # the way a ray bounces off a surface. The normal is normalized
+    # internally, so it can be of any length.
+    #
+    #   vector = Vector2d(2, 3)
+    #   vector.reflect(Vector2d(0, 1)) # => Vector2d(2.0,-3.0)
+    #   vector.reflect(Vector2d(0, 5)) # => Vector2d(2.0,-3.0)
+    #
+    # The zero vector has no direction, and defines no surface to
+    # reflect off. The vector is returned unchanged.
+    #
+    #   vector.reflect(Vector2d(0, 0)) # => Vector2d(2,3)
+    #
+    def reflect(normal)
+      n = to_vector(normal).normalize
+      scale = 2 * dot_product(n)
+      self.class.new(x - (scale * n.x), y - (scale * n.y))
+    end
+
     private
 
     def calculate_each(method, other)
