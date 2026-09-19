@@ -2,6 +2,16 @@
 
 class Vector2d
   module Transformations
+    # Returns the absolute value of each axis. This is component-wise,
+    # not the magnitude of the vector, which is #length.
+    #
+    #   Vector2d(-2, 3).abs  # => Vector2d(2,3)
+    #   Vector2d(-2, -3).abs # => Vector2d(2,3)
+    #
+    def abs
+      self.class.new(x.abs, y.abs)
+    end
+
     # Rounds vector up to nearest integer.
     #
     #   Vector2d(2.4, 3.6).ceil # => Vector2d(3,4)
@@ -10,17 +20,30 @@ class Vector2d
       self.class.new(x.ceil, y.ceil)
     end
 
-    # Clamps the vector between two others, one axis at a time.
-    # The bounds are coerced, so scalars work too.
+    # Clamps the vector between two others, one axis at a time. The
+    # bounds are coerced, so scalars work too.
     #
     #   vector = Vector2d(2, 8)
     #   vector.clamp(Vector2d(3, 3), Vector2d(6, 6)) # => Vector2d(3,6)
     #   vector.clamp(3, 6)                           # => Vector2d(3,6)
     #
-    def clamp(min, max)
-      min_v = to_vector(min)
-      max_v = to_vector(max)
-      self.class.new(x.clamp(min_v.x, max_v.x), y.clamp(min_v.y, max_v.y))
+    # The bounds can also be given as a single range, which may be
+    # beginless or endless to clamp only one side.
+    #
+    #   vector.clamp(3..6) # => Vector2d(3,6)
+    #   vector.clamp(..6)  # => Vector2d(2,6)
+    #   vector.clamp(3..)  # => Vector2d(3,8)
+    #
+    # The range must not exclude its end, as with Comparable#clamp.
+    #
+    #   vector.clamp(3...6) # => ArgumentError
+    #
+    def clamp(min, max = nil)
+      min_v, max_v = clamp_bounds(min, max)
+      self.class.new(
+        x.clamp(Range.new(min_v&.x, max_v&.x)),
+        y.clamp(Range.new(min_v&.y, max_v&.y))
+      )
     end
 
     # Clamps the length of the vector, scaling it down if it is longer
@@ -45,6 +68,30 @@ class Vector2d
     #
     def floor
       self.class.new(x.floor, y.floor)
+    end
+
+    # Returns the larger value of each axis. The other vector is
+    # coerced, so scalars work too.
+    #
+    #   vector = Vector2d(2, 8)
+    #   vector.max(Vector2d(5, 5)) # => Vector2d(5,8)
+    #   vector.max(5)              # => Vector2d(5,8)
+    #
+    def max(other)
+      v = to_vector(other)
+      self.class.new([x, v.x].max, [y, v.y].max)
+    end
+
+    # Returns the smaller value of each axis. The other vector is
+    # coerced, so scalars work too.
+    #
+    #   vector = Vector2d(2, 8)
+    #   vector.min(Vector2d(5, 5)) # => Vector2d(2,5)
+    #   vector.min(5)              # => Vector2d(2,5)
+    #
+    def min(other)
+      v = to_vector(other)
+      self.class.new([x, v.x].min, [y, v.y].min)
     end
 
     # Normalizes the vector.
@@ -134,6 +181,26 @@ class Vector2d
     #
     def round(digits = 0)
       self.class.new(x.round(digits), y.round(digits))
+    end
+
+    private
+
+    def clamp_bounds(min, max)
+      if min.is_a?(Range)
+        raise ArgumentError, "wrong number of arguments (given 2, expected 1)" unless max.nil?
+
+        return range_bounds(min)
+      end
+
+      raise ArgumentError, "wrong number of arguments (given 1, expected 2)" if max.nil?
+
+      [to_vector(min), to_vector(max)]
+    end
+
+    def range_bounds(range)
+      raise ArgumentError, "cannot clamp with an exclusive range" if range.exclude_end?
+
+      [range.begin && to_vector(range.begin), range.end && to_vector(range.end)]
     end
   end
 end

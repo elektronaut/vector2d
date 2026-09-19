@@ -184,6 +184,30 @@ describe Vector2d::Calculations do
     end
   end
 
+  describe "-@" do
+    it "reverses the vector" do
+      expect(-Vector2d.new(2, 3)).to eq(Vector2d.new(-2, -3))
+    end
+
+    it "is the same as #reverse" do
+      expect(-vector).to eq(vector.reverse)
+    end
+
+    it "returns the original vector when applied twice" do
+      expect(-(-vector)).to eq(vector)
+    end
+  end
+
+  describe "+@" do
+    it "returns the vector unchanged" do
+      expect(+Vector2d.new(2, 3)).to eq(Vector2d.new(2, 3))
+    end
+
+    it "returns the same object" do
+      expect(+vector).to be(vector)
+    end
+  end
+
   describe "#cross_product" do
     let(:comp) { Vector2d.new(3, 4) }
 

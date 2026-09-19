@@ -98,6 +98,22 @@ class Vector2d
       calculate_each(:-, other)
     end
 
+    # Returns the vector reversed.
+    #
+    #   -Vector2d(2, 3) # => Vector2d(-2,-3)
+    #
+    def -@
+      reverse
+    end
+
+    # Returns the vector unchanged.
+    #
+    #   +Vector2d(2, 3) # => Vector2d(2,3)
+    #
+    def +@
+      self
+    end
+
     # Calculates the distance between two vectors.
     #
     #   v1 = Vector2d(2, 3)
