@@ -123,6 +123,62 @@ class Vector2d
     end
     alias squared_distance distance_squared
 
+    # Calculates the Manhattan distance between two vectors, the sum of
+    # the absolute differences along each axis.
+    #
+    #   v1 = Vector2d(2, 3)
+    #   v2 = Vector2d(5, 7)
+    #   v1.manhattan_distance(v2) # => 7
+    #
+    def manhattan_distance(other)
+      v = to_vector(other)
+      (v.x - x).abs + (v.y - y).abs
+    end
+
+    # Calculates the Chebyshev distance between two vectors, the largest
+    # absolute difference along any axis.
+    #
+    #   v1 = Vector2d(2, 3)
+    #   v2 = Vector2d(5, 7)
+    #   v1.chebyshev_distance(v2) # => 4
+    #
+    def chebyshev_distance(other)
+      v = to_vector(other)
+      [(v.x - x).abs, (v.y - y).abs].max
+    end
+
+    # Linearly interpolates between this vector and another vector.
+    #
+    #   v1 = Vector2d(0, 0)
+    #   v2 = Vector2d(10, 20)
+    #   v1.lerp(v2, 0.0)  # => Vector2d(0.0,0.0)
+    #   v1.lerp(v2, 0.25) # => Vector2d(2.5,5.0)
+    #   v1.lerp(v2, 1.0)  # => Vector2d(10.0,20.0)
+    #
+    # The amount is not clamped to 0..1. Values outside that range
+    # extrapolate past the end points.
+    #
+    #   v1.lerp(v2, 2.0)  # => Vector2d(20.0,40.0)
+    #   v1.lerp(v2, -0.5) # => Vector2d(-5.0,-10.0)
+    #
+    def lerp(other, amount)
+      v = to_vector(other)
+      self.class.new(
+        x + ((v.x - x) * amount),
+        y + ((v.y - y) * amount)
+      )
+    end
+
+    # Returns the point halfway between this vector and another vector.
+    #
+    #   v1 = Vector2d(0, 0)
+    #   v2 = Vector2d(10, 20)
+    #   v1.midpoint(v2) # => Vector2d(5.0,10.0)
+    #
+    def midpoint(other)
+      lerp(other, 0.5)
+    end
+
     # Dot product of this vector and another vector.
     #
     #   v1 = Vector2d(2, 1)
