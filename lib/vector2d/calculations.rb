@@ -311,12 +311,15 @@ class Vector2d
     #   vector.reflect(Vector2d(0, 5)) # => Vector2d(2.0,-3.0)
     #
     # The zero vector has no direction, and defines no surface to
-    # reflect off. The vector is returned unchanged.
+    # reflect off. Nothing is reflected, and the vector is returned.
     #
-    #   vector.reflect(Vector2d(0, 0)) # => Vector2d(2,3)
+    #   vector.reflect(Vector2d(0, 0)) # => Vector2d(2.0,3.0)
     #
     def reflect(normal)
-      n = to_vector(normal).normalize
+      v = to_vector(normal)
+      return to_f_vector if v.zero?
+
+      n = v.normalize
       self - (n * (2 * dot_product(n)))
     end
 
