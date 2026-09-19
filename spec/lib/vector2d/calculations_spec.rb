@@ -23,26 +23,73 @@ describe Vector2d::Calculations do
     end
   end
 
+  describe ".angle_to" do
+    let(:v1) { Vector2d.new(2, 3) }
+    let(:v2) { Vector2d.new(4, 5) }
+
+    it "calculates the angle from one vector to another" do
+      expect(Vector2d.angle_to(v1, v2)).to be_within(0.0001).of(-0.0867)
+    end
+
+    it "signs the angle by direction of rotation" do
+      expect(Vector2d.angle_to(v2, v1)).to be_within(0.0001).of(0.0867)
+    end
+
+    it "ignores the magnitude of the vectors" do
+      expect(
+        Vector2d.angle_to(v1 * 1000, v2 * 0.001)
+      ).to be_within(0.0001).of(-0.0867)
+    end
+
+    it "returns zero for identical vectors" do
+      expect(Vector2d.angle_to(v1, v1)).to eq(0.0)
+    end
+
+    it "returns zero for parallel vectors" do
+      expect(Vector2d.angle_to(v1, v1 * 2.3)).to eq(0.0)
+    end
+
+    it "returns PI for antiparallel vectors" do
+      expect(Vector2d.angle_to(v1, v1 * -2.3)).to eq(Math::PI)
+    end
+
+    it "returns zero for a zero length vector" do
+      expect(Vector2d.angle_to(v1, Vector2d.new(0, 0))).to eq(0.0)
+    end
+
+    it "stays within -PI..PI" do
+      angles = 360.times.map do |i|
+        Vector2d.angle_to(v1, v1.rotate(i * Math::PI / 180))
+      end
+      expect(angles).to all(be_between(-Math::PI, Math::PI))
+    end
+
+    it "handles parallel vectors of any magnitude" do
+      angles = 1000.times.map do |i|
+        v = Vector2d.new((i + 1) * 0.37, (i + 1) * -1.13)
+        Vector2d.angle_to(v, v * ((i % 7) + 1))
+      end
+      expect(angles).to all(be_within(1e-12).of(0.0))
+    end
+  end
+
   describe ".angle_between" do
     let(:v1) { Vector2d.new(2, 3) }
     let(:v2) { Vector2d.new(4, 5) }
 
-    it "calculates the angle between two vectors" do
-      expect(Vector2d.angle_between(v1, v2)).to be_within(0.0001).of(-0.0867)
+    it "calculates the unsigned angle between two vectors" do
+      expect(Vector2d.angle_between(v1, v2)).to be_within(0.0001).of(0.0867)
     end
 
-    it "signs the angle by direction of rotation" do
-      expect(Vector2d.angle_between(v2, v1)).to be_within(0.0001).of(0.0867)
+    it "ignores the order of the arguments" do
+      expect(Vector2d.angle_between(v2, v1))
+        .to eq(Vector2d.angle_between(v1, v2))
     end
 
     it "ignores the magnitude of the vectors" do
       expect(
         Vector2d.angle_between(v1 * 1000, v2 * 0.001)
-      ).to be_within(0.0001).of(-0.0867)
-    end
-
-    it "returns zero for identical vectors" do
-      expect(Vector2d.angle_between(v1, v1)).to eq(0.0)
+      ).to be_within(0.0001).of(0.0867)
     end
 
     it "returns zero for parallel vectors" do
@@ -57,12 +104,11 @@ describe Vector2d::Calculations do
       expect(Vector2d.angle_between(v1, Vector2d.new(0, 0))).to eq(0.0)
     end
 
-    it "handles parallel vectors of any magnitude" do
-      angles = 1000.times.map do |i|
-        v = Vector2d.new((i + 1) * 0.37, (i + 1) * -1.13)
-        Vector2d.angle_between(v, v * ((i % 7) + 1))
+    it "stays within 0..PI" do
+      angles = 360.times.map do |i|
+        Vector2d.angle_between(v1, v1.rotate(i * Math::PI / 180))
       end
-      expect(angles).to all(be_within(1e-12).of(0.0))
+      expect(angles).to all(be_between(0, Math::PI))
     end
   end
 
@@ -180,6 +226,20 @@ describe Vector2d::Calculations do
     end
   end
 
+  describe "#angle_to" do
+    let(:comp) { Vector2d.new(3, 4) }
+
+    it "calculates the angle to the other vector" do
+      expect(
+        vector.angle_to(comp)
+      ).to eq(Vector2d.angle_to(vector, comp))
+    end
+
+    it "coerces the argument" do
+      expect(vector.angle_to([3, 4])).to eq(vector.angle_to(comp))
+    end
+  end
+
   describe "#angle_between" do
     let(:comp) { Vector2d.new(3, 4) }
 
@@ -187,6 +247,10 @@ describe Vector2d::Calculations do
       expect(
         vector.angle_between(comp)
       ).to eq(Vector2d.angle_between(vector, comp))
+    end
+
+    it "coerces the argument" do
+      expect(vector.angle_between([3, 4])).to eq(vector.angle_between(comp))
     end
   end
 end
