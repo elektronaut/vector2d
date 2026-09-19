@@ -27,29 +27,44 @@ class Vector2d
     #   Vector2d.parse({x: 150, y: 100})
     #   Vector2d.parse({"x" => 150.0, "y" => 100.0})
     #   Vector2d.parse(Vector2d(150, 100))
+    #
+    # Raises ArgumentError unless both coordinates resolve to numbers.
     def parse(arg, second_arg = nil)
-      if second_arg.nil?
-        parse_single_arg(arg)
-      else
-        new(arg, second_arg)
-      end
+      return parse_single_arg(arg) if second_arg.nil?
+
+      new(coordinate(arg), coordinate(second_arg))
     end
 
     private
 
     def parse_single_arg(arg)
       return arg if arg.is_a?(Vector2d)
-      return parse(*arg) if arg.is_a?(Array)
+      return parse_array(arg) if arg.is_a?(Array)
       return parse_str(arg) if arg.is_a?(String)
-      return parse_hash(arg.dup) if arg.is_a?(Hash)
+      return parse_hash(arg) if arg.is_a?(Hash)
 
-      new(arg, arg)
+      value = coordinate(arg)
+      new(value, value)
+    end
+
+    def parse_array(array)
+      case array.length
+      when 1 then parse_single_arg(array.first)
+      when 2 then new(coordinate(array[0]), coordinate(array[1]))
+      else
+        raise ArgumentError, "expected 1 or 2 coordinates, got #{array.length}"
+      end
     end
 
     def parse_hash(hash)
-      hash[:x] ||= hash["x"] if hash.key?("x")
-      hash[:y] ||= hash["y"] if hash.key?("y")
-      new(hash[:x], hash[:y])
+      new(coordinate(hash[:x] || hash["x"]),
+          coordinate(hash[:y] || hash["y"]))
+    end
+
+    def coordinate(value)
+      raise ArgumentError, "not a valid coordinate: #{value.inspect}" unless value.is_a?(Numeric)
+
+      value
     end
 
     def parse_str(str)
