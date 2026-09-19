@@ -48,10 +48,7 @@ class Vector2d
     #   Vector2d(0, 0).fit(Vector2d(10, 10)) # => Vector2d(0,0)
     #
     def fit(other)
-      return self if zero?
-
-      v = to_vector(other)
-      fit_vector(v)
+      fit_vector(to_vector(other))
     end
     alias constrain_both fit
 
@@ -78,8 +75,6 @@ class Vector2d
     #   Vector2d(0, 0).fit_either(Vector2d(5, 5)) # => Vector2d(0,0)
     #
     def fit_either(other)
-      return self if zero?
-
       v = to_vector(other)
       factors = fit_factors(v)
       factors.length == 2 ? self * factors.max : fit_vector(v)

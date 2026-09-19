@@ -162,6 +162,23 @@ describe Vector2d::Fitting do
       end
     end
 
+    context "when the argument is invalid" do
+      let(:comp) { "garbage" }
+
+      it "raises an error" do
+        expect { vector }.to raise_error(ArgumentError)
+      end
+    end
+
+    context "when the vector is zero and the argument is invalid" do
+      let(:original) { Vector2d.new(0, 0) }
+      let(:comp) { "garbage" }
+
+      it "raises an error" do
+        expect { vector }.to raise_error(ArgumentError)
+      end
+    end
+
     context "when the x axis is zero" do
       let(:original) { Vector2d.new(0, 5) }
       let(:comp) { Vector2d.new(10, 2) }
@@ -255,6 +272,23 @@ describe Vector2d::Fitting do
 
       it "returns the zero vector" do
         expect(vector).to eq(Vector2d.new(0, 0))
+      end
+    end
+
+    context "when the argument is invalid" do
+      let(:comp) { "garbage" }
+
+      it "raises an error" do
+        expect { vector }.to raise_error(ArgumentError)
+      end
+    end
+
+    context "when the vector is zero and the argument is invalid" do
+      let(:original) { Vector2d.new(0, 0) }
+      let(:comp) { "garbage" }
+
+      it "raises an error" do
+        expect { vector }.to raise_error(ArgumentError)
       end
     end
 
