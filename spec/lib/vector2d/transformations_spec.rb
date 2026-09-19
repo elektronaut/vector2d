@@ -5,6 +5,20 @@ require "spec_helper"
 describe Vector2d::Transformations do
   subject(:vector) { Vector2d.new(2, 3) }
 
+  describe "#abs" do
+    it "returns the absolute value of each axis" do
+      expect(Vector2d.new(-2, 3).abs).to eq(Vector2d.new(2, 3))
+    end
+
+    it "leaves a positive vector alone" do
+      expect(vector.abs).to eq(vector)
+    end
+
+    it "is component-wise, not the length" do
+      expect(Vector2d.new(-2, -3).abs).to eq(Vector2d.new(2, 3))
+    end
+  end
+
   describe "#ceil" do
     subject(:vector) { Vector2d.new(2.3, 3.3) }
 
@@ -28,6 +42,56 @@ describe Vector2d::Transformations do
     it "leaves a vector within the bounds alone" do
       expect(vector.clamp(0, 10)).to eq(vector)
     end
+
+    it "raises ArgumentError without an upper bound" do
+      expect { vector.clamp(3) }.to raise_error(ArgumentError)
+    end
+
+    context "with a range" do
+      it "clamps each axis" do
+        expect(vector.clamp(3..6)).to eq(Vector2d.new(3, 6))
+      end
+
+      it "coerces the bounds" do
+        expect(vector.clamp("3x3".."6x6")).to eq(Vector2d.new(3, 6))
+      end
+
+      it "leaves a vector within the bounds alone" do
+        expect(vector.clamp(0..10)).to eq(vector)
+      end
+
+      it "matches the two argument form" do
+        expect(vector.clamp(3..6)).to eq(vector.clamp(3, 6))
+      end
+
+      it "clamps only the upper bound of a beginless range" do
+        expect(vector.clamp(..6)).to eq(Vector2d.new(2, 6))
+      end
+
+      it "clamps only the lower bound of an endless range" do
+        expect(vector.clamp(3..)).to eq(Vector2d.new(3, 8))
+      end
+
+      it "leaves a vector bounded at neither end alone" do
+        expect(vector.clamp(nil..nil)).to eq(vector)
+      end
+
+      it "matches #min for a beginless range" do
+        expect(vector.clamp(..6)).to eq(vector.min(6))
+      end
+
+      it "matches #max for an endless range" do
+        expect(vector.clamp(3..)).to eq(vector.max(3))
+      end
+
+      it "raises ArgumentError for an exclusive range" do
+        expect { vector.clamp(3...6) }.to raise_error(ArgumentError)
+      end
+
+      it "raises ArgumentError when given a second argument" do
+        expect { vector.clamp(3..6, 6) }.to raise_error(ArgumentError)
+      end
+    end
   end
 
   describe "#floor" do
@@ -35,6 +99,40 @@ describe Vector2d::Transformations do
 
     it "rounds the vector down" do
       expect(vector.floor).to eq(Vector2d.new(2, 3))
+    end
+  end
+
+  describe "#max" do
+    subject(:vector) { Vector2d.new(2, 8) }
+
+    it "returns the larger value of each axis" do
+      expect(vector.max(Vector2d.new(5, 5))).to eq(Vector2d.new(5, 8))
+    end
+
+    it "coerces the argument" do
+      expect(vector.max(5)).to eq(Vector2d.new(5, 8))
+    end
+
+    it "is symmetric" do
+      other = Vector2d.new(5, 5)
+      expect(other.max(vector)).to eq(vector.max(other))
+    end
+  end
+
+  describe "#min" do
+    subject(:vector) { Vector2d.new(2, 8) }
+
+    it "returns the smaller value of each axis" do
+      expect(vector.min(Vector2d.new(5, 5))).to eq(Vector2d.new(2, 5))
+    end
+
+    it "coerces the argument" do
+      expect(vector.min(5)).to eq(Vector2d.new(2, 5))
+    end
+
+    it "is symmetric" do
+      other = Vector2d.new(5, 5)
+      expect(other.min(vector)).to eq(vector.min(other))
     end
   end
 

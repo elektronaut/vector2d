@@ -11,6 +11,8 @@ describe Vector2d do
   it_behaves_like "a class preserving method", :/, 2
   it_behaves_like "a class preserving method", :+, 2
   it_behaves_like "a class preserving method", :-, 2
+  it_behaves_like "a class preserving method", :-@
+  it_behaves_like "a class preserving method", :+@
   it_behaves_like "a class preserving method", :project, 2
   it_behaves_like "a class preserving method", :reflect, 2
   it_behaves_like "a class preserving method", :reject, 2
@@ -22,12 +24,16 @@ describe Vector2d do
   it_behaves_like "a class preserving method", :cover, 10
   it_behaves_like "a class preserving method", :fit_either, 10
 
+  it_behaves_like "a class preserving method", :abs
   it_behaves_like "a class preserving method", :ceil
   it_behaves_like "a class preserving method", :clamp, 0, 10
+  it_behaves_like "a class preserving method", :clamp, 0..10
   it_behaves_like "a class preserving method", :clamp_length, 1.0
   it_behaves_like "a class preserving method", :floor
   it_behaves_like "a class preserving method", :lerp, 2, 0.5
+  it_behaves_like "a class preserving method", :max, 2
   it_behaves_like "a class preserving method", :midpoint, 2
+  it_behaves_like "a class preserving method", :min, 2
   it_behaves_like "a class preserving method", :normalize
   it_behaves_like "a class preserving method", :perpendicular
   it_behaves_like "a class preserving method", :perpendicular_ccw
