@@ -14,7 +14,16 @@ class Vector2d
     #
     #   Vector2d(2, 3).aspect_ratio # => 0.6667..
     #
+    # A vector without height has no aspect ratio, so ArgumentError is
+    # raised.
+    #
+    #   Vector2d(2, 0).aspect_ratio # => ArgumentError
+    #   Vector2d(0, 0).aspect_ratio # => ArgumentError
+    #
     def aspect_ratio
+      raise ArgumentError, "the zero vector has no aspect ratio" if zero?
+      raise ArgumentError, "#{inspect} has no aspect ratio, y is zero" if y.zero?
+
       (x.to_f / y).abs
     end
 

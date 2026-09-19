@@ -15,6 +15,26 @@ describe Vector2d::Properties do
     it "returns the aspect_ratio" do
       expect(vector.aspect_ratio).to be_within(0.0001).of(0.6667)
     end
+
+    context "when y is zero" do
+      let(:vector) { Vector2d.new(2, 0) }
+
+      it "raises an ArgumentError" do
+        expect { vector.aspect_ratio }
+          .to raise_error(ArgumentError,
+                          "Vector2d(2,0) has no aspect ratio, y is zero")
+      end
+    end
+
+    context "with the zero vector" do
+      let(:vector) { Vector2d.new(0, 0) }
+
+      it "raises an ArgumentError" do
+        expect { vector.aspect_ratio }
+          .to raise_error(ArgumentError,
+                          "the zero vector has no aspect ratio")
+      end
+    end
   end
 
   describe "#length" do
