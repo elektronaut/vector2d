@@ -364,6 +364,11 @@ describe Vector2d::Fitting do
   describe "#contain" do
     subject(:vector) { original.contain(comp) }
 
+    it_behaves_like "a deprecated method", "contain",
+                    "other.fit(self, upscale: false)" do
+      let(:comp) { Vector2d.new(400, 300) }
+    end
+
     context "when vector is smaller" do
       let(:comp) { Vector2d.new(150, 100) }
 
@@ -483,6 +488,54 @@ describe Vector2d::Fitting do
 
       it "raises an error" do
         expect { vector }.to raise_error(ArgumentError)
+      end
+    end
+  end
+
+  describe "#constrain_both" do
+    subject(:vector) { original.constrain_both(comp) }
+
+    it_behaves_like "a deprecated method", "constrain_both", "#fit" do
+      let(:comp) { Vector2d.new(200, 150) }
+    end
+
+    context "when the vector is larger than the constraint" do
+      let(:comp) { Vector2d.new(200, 150) }
+
+      it "matches #fit" do
+        expect(vector).to eq(original.fit(comp))
+      end
+    end
+
+    context "when the vector is smaller than the constraint" do
+      let(:comp) { Vector2d.new(600, 600) }
+
+      it "scales up, as #fit does" do
+        expect(vector).to eq(Vector2d.new(600, 600))
+      end
+    end
+  end
+
+  describe "#constrain_one" do
+    subject(:vector) { original.constrain_one(comp) }
+
+    it_behaves_like "a deprecated method", "constrain_one", "#cover" do
+      let(:comp) { Vector2d.new(200, 150) }
+    end
+
+    context "when width is largest" do
+      let(:comp) { Vector2d.new(200, 150) }
+
+      it "matches #cover" do
+        expect(vector).to eq(original.cover(comp))
+      end
+    end
+
+    context "when height is largest" do
+      let(:comp) { Vector2d.new(150, 200) }
+
+      it "matches #cover" do
+        expect(vector).to eq(original.cover(comp))
       end
     end
   end

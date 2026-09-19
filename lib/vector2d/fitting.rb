@@ -34,7 +34,6 @@ class Vector2d
     def fit(other, upscale: true)
       scale_by(fit_factors(to_vector(other)).min, upscale: upscale)
     end
-    alias constrain_both fit
 
     # Scales the vector to cover another vector, retaining the aspect
     # ratio. Where #fit scales until the vector is contained by the
@@ -71,8 +70,9 @@ class Vector2d
                upscale: upscale)
     end
     alias fit_either cover
-    alias constrain_one cover
 
+    # @deprecated Use <tt>other.fit(self, upscale: false)</tt> instead.
+    #
     # Scales down the given vector unless it fits inside.
     #
     #   vector = Vector2d(20, 20)
@@ -91,7 +91,21 @@ class Vector2d
     #   Vector2d(0, 0).contain(Vector2d(40, 20)) # => Vector2d(40,20)
     #
     def contain(other)
+      warn_deprecated("Vector2d#contain is deprecated. " \
+                      "Use `other.fit(self, upscale: false)` instead.")
       to_vector(other).fit(self, upscale: false)
+    end
+
+    # @deprecated Use #fit instead.
+    def constrain_both(other)
+      warn_deprecated("Vector2d#constrain_both is deprecated. Use #fit instead.")
+      fit(other)
+    end
+
+    # @deprecated Use #cover instead.
+    def constrain_one(other)
+      warn_deprecated("Vector2d#constrain_one is deprecated. Use #cover instead.")
+      cover(other)
     end
 
     protected
@@ -110,6 +124,15 @@ class Vector2d
       return self if factor.nil? || (!upscale && factor >= 1)
 
       self * factor
+    end
+
+    private
+
+    # Warns that a method is deprecated. Silent unless deprecation
+    # warnings are enabled, either with <tt>Warning[:deprecated] = true</tt>
+    # or by running Ruby with <tt>-w</tt>.
+    def warn_deprecated(message)
+      warn(message, uplevel: 2, category: :deprecated)
     end
   end
 end
