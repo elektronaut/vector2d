@@ -37,6 +37,10 @@ class Vector2d
     #   vector.normalize        # => Vector2d(0.5547.., 0.8320..)
     #   vector.normalize.length # => 1.0
     #
+    # The zero vector has no direction, and is returned unchanged.
+    #
+    #   Vector2d(0, 0).normalize # => Vector2d(0,0)
+    #
     def normalize
       resize(1.0)
     end
@@ -53,7 +57,13 @@ class Vector2d
     #
     #   Vector2d(2, 3).resize(1.0) # => Vector2d(0.5547.., 0.8320..)
     #
+    # The zero vector has no direction, and is returned unchanged.
+    #
+    #   Vector2d(0, 0).resize(1.0) # => Vector2d(0,0)
+    #
     def resize(new_length)
+      return self if zero?
+
       self * (new_length / length)
     end
 
@@ -90,6 +100,10 @@ class Vector2d
     #   vector = Vector2d(2.0, 3.0)
     #   vector.truncate(5.0) # => Vector2d(2.0, 3.0)
     #   vector.truncate(1.0) # => Vector2d(0.5547.., 0.8320..)
+    #
+    # The zero vector has no direction, and is returned unchanged.
+    #
+    #   Vector2d(0, 0).truncate(1.0) # => Vector2d(0,0)
     #
     def truncate(max)
       resize([max, length].min)

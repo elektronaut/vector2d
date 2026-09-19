@@ -43,6 +43,14 @@ describe Vector2d::Transformations do
 
     its(:x) { is_expected.to be_within(0.0001).of(0.5547) }
     its(:y) { is_expected.to be_within(0.0001).of(0.8320) }
+
+    context "with the zero vector" do
+      subject(:vector) { Vector2d.new(0, 0) }
+
+      it "returns the zero vector" do
+        expect(vector.normalize).to eq(Vector2d.new(0, 0))
+      end
+    end
   end
 
   describe "#perpendicular" do
@@ -64,6 +72,22 @@ describe Vector2d::Transformations do
 
     it "modifies the y property" do
       expect(resized.y).to be_within(0.0001).of(1.6641)
+    end
+
+    context "with the zero vector" do
+      subject(:vector) { Vector2d.new(0, 0) }
+
+      it "returns the zero vector" do
+        expect(resized).to eq(Vector2d.new(0, 0))
+      end
+    end
+
+    context "with a float zero vector" do
+      subject(:vector) { Vector2d.new(0.0, 0.0) }
+
+      it "returns the zero vector" do
+        expect(resized).to eq(Vector2d.new(0.0, 0.0))
+      end
     end
   end
 
@@ -133,6 +157,14 @@ describe Vector2d::Transformations do
 
       it "changes the length" do
         expect(vector.truncate(arg).length).to be_within(0.0001).of(arg)
+      end
+    end
+
+    context "with the zero vector" do
+      subject(:vector) { Vector2d.new(0, 0) }
+
+      it "returns the zero vector" do
+        expect(vector.truncate(5.0)).to eq(Vector2d.new(0, 0))
       end
     end
   end
