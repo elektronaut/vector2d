@@ -43,8 +43,14 @@ describe Vector2d::Properties do
     end
   end
 
-  describe "#squared_length" do
+  describe "#length_squared" do
     it "calculates the squared length" do
+      expect(vector.length_squared).to eq(13)
+    end
+  end
+
+  describe "#squared_length" do
+    it "is an alias of #length_squared" do
       expect(vector.squared_length).to eq(13)
     end
   end

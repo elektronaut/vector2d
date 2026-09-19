@@ -76,25 +76,27 @@ class Vector2d
     # Calculates the distance between two vectors.
     #
     #   v1 = Vector2d(2, 3)
-    #   v2 = Vector2d(5, 6)
+    #   v2 = Vector2d(3, 4)
     #   v1.distance(v2) # => 1.4142..
     #
     def distance(other)
-      Math.sqrt(squared_distance(other))
+      Math.sqrt(distance_squared(other))
     end
 
-    # Calculate squared distance between vectors.
+    # Calculate squared distance between vectors. Avoids the square root
+    # when distances are only being compared to each other.
     #
     #   v1 = Vector2d(2, 3)
     #   v2 = Vector2d(5, 6)
     #   v1.distance_squared(v2) # => 18
     #
-    def squared_distance(other)
+    def distance_squared(other)
       v = to_vector(other)
       dx = v.x - x
       dy = v.y - y
       (dx * dx) + (dy * dy)
     end
+    alias squared_distance distance_squared
 
     # Dot product of this vector and another vector.
     #

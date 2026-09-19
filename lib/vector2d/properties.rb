@@ -32,16 +32,18 @@ class Vector2d
     #   Vector2d(2, 3).length # => 3.6055..
     #
     def length
-      Math.sqrt(squared_length)
+      Math.sqrt(length_squared)
     end
 
-    # Squared length of vector.
+    # Squared length of vector. Avoids the square root when lengths are
+    # only being compared to each other.
     #
-    #   Vector2d(2, 3).squared_length # => 13
+    #   Vector2d(2, 3).length_squared # => 13
     #
-    def squared_length
+    def length_squared
       (x * x) + (y * y)
     end
+    alias squared_length length_squared
 
     # Is this the zero vector?
     #
@@ -49,7 +51,7 @@ class Vector2d
     #   Vector2d(2, 3).zero? # => false
     #
     def zero?
-      squared_length.zero?
+      length_squared.zero?
     end
 
     # Is this a normalized vector?

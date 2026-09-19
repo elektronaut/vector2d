@@ -156,10 +156,18 @@ describe Vector2d::Calculations do
     end
   end
 
-  describe "#squared_distance" do
+  describe "#distance_squared" do
     let(:comp) { Vector2d.new(5, 6) }
 
     it "returns the squared distance between two vectors" do
+      expect(vector.distance_squared(comp)).to eq(18)
+    end
+  end
+
+  describe "#squared_distance" do
+    let(:comp) { Vector2d.new(5, 6) }
+
+    it "is an alias of #distance_squared" do
       expect(vector.squared_distance(comp)).to eq(18)
     end
   end
