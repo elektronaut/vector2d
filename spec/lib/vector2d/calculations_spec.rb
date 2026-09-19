@@ -407,6 +407,20 @@ describe Vector2d::Calculations do
     it "returns the zero vector when projecting a zero vector" do
       expect(Vector2d.new(0, 0).project(comp)).to eq(Vector2d.new(0, 0))
     end
+
+    describe "the components" do
+      subject { vector.project(comp) }
+
+      its(:x) { is_expected.to be_a(Float) }
+      its(:y) { is_expected.to be_a(Float) }
+    end
+
+    describe "the components of a projection onto a zero vector" do
+      subject { vector.project(Vector2d.new(0, 0)) }
+
+      its(:x) { is_expected.to be_a(Float) }
+      its(:y) { is_expected.to be_a(Float) }
+    end
   end
 
   describe "#reject" do
@@ -490,6 +504,25 @@ describe Vector2d::Calculations do
 
     it "returns the vector unchanged for a zero vector" do
       expect(vector.reflect(Vector2d.new(0, 0))).to eq(vector)
+    end
+
+    it "ignores the component types of a zero normal" do
+      expect(vector.reflect(Vector2d.new(0, 0)))
+        .to eql(vector.reflect(Vector2d.new(0.0, 0.0)))
+    end
+
+    describe "the components" do
+      subject { vector.reflect(normal) }
+
+      its(:x) { is_expected.to be_a(Float) }
+      its(:y) { is_expected.to be_a(Float) }
+    end
+
+    describe "the components of a reflection off a zero vector" do
+      subject { vector.reflect(Vector2d.new(0, 0)) }
+
+      its(:x) { is_expected.to be_a(Float) }
+      its(:y) { is_expected.to be_a(Float) }
     end
   end
 end
