@@ -50,7 +50,7 @@ class Vector2d
     #   Vector2d(2, 3).perpendicular # => Vector2d(-3,2)
     #
     def perpendicular
-      Vector2d.new(-y, x)
+      self.class.new(-y, x)
     end
 
     # Changes magnitude of vector.
@@ -80,7 +80,7 @@ class Vector2d
     #   Vector2d(1, 0).rotate(Math:PI/2) => Vector2d(1,0)
     #
     def rotate(angle)
-      Vector2d.new(
+      self.class.new(
         (x * Math.cos(angle)) - (y * Math.sin(angle)),
         (x * Math.sin(angle)) + (y * Math.cos(angle))
       )
