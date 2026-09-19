@@ -18,8 +18,8 @@ class Vector2d
     #   vector.clamp(3, 6)                           # => Vector2d(3,6)
     #
     def clamp(min, max)
-      min_v, = coerce(min)
-      max_v, = coerce(max)
+      min_v = to_vector(min)
+      max_v = to_vector(max)
       self.class.new(x.clamp(min_v.x, max_v.x), y.clamp(min_v.y, max_v.y))
     end
 

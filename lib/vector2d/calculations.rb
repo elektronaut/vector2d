@@ -90,7 +90,7 @@ class Vector2d
     #   v1.distance_squared(v2) # => 18
     #
     def squared_distance(other)
-      v, = coerce(other)
+      v = to_vector(other)
       dx = v.x - x
       dy = v.y - y
       (dx * dx) + (dy * dy)
@@ -103,7 +103,7 @@ class Vector2d
     #   v1.dot_product(v2) # => 10
     #
     def dot_product(other)
-      v, = coerce(other)
+      v = to_vector(other)
       self.class.dot_product(self, v)
     end
 
@@ -114,7 +114,7 @@ class Vector2d
     #   v1.cross_product(v2) # => 4
     #
     def cross_product(other)
-      v, = coerce(other)
+      v = to_vector(other)
       self.class.cross_product(self, v)
     end
 
@@ -126,14 +126,14 @@ class Vector2d
     #   v1.angle_between(v2) # => -0.0867..
     #
     def angle_between(other)
-      v, = coerce(other)
+      v = to_vector(other)
       self.class.angle_between(self, v)
     end
 
     private
 
     def calculate_each(method, other)
-      v, = coerce(other)
+      v = to_vector(other)
       self.class.new(
         x.send(method, v.x),
         y.send(method, v.y)

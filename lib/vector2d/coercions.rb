@@ -2,15 +2,13 @@
 
 class Vector2d
   module Coercions
+    # Implements Ruby's coercion protocol, so a vector can be the right
+    # hand operand of a scalar.
+    #
+    #   2 * Vector2d(3, 4) # => Vector2d(6,8)
+    #
     def coerce(other)
-      case other
-      when Vector2d
-        [other, self]
-      when Array, Numeric, String, Hash
-        [Vector2d.parse(other), self]
-      else
-        raise TypeError, "#{self.class} can't be coerced into #{other.class}"
-      end
+      [to_vector(other), self]
     end
 
     # Renders vector as a pretty string.
@@ -59,6 +57,18 @@ class Vector2d
     #
     def to_s
       "#{x}x#{y}"
+    end
+
+    private
+
+    # Parses anything Vector2d.parse accepts into a vector.
+    def to_vector(other)
+      case other
+      when Vector2d, Array, Numeric, String, Hash
+        Vector2d.parse(other)
+      else
+        raise TypeError, "#{self.class} can't be coerced into #{other.class}"
+      end
     end
   end
 end
