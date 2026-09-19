@@ -407,6 +407,20 @@ describe Vector2d::Calculations do
     it "returns the zero vector when projecting a zero vector" do
       expect(Vector2d.new(0, 0).project(comp)).to eq(Vector2d.new(0, 0))
     end
+
+    describe "the components" do
+      subject { vector.project(comp) }
+
+      its(:x) { is_expected.to be_a(Float) }
+      its(:y) { is_expected.to be_a(Float) }
+    end
+
+    describe "the components of a projection onto a zero vector" do
+      subject { vector.project(Vector2d.new(0, 0)) }
+
+      its(:x) { is_expected.to be_a(Float) }
+      its(:y) { is_expected.to be_a(Float) }
+    end
   end
 
   describe "#reject" do
