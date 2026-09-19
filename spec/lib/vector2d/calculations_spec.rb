@@ -253,4 +253,120 @@ describe Vector2d::Calculations do
       expect(vector.angle_between([3, 4])).to eq(vector.angle_between(comp))
     end
   end
+
+  describe "#project" do
+    let(:comp) { Vector2d.new(4, 0) }
+
+    it "returns the component along the other vector" do
+      expect(vector.project(comp)).to eq(Vector2d.new(2.0, 0.0))
+    end
+
+    it "ignores the magnitude of the other vector" do
+      expect(vector.project(comp * 10)).to eq(vector.project(comp))
+    end
+
+    it "ignores the direction of the other vector" do
+      expect(vector.project(comp.reverse)).to eq(vector.project(comp))
+    end
+
+    it "is parallel to the other vector" do
+      expect(vector.project(comp).angle_between(comp)).to eq(0.0)
+    end
+
+    it "coerces the argument" do
+      expect(vector.project([4, 0])).to eq(vector.project(comp))
+    end
+
+    it "returns the zero vector when projecting onto a zero vector" do
+      expect(vector.project(Vector2d.new(0, 0))).to eq(Vector2d.new(0, 0))
+    end
+
+    it "returns the zero vector when projecting a zero vector" do
+      expect(Vector2d.new(0, 0).project(comp)).to eq(Vector2d.new(0, 0))
+    end
+  end
+
+  describe "#reject" do
+    let(:comp) { Vector2d.new(4, 0) }
+
+    it "returns the component perpendicular to the other vector" do
+      expect(vector.reject(comp)).to eq(Vector2d.new(0.0, 3.0))
+    end
+
+    it "is what remains when the projection is subtracted" do
+      expect(vector.project(comp) + vector.reject(comp)).to eq(vector)
+    end
+
+    it "coerces the argument" do
+      expect(vector.reject([4, 0])).to eq(vector.reject(comp))
+    end
+
+    it "returns the vector unchanged for a zero vector" do
+      expect(vector.reject(Vector2d.new(0, 0))).to eq(vector)
+    end
+  end
+
+  describe "#scalar_projection" do
+    let(:comp) { Vector2d.new(4, 0) }
+
+    it "returns the signed length of the projection" do
+      expect(vector.scalar_projection(comp)).to eq(2.0)
+    end
+
+    it "is negative when the vectors point in opposite directions" do
+      expect(vector.scalar_projection(comp.reverse)).to eq(-2.0)
+    end
+
+    it "ignores the magnitude of the other vector" do
+      expect(vector.scalar_projection(comp * 10)).to eq(2.0)
+    end
+
+    it "matches the length of the vector projection" do
+      expect(vector.scalar_projection(comp).abs)
+        .to be_within(1e-12).of(vector.project(comp).length)
+    end
+
+    it "coerces the argument" do
+      expect(vector.scalar_projection([4, 0])).to eq(2.0)
+    end
+
+    it "returns zero for a zero vector" do
+      expect(vector.scalar_projection(Vector2d.new(0, 0))).to eq(0.0)
+    end
+  end
+
+  describe "#reflect" do
+    let(:normal) { Vector2d.new(1, 2) }
+
+    it "reflects the vector about the line perpendicular to the normal" do
+      expect(vector.reflect(Vector2d.new(0, 1))).to eq(Vector2d.new(2.0, -3.0))
+    end
+
+    it "normalizes the normal" do
+      expect(vector.reflect(Vector2d.new(0, 5)))
+        .to eq(vector.reflect(Vector2d.new(0, 1)))
+    end
+
+    it "reverses a vector parallel to the normal" do
+      expect(vector.reflect(vector).distance(vector.reverse))
+        .to be_within(1e-12).of(0.0)
+    end
+
+    it "preserves the length of the vector" do
+      expect(vector.reflect(normal).length).to be_within(1e-12).of(vector.length)
+    end
+
+    it "returns the original vector when applied twice" do
+      expect(vector.reflect(normal).reflect(normal).distance(vector))
+        .to be_within(1e-12).of(0.0)
+    end
+
+    it "coerces the argument" do
+      expect(vector.reflect([0, 1])).to eq(vector.reflect(Vector2d.new(0, 1)))
+    end
+
+    it "returns the vector unchanged for a zero vector" do
+      expect(vector.reflect(Vector2d.new(0, 0))).to eq(vector)
+    end
+  end
 end
