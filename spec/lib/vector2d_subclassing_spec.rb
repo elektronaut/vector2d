@@ -25,9 +25,12 @@ describe Vector2d do
   it_behaves_like "a class preserving method", :floor
   it_behaves_like "a class preserving method", :normalize
   it_behaves_like "a class preserving method", :perpendicular
+  it_behaves_like "a class preserving method", :perpendicular_ccw
+  it_behaves_like "a class preserving method", :perpendicular_cw
   it_behaves_like "a class preserving method", :resize, 2.0
   it_behaves_like "a class preserving method", :reverse
   it_behaves_like "a class preserving method", :rotate, Math::PI
+  it_behaves_like "a class preserving method", :rotate_around, 0, Math::PI
   it_behaves_like "a class preserving method", :round
 
   describe "#contain" do

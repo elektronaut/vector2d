@@ -57,6 +57,27 @@ describe Vector2d::Transformations do
     it "returns a perpendicular vector" do
       expect(vector.perpendicular).to eq(Vector2d.new(-3, 2))
     end
+
+    it "turns the same way as #rotate" do
+      expect(vector.perpendicular.round(3))
+        .to eq(vector.rotate(Math::PI / 2).round(3))
+    end
+  end
+
+  describe "#perpendicular_ccw" do
+    it "is an alias of #perpendicular" do
+      expect(vector.perpendicular_ccw).to eq(vector.perpendicular)
+    end
+  end
+
+  describe "#perpendicular_cw" do
+    it "returns a perpendicular vector" do
+      expect(vector.perpendicular_cw).to eq(Vector2d.new(3, -2))
+    end
+
+    it "turns the opposite way from #perpendicular" do
+      expect(vector.perpendicular_cw).to eq(vector.perpendicular.reverse)
+    end
   end
 
   describe "#resize" do
@@ -124,6 +145,33 @@ describe Vector2d::Transformations do
       let(:rotation) { Math::PI / 4 }
 
       it { is_expected.to eq(Vector2d.new(0.707, 0.707)) }
+    end
+  end
+
+  describe "#rotate_around" do
+    subject { vector.rotate_around(center, Math::PI / 2).round(3) }
+
+    let(:vector) { Vector2d.new(2, 1) }
+    let(:center) { Vector2d.new(1, 1) }
+
+    it { is_expected.to eq(Vector2d.new(1, 2)) }
+
+    context "when the center is the origin" do
+      let(:center) { Vector2d.new(0, 0) }
+
+      it { is_expected.to eq(vector.rotate(Math::PI / 2).round(3)) }
+    end
+
+    context "when the center is the vector itself" do
+      let(:center) { vector }
+
+      it { is_expected.to eq(vector) }
+    end
+
+    context "with a coercible center" do
+      let(:center) { [1, 1] }
+
+      it { is_expected.to eq(Vector2d.new(1, 2)) }
     end
   end
 
