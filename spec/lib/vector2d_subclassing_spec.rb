@@ -20,6 +20,7 @@ describe Vector2d do
 
   it_behaves_like "a class preserving method", :ceil
   it_behaves_like "a class preserving method", :clamp, 0, 10
+  it_behaves_like "a class preserving method", :clamp_length, 1.0
   it_behaves_like "a class preserving method", :floor
   it_behaves_like "a class preserving method", :normalize
   it_behaves_like "a class preserving method", :perpendicular
@@ -27,7 +28,6 @@ describe Vector2d do
   it_behaves_like "a class preserving method", :reverse
   it_behaves_like "a class preserving method", :rotate, Math::PI
   it_behaves_like "a class preserving method", :round
-  it_behaves_like "a class preserving method", :truncate, 1.0
 
   describe "#contain" do
     it "returns an instance of the argument's class" do
