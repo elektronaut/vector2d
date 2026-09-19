@@ -450,5 +450,40 @@ describe Vector2d::Fitting do
         expect(vector).to eq(Vector2d.new(40, 20))
       end
     end
+
+    context "when one axis is unconstrained and the other fits" do
+      let(:original) { Vector2d.new(0, 10) }
+      let(:comp) { Vector2d.new(5, 5) }
+
+      it "does not scale the argument up" do
+        expect(vector).to eq(Vector2d.new(5, 5))
+      end
+    end
+
+    context "when one axis is unconstrained and the other does not fit" do
+      let(:original) { Vector2d.new(0, 10) }
+      let(:comp) { Vector2d.new(5, 20) }
+
+      it "scales the argument down" do
+        expect(vector).to eq(Vector2d.new(2.5, 10))
+      end
+    end
+
+    context "when both vectors are zero" do
+      let(:original) { Vector2d.new(0, 0) }
+      let(:comp) { Vector2d.new(0, 0) }
+
+      it "returns the argument unchanged" do
+        expect(vector).to eq(Vector2d.new(0, 0))
+      end
+    end
+
+    context "when the argument is invalid" do
+      let(:comp) { "garbage" }
+
+      it "raises an error" do
+        expect { vector }.to raise_error(ArgumentError)
+      end
+    end
   end
 end

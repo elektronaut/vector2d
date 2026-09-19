@@ -91,19 +91,10 @@ class Vector2d
     #   Vector2d(0, 0).contain(Vector2d(40, 20)) # => Vector2d(40,20)
     #
     def contain(other)
-      v = to_vector(other)
-      v.x.abs > x.abs || v.y.abs > y.abs ? v.fit_vector(self) : v
+      to_vector(other).fit(self, upscale: false)
     end
 
     protected
-
-    # Scales the vector to fit inside an already coerced vector.
-    def fit_vector(other)
-      factors = fit_factors(other)
-      return self if factors.empty?
-
-      self * factors.min
-    end
 
     # Magnitudes of the scale factor for each axis, disregarding axes
     # that don't constrain the vector.
