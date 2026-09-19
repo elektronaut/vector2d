@@ -62,10 +62,16 @@ class Vector2d
     #   Vector2d(20, 10).fit_either(constraint) # => Vector2d(10,5)
     #   Vector2d(10, 20).fit_either(constraint) # => Vector2d(5,10)
     #
+    # As in #fit, coordinates are constrained by magnitude and the
+    # vector keeps its direction.
+    #
+    #   Vector2d(-20, 10).fit_either(constraint) # => Vector2d(-10,5)
+    #
     # Note: Either axis will be disregarded if zero or nil, as in #fit.
     # This is a feature, not a bug.
     #
     #   Vector2d(0, 10).fit_either(constraint) # => Vector2d(0,5)
+    #   Vector2d(20, 10).fit_either(Vector2d(0, 0)) # => Vector2d(20,10)
     #
     # The zero vector has no direction, and is returned unchanged.
     #
@@ -75,12 +81,8 @@ class Vector2d
       return self if zero?
 
       v = to_vector(other)
-      scale = v.to_f_vector / self
-      if [scale.x, scale.y].all? { |s| s.positive? && s.finite? }
-        self * [scale.x, scale.y].max
-      else
-        fit_vector(v)
-      end
+      factors = fit_factors(v)
+      factors.length == 2 ? self * factors.max : fit_vector(v)
     end
     alias constrain_one fit_either
 
@@ -88,11 +90,17 @@ class Vector2d
 
     # Scales the vector to fit inside an already coerced vector.
     def fit_vector(other)
-      scale = other.to_f_vector / self
-      factors = [scale.x, scale.y].select { |s| s.finite? && !s.zero? }.map(&:abs)
+      factors = fit_factors(other)
       return self if factors.empty?
 
       self * factors.min
+    end
+
+    # Magnitudes of the scale factor for each axis, disregarding axes
+    # that don't constrain the vector.
+    def fit_factors(other)
+      scale = other.to_f_vector / self
+      [scale.x, scale.y].select { |s| s.finite? && !s.zero? }.map(&:abs)
     end
   end
 end

@@ -217,6 +217,38 @@ describe Vector2d::Fitting do
       its(:y) { is_expected.to eq(150) }
     end
 
+    context "when a coordinate is negative and width is largest" do
+      let(:original) { Vector2d.new(-300, 300) }
+      let(:comp) { Vector2d.new(200, 150) }
+
+      its(:x) { is_expected.to eq(-200) }
+      its(:y) { is_expected.to eq(200) }
+    end
+
+    context "when a coordinate is negative and height is largest" do
+      let(:original) { Vector2d.new(300, -300) }
+      let(:comp) { Vector2d.new(150, 200) }
+
+      its(:x) { is_expected.to eq(200) }
+      its(:y) { is_expected.to eq(-200) }
+    end
+
+    context "when both coordinates are negative" do
+      let(:original) { Vector2d.new(-20, -10) }
+      let(:comp) { Vector2d.new(5, 5) }
+
+      its(:x) { is_expected.to eq(-10) }
+      its(:y) { is_expected.to eq(-5) }
+    end
+
+    context "when the constraint is negative" do
+      let(:original) { Vector2d.new(20, 10) }
+      let(:comp) { Vector2d.new(-5, -5) }
+
+      its(:x) { is_expected.to eq(10) }
+      its(:y) { is_expected.to eq(5) }
+    end
+
     context "with the zero vector" do
       let(:original) { Vector2d.new(0, 0) }
       let(:comp) { Vector2d.new(5, 5) }
@@ -245,6 +277,19 @@ describe Vector2d::Fitting do
 
       it "disregards the zero axis" do
         expect(vector).to eq(Vector2d.new(2.0, 0.0))
+      end
+
+      it "matches #fit" do
+        expect(vector).to eq(original.fit(comp))
+      end
+    end
+
+    context "when both constraint axes are zero" do
+      let(:original) { Vector2d.new(20, 10) }
+      let(:comp) { Vector2d.new(0, 0) }
+
+      it "returns the vector unchanged" do
+        expect(vector).to eq(Vector2d.new(20, 10))
       end
 
       it "matches #fit" do
