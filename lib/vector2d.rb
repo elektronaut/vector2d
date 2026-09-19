@@ -29,6 +29,21 @@ class Vector2d
   private_constant :COORDINATE_EXPRESSION, :STRING_EXPRESSION
 
   class << self
+    # Builds a new vector of this class from two coordinates, the way
+    # .parse and .from_angle do. Override it in a subclass whose
+    # constructor requires more than the coordinates, and see #build for
+    # the instance side.
+    #
+    #   class Labeled < Vector2d
+    #     def self.build(x, y) = new(x, y, "unlabeled")
+    #   end
+    #
+    #   Labeled.parse("2x3").label # => "unlabeled"
+    #
+    def build(x, y)
+      new(x, y)
+    end
+
     # Creates a vector from an angle in radians, with an optional
     # length. Angles are measured counterclockwise from the positive x
     # axis, the same convention #angle follows.
@@ -46,7 +61,7 @@ class Vector2d
     def from_angle(angle, length = 1.0)
       angle = coordinate(angle)
       length = coordinate(length)
-      new(Math.cos(angle) * length, Math.sin(angle) * length)
+      build(Math.cos(angle) * length, Math.sin(angle) * length)
     end
 
     # Creates a new vector.
@@ -74,7 +89,7 @@ class Vector2d
     def parse(arg, second_arg = nil)
       return parse_single_arg(arg) if second_arg.nil?
 
-      new(coordinate(arg), coordinate(second_arg))
+      build(coordinate(arg), coordinate(second_arg))
     end
 
     private
@@ -86,21 +101,21 @@ class Vector2d
       return parse_hash(arg) if arg.is_a?(Hash)
 
       value = coordinate(arg)
-      new(value, value)
+      build(value, value)
     end
 
     def parse_array(array)
       case array.length
       when 1 then parse_single_arg(array.first)
-      when 2 then new(coordinate(array[0]), coordinate(array[1]))
+      when 2 then build(coordinate(array[0]), coordinate(array[1]))
       else
         raise ArgumentError, "expected 1 or 2 coordinates, got #{array.length}"
       end
     end
 
     def parse_hash(hash)
-      new(coordinate(hash[:x] || hash["x"]),
-          coordinate(hash[:y] || hash["y"]))
+      build(coordinate(hash[:x] || hash["x"]),
+            coordinate(hash[:y] || hash["y"]))
     end
 
     def coordinate(value)
@@ -113,7 +128,7 @@ class Vector2d
       match = STRING_EXPRESSION.match(str)
       raise ArgumentError, "not a valid string input: #{str.inspect}" unless match
 
-      new(string_coordinate(match[1]), string_coordinate(match[2]))
+      build(string_coordinate(match[1]), string_coordinate(match[2]))
     end
 
     def string_coordinate(value)
@@ -157,6 +172,30 @@ class Vector2d
   #
   def hash
     [self.class, x, y].hash
+  end
+
+  # Builds a new vector of this class from two coordinates. Every method
+  # that returns a new vector goes through here, so a subclass whose
+  # constructor takes more than the coordinates only has to override
+  # this to have its own state carried across operations.
+  #
+  #   class Labeled < Vector2d
+  #     attr_reader :label
+  #
+  #     def initialize(x, y, label = nil)
+  #       @label = label
+  #       super(x, y)
+  #     end
+  #
+  #     def build(x, y) = self.class.new(x, y, label)
+  #   end
+  #
+  #   Labeled.new(2, 3, "point").abs.label # => "point"
+  #
+  # Class level constructors have no instance to carry state from, and
+  # use .build instead.
+  def build(x, y)
+    self.class.build(x, y)
   end
 end
 

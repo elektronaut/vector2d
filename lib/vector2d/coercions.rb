@@ -40,7 +40,7 @@ class Vector2d
     #   Vector2d(2.0, 3.0).to_i_vector # => Vector2d(2,3)
     #
     def to_i_vector
-      self.class.new(x.to_i, y.to_i)
+      build(x.to_i, y.to_i)
     end
 
     # Converts vector to floats.
@@ -48,7 +48,7 @@ class Vector2d
     #   Vector2d(2, 3).to_f_vector # => Vector2d(2.0,3.0)
     #
     def to_f_vector
-      self.class.new(x.to_f, y.to_f)
+      build(x.to_f, y.to_f)
     end
 
     # Converts vector to string.

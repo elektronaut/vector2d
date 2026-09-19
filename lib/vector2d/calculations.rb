@@ -260,10 +260,10 @@ class Vector2d
     #
     def project(other)
       v = to_vector(other)
-      return self.class.new(0, 0) if v.zero?
+      return build(0, 0) if v.zero?
 
       scale = dot_product(v).to_f / v.length_squared
-      self.class.new(v.x * scale, v.y * scale)
+      build(v.x * scale, v.y * scale)
     end
 
     # Vector rejection of this vector from another vector, the component
@@ -324,7 +324,7 @@ class Vector2d
 
     def calculate_each(method, other)
       v = to_vector(other)
-      self.class.new(
+      build(
         x.send(method, v.x),
         y.send(method, v.y)
       )

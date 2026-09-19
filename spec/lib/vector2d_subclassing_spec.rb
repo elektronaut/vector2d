@@ -57,4 +57,53 @@ describe Vector2d do
         .to be_an_instance_of(subclass)
     end
   end
+
+  context "when the subclass takes extra constructor arguments" do
+    subject(:vector) { labeled.new(2.5, 3.5, "point") }
+
+    let(:labeled) do
+      stub_const("LabeledVector", Class.new(described_class) do
+        attr_reader :label
+
+        def self.build(x, y)
+          new(x, y, "unlabeled")
+        end
+
+        def initialize(x, y, label)
+          @label = label
+          super(x, y)
+        end
+
+        def build(x, y)
+          self.class.new(x, y, label)
+        end
+      end)
+    end
+
+    describe "#abs" do
+      subject { vector.abs }
+
+      it { is_expected.to be_an_instance_of(labeled) }
+      its(:label) { is_expected.to eq("point") }
+    end
+
+    describe "#*" do
+      subject { vector * 2 }
+
+      its(:label) { is_expected.to eq("point") }
+    end
+
+    describe ".parse" do
+      subject { labeled.parse("2x3") }
+
+      it { is_expected.to be_an_instance_of(labeled) }
+      its(:label) { is_expected.to eq("unlabeled") }
+    end
+
+    describe ".from_angle" do
+      subject { labeled.from_angle(0) }
+
+      its(:label) { is_expected.to eq("unlabeled") }
+    end
+  end
 end
