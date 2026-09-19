@@ -40,7 +40,7 @@ class Vector2d
     #   Vector2d(2, 3).normalized? # => false
     #
     def normalized?
-      (length.to_f - 1.0).abs < Float::EPSILON
+      (length - 1.0).abs < (4 * Float::EPSILON)
     end
   end
 end
