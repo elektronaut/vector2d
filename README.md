@@ -42,6 +42,38 @@ Vector2d.parse("x70")     # => Vector2d(0,70)
 
 Anything else raises `ArgumentError`.
 
+## Angles
+
+Every angle in this library is in radians, both in and out. There are no
+degree variants; use `* 180 / Math::PI` to convert when you need to.
+
+Positive angles turn counterclockwise, which is the direction `#rotate`
+and `#perpendicular` turn in.
+
+There are two ways to measure the angle between two vectors, and they
+differ in whether the direction of rotation is part of the answer.
+
+```ruby
+v1 = Vector2d(2, 3)
+v2 = Vector2d(4, 5)
+
+v1.angle_to(v2)      # => -0.08673833867598511
+v2.angle_to(v1)      # => 0.08673833867598511
+
+v1.angle_between(v2) # => 0.08673833867598511
+v2.angle_between(v1) # => 0.08673833867598511
+```
+
+`#angle_to` is signed and ranges over `-PI..PI`. It is positive when the
+other vector is counterclockwise from this one, so reversing the
+arguments flips the sign.
+
+`#angle_between` is unsigned and ranges over `0..PI`. It is the
+magnitude of `#angle_to`, so the order does not matter.
+
+Both ignore the magnitudes of the vectors. The zero vector has no
+direction, so any angle involving it is zero.
+
 ## Documentation
 
 [API documentation](https://rubydoc.info/gems/vector2d)

@@ -61,12 +61,24 @@ class Vector2d
       resize(1.0)
     end
 
-    # Returns a perpendicular vector.
+    # Returns the vector rotated a quarter turn counterclockwise.
     #
     #   Vector2d(2, 3).perpendicular # => Vector2d(-3,2)
     #
+    # Counterclockwise is the same positive direction #rotate turns in.
+    # Use #perpendicular_cw for the other one.
+    #
     def perpendicular
       self.class.new(-y, x)
+    end
+    alias perpendicular_ccw perpendicular
+
+    # Returns the vector rotated a quarter turn clockwise.
+    #
+    #   Vector2d(2, 3).perpendicular_cw # => Vector2d(3,-2)
+    #
+    def perpendicular_cw
+      self.class.new(y, -x)
     end
 
     # Changes magnitude of vector.
@@ -91,15 +103,28 @@ class Vector2d
       self.class.new(-x, -y)
     end
 
-    # Rotates the vector
+    # Rotates the vector around the origin. The angle is in radians, and
+    # a positive angle turns counterclockwise.
     #
-    #   Vector2d(1, 0).rotate(Math:PI/2) => Vector2d(1,0)
+    #   Vector2d(2, 3).rotate(Math::PI / 2) # => Vector2d(-3.0,2.0)
     #
     def rotate(angle)
       self.class.new(
         (x * Math.cos(angle)) - (y * Math.sin(angle)),
         (x * Math.sin(angle)) + (y * Math.cos(angle))
       )
+    end
+
+    # Rotates the vector around another point. The center is coerced, so
+    # scalars work too. The angle is in radians, and a positive angle
+    # turns counterclockwise.
+    #
+    #   Vector2d(2, 1).rotate_around(Vector2d(1, 1), Math::PI / 2)
+    #   # => Vector2d(1.0,2.0)
+    #
+    def rotate_around(center, angle)
+      center_v = to_vector(center)
+      (self - center_v).rotate(angle) + center_v
     end
 
     # Rounds vector to nearest integer.
