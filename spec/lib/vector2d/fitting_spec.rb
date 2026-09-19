@@ -57,6 +57,43 @@ describe Vector2d::Fitting do
       its(:x) { is_expected.to eq(150) }
       its(:y) { is_expected.to eq(100) }
     end
+
+    context "when the vector is negative and wider" do
+      let(:comp) { Vector2d.new(-400, 300) }
+
+      its(:x) { is_expected.to eq(-300) }
+      its(:y) { is_expected.to eq(225) }
+    end
+
+    context "when the vector is negative and higher" do
+      let(:comp) { Vector2d.new(300, -400) }
+
+      its(:x) { is_expected.to eq(225) }
+      its(:y) { is_expected.to eq(-300) }
+    end
+
+    context "when both coordinates are negative" do
+      let(:comp) { Vector2d.new(-400, -300) }
+
+      its(:x) { is_expected.to eq(-300) }
+      its(:y) { is_expected.to eq(-225) }
+    end
+
+    context "when the negative vector already fits" do
+      let(:comp) { Vector2d.new(-150, -100) }
+
+      its(:x) { is_expected.to eq(-150) }
+      its(:y) { is_expected.to eq(-100) }
+    end
+
+    context "when the vector is unconstrained" do
+      let(:original) { Vector2d.new(0, 0) }
+      let(:comp) { Vector2d.new(40, 20) }
+
+      it "returns the argument unchanged" do
+        expect(vector).to eq(Vector2d.new(40, 20))
+      end
+    end
   end
 
   describe "#fit" do
@@ -74,6 +111,46 @@ describe Vector2d::Fitting do
 
       its(:x) { is_expected.to eq(150) }
       its(:y) { is_expected.to eq(150) }
+    end
+
+    context "when the x coordinate is negative" do
+      let(:original) { Vector2d.new(-20, 10) }
+      let(:comp) { Vector2d.new(5, 5) }
+
+      its(:x) { is_expected.to eq(-5) }
+      its(:y) { is_expected.to eq(2.5) }
+    end
+
+    context "when the y coordinate is negative" do
+      let(:original) { Vector2d.new(20, -10) }
+      let(:comp) { Vector2d.new(5, 5) }
+
+      its(:x) { is_expected.to eq(5) }
+      its(:y) { is_expected.to eq(-2.5) }
+    end
+
+    context "when both coordinates are negative" do
+      let(:original) { Vector2d.new(-20, -10) }
+      let(:comp) { Vector2d.new(5, 5) }
+
+      its(:x) { is_expected.to eq(-5) }
+      its(:y) { is_expected.to eq(-2.5) }
+    end
+
+    context "when both coordinates are negative and the y axis binds" do
+      let(:original) { Vector2d.new(-10, -20) }
+      let(:comp) { Vector2d.new(5, 5) }
+
+      its(:x) { is_expected.to eq(-2.5) }
+      its(:y) { is_expected.to eq(-5) }
+    end
+
+    context "when the constraint is negative" do
+      let(:original) { Vector2d.new(20, 10) }
+      let(:comp) { Vector2d.new(-5, -5) }
+
+      its(:x) { is_expected.to eq(5) }
+      its(:y) { is_expected.to eq(2.5) }
     end
 
     context "with the zero vector" do
@@ -100,6 +177,15 @@ describe Vector2d::Fitting do
 
       it "disregards the zero axis" do
         expect(vector).to eq(Vector2d.new(2.0, 0.0))
+      end
+    end
+
+    context "when both constraint axes are zero" do
+      let(:original) { Vector2d.new(20, 10) }
+      let(:comp) { Vector2d.new(0, 0) }
+
+      it "returns the vector unchanged" do
+        expect(vector).to eq(Vector2d.new(20, 10))
       end
     end
   end
