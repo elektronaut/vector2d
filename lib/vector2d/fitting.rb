@@ -65,9 +65,7 @@ class Vector2d
     #   Vector2d(0, 0).cover(Vector2d(5, 5)) # => Vector2d(0,0)
     #
     def cover(other, upscale: true)
-      factors = fit_factors(to_vector(other))
-      scale_by(factors.length == 2 ? factors.max : factors.min,
-               upscale: upscale)
+      scale_by(fit_factors(to_vector(other)).max, upscale: upscale)
     end
     alias fit_either cover
 
@@ -114,7 +112,7 @@ class Vector2d
     # that don't constrain the vector.
     def fit_factors(other)
       scale = other.to_f_vector / self
-      [scale.x, scale.y].select { |s| s.finite? && !s.zero? }.map(&:abs)
+      scale.to_a.select { |s| s.finite? && !s.zero? }.map(&:abs)
     end
 
     # Scales the vector by the given factor. An unconstrained vector,

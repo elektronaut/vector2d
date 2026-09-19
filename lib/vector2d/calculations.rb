@@ -121,7 +121,7 @@ class Vector2d
     #   v1.distance(v2) # => 1.4142..
     #
     def distance(other)
-      Math.sqrt(distance_squared(other))
+      (self - other).length
     end
 
     # Calculate squared distance between vectors. Avoids the square root
@@ -132,10 +132,7 @@ class Vector2d
     #   v1.distance_squared(v2) # => 18
     #
     def distance_squared(other)
-      v = to_vector(other)
-      dx = v.x - x
-      dy = v.y - y
-      (dx * dx) + (dy * dy)
+      (self - other).length_squared
     end
     alias squared_distance distance_squared
 
@@ -147,8 +144,7 @@ class Vector2d
     #   v1.manhattan_distance(v2) # => 7
     #
     def manhattan_distance(other)
-      v = to_vector(other)
-      (v.x - x).abs + (v.y - y).abs
+      (self - other).abs.to_a.sum
     end
 
     # Calculates the Chebyshev distance between two vectors, the largest
@@ -159,8 +155,7 @@ class Vector2d
     #   v1.chebyshev_distance(v2) # => 4
     #
     def chebyshev_distance(other)
-      v = to_vector(other)
-      [(v.x - x).abs, (v.y - y).abs].max
+      (self - other).abs.to_a.max
     end
 
     # Linearly interpolates between this vector and another vector.
@@ -179,10 +174,7 @@ class Vector2d
     #
     def lerp(other, amount)
       v = to_vector(other)
-      self.class.new(
-        x + ((v.x - x) * amount),
-        y + ((v.y - y) * amount)
-      )
+      self + ((v - self) * amount)
     end
 
     # Returns the point halfway between this vector and another vector.
@@ -325,8 +317,7 @@ class Vector2d
     #
     def reflect(normal)
       n = to_vector(normal).normalize
-      scale = 2 * dot_product(n)
-      self.class.new(x - (scale * n.x), y - (scale * n.y))
+      self - (n * (2 * dot_product(n)))
     end
 
     private
