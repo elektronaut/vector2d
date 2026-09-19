@@ -70,6 +70,12 @@ describe Vector2d do
       it_behaves_like "a parsed vector", [1, 2]
     end
 
+    context "with single element array argument" do
+      subject(:vector) { described_class.parse([5]) }
+
+      it_behaves_like "a parsed vector", [5, 5]
+    end
+
     context "with hash argument, symbol keys" do
       subject(:vector) { described_class.parse(x: 1, y: 2) }
 

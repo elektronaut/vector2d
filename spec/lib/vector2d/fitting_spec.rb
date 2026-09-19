@@ -95,5 +95,13 @@ describe Vector2d::Fitting do
       its(:x) { is_expected.to eq(200) }
       its(:y) { is_expected.to eq(200) }
     end
+
+    context "when a coordinate is negative" do
+      let(:original) { Vector2d.new(-300, 300) }
+      let(:comp) { Vector2d.new(150, 150) }
+
+      its(:x) { is_expected.to eq(-150) }
+      its(:y) { is_expected.to eq(150) }
+    end
   end
 end
