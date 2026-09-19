@@ -15,6 +15,19 @@ class Vector2d
   include Vector2d::Properties
   include Vector2d::Transformations
 
+  # Matches a single coordinate in a string, with an optional sign and
+  # an optional fractional part.
+  COORDINATE_EXPRESSION = /[+-]?(?:\d+(?:\.\d+)?|\.\d+)/
+
+  # Matches the string form of a vector, "150x100" or "150,100".
+  # Whitespace is insignificant, the separator is case insensitive, and
+  # either coordinate can be left out to mean zero.
+  STRING_EXPRESSION = /
+    \A\s*(#{COORDINATE_EXPRESSION})?\s*[x,]\s*(#{COORDINATE_EXPRESSION})?\s*\z
+  /xi
+
+  private_constant :COORDINATE_EXPRESSION, :STRING_EXPRESSION
+
   class << self
     # Creates a new vector.
     # The following examples are all valid:
@@ -27,6 +40,15 @@ class Vector2d
     #   Vector2d.parse({x: 150, y: 100})
     #   Vector2d.parse({"x" => 150.0, "y" => 100.0})
     #   Vector2d.parse(Vector2d(150, 100))
+    #
+    # Strings are either "150x100" or "150,100", optionally signed and
+    # case insensitive. Coordinates keep their type, so "150x100" gives
+    # integers and "150.0x100" gives a float and an integer. An omitted
+    # coordinate is zero, as in "x100".
+    #
+    #   Vector2d.parse("-150X100") # => Vector2d(-150,100)
+    #   Vector2d.parse("150, 100") # => Vector2d(150,100)
+    #   Vector2d.parse("x100")     # => Vector2d(0,100)
     #
     # Raises ArgumentError unless both coordinates resolve to numbers.
     def parse(arg, second_arg = nil)
@@ -68,10 +90,16 @@ class Vector2d
     end
 
     def parse_str(str)
-      raise ArgumentError, "not a valid string input" unless /^\s*[\d.]*\s*x\s*[\d.]*\s*$/.match?(str)
+      match = STRING_EXPRESSION.match(str)
+      raise ArgumentError, "not a valid string input: #{str.inspect}" unless match
 
-      x, y = str.split("x")
-      new(x.to_f, y.to_f)
+      new(string_coordinate(match[1]), string_coordinate(match[2]))
+    end
+
+    def string_coordinate(value)
+      return 0 if value.nil?
+
+      value.include?(".") ? value.to_f : value.to_i
     end
   end
 

@@ -64,6 +64,73 @@ describe Vector2d do
       it_behaves_like "a parsed vector", [1.0, 2.0]
     end
 
+    context "with string argument, negative" do
+      subject(:vector) { described_class.parse("-1x-2") }
+
+      it_behaves_like "a parsed vector", [-1, -2]
+    end
+
+    context "with string argument, explicitly positive" do
+      subject(:vector) { described_class.parse("+1x+2") }
+
+      it_behaves_like "a parsed vector", [1, 2]
+    end
+
+    context "with string argument, no leading zero" do
+      subject(:vector) { described_class.parse(".5x.25") }
+
+      it_behaves_like "a parsed vector", [0.5, 0.25]
+    end
+
+    context "with string argument, uppercase separator" do
+      subject(:vector) { described_class.parse("1X2") }
+
+      it_behaves_like "a parsed vector", [1, 2]
+    end
+
+    context "with string argument, comma separator" do
+      subject(:vector) { described_class.parse("1, 2") }
+
+      it_behaves_like "a parsed vector", [1, 2]
+    end
+
+    context "with string argument, surrounding whitespace" do
+      subject(:vector) { described_class.parse(" 1 x 2 ") }
+
+      it_behaves_like "a parsed vector", [1, 2]
+    end
+
+    context "with string argument, mixing integer and float" do
+      subject(:vector) { described_class.parse("1x2.0") }
+
+      its(:x) { is_expected.to be_an(Integer) }
+      its(:y) { is_expected.to be_a(Float) }
+    end
+
+    context "with a malformed string argument" do
+      it "raises an error" do
+        expect { described_class.parse("1.2.3x4") }.to(
+          raise_error(ArgumentError, 'not a valid string input: "1.2.3x4"')
+        )
+      end
+    end
+
+    context "with a string argument holding three coordinates" do
+      it "raises an error" do
+        expect { described_class.parse("1x2x3") }.to(
+          raise_error(ArgumentError, 'not a valid string input: "1x2x3"')
+        )
+      end
+    end
+
+    context "with a string argument holding no coordinates" do
+      it "raises an error" do
+        expect { described_class.parse("foo") }.to(
+          raise_error(ArgumentError, 'not a valid string input: "foo"')
+        )
+      end
+    end
+
     context "with array argument" do
       subject(:vector) { described_class.parse([1, 2]) }
 
