@@ -71,9 +71,10 @@ class Vector2d
   #
   #   Vector2d(2, 3) == Vector2d(2, 3) # => true
   #   Vector2d(2, 3) == Vector2d(1, 0) # => false
+  #   Vector2d(2, 3) == [2, 3]         # => false
   #
   def ==(other)
-    other.x == x && other.y == y
+    other.is_a?(Vector2d) && other.x == x && other.y == y
   end
 end
 
