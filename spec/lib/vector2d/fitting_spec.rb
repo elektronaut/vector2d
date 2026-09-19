@@ -5,97 +5,6 @@ require "spec_helper"
 describe Vector2d::Fitting do
   let(:original) { Vector2d.new(300, 300) }
 
-  describe "#contain" do
-    subject(:vector) { original.contain(comp) }
-
-    context "when vector is smaller" do
-      let(:comp) { Vector2d.new(150, 100) }
-
-      its(:x) { is_expected.to eq(150) }
-      its(:y) { is_expected.to eq(100) }
-    end
-
-    context "when vector is wider" do
-      let(:comp) { Vector2d.new(400, 300) }
-
-      its(:x) { is_expected.to eq(300) }
-      its(:y) { is_expected.to eq(225) }
-    end
-
-    context "when vector is higher" do
-      let(:comp) { Vector2d.new(300, 400) }
-
-      its(:x) { is_expected.to eq(225) }
-      its(:y) { is_expected.to eq(300) }
-    end
-
-    context "when the argument is an array" do
-      let(:comp) { [400, 300] }
-
-      its(:x) { is_expected.to eq(300) }
-      its(:y) { is_expected.to eq(225) }
-    end
-
-    context "when the argument is a string" do
-      let(:comp) { "400x300" }
-
-      its(:x) { is_expected.to eq(300) }
-      its(:y) { is_expected.to eq(225) }
-    end
-
-    context "when the argument is a hash" do
-      let(:comp) { { x: 400, y: 300 } }
-
-      its(:x) { is_expected.to eq(300) }
-      its(:y) { is_expected.to eq(225) }
-    end
-
-    context "when the coerced argument already fits" do
-      let(:comp) { [150, 100] }
-
-      it { is_expected.to be_a(Vector2d) }
-      its(:x) { is_expected.to eq(150) }
-      its(:y) { is_expected.to eq(100) }
-    end
-
-    context "when the vector is negative and wider" do
-      let(:comp) { Vector2d.new(-400, 300) }
-
-      its(:x) { is_expected.to eq(-300) }
-      its(:y) { is_expected.to eq(225) }
-    end
-
-    context "when the vector is negative and higher" do
-      let(:comp) { Vector2d.new(300, -400) }
-
-      its(:x) { is_expected.to eq(225) }
-      its(:y) { is_expected.to eq(-300) }
-    end
-
-    context "when both coordinates are negative" do
-      let(:comp) { Vector2d.new(-400, -300) }
-
-      its(:x) { is_expected.to eq(-300) }
-      its(:y) { is_expected.to eq(-225) }
-    end
-
-    context "when the negative vector already fits" do
-      let(:comp) { Vector2d.new(-150, -100) }
-
-      its(:x) { is_expected.to eq(-150) }
-      its(:y) { is_expected.to eq(-100) }
-    end
-
-    context "when the vector is unconstrained" do
-      let(:original) { Vector2d.new(0, 0) }
-      let(:comp) { Vector2d.new(40, 20) }
-
-      it "returns the argument unchanged" do
-        expect(vector).to eq(Vector2d.new(40, 20))
-      end
-    end
-  end
-
   describe "#fit" do
     subject(:vector) { original.fit(comp) }
 
@@ -205,12 +114,72 @@ describe Vector2d::Fitting do
         expect(vector).to eq(Vector2d.new(20, 10))
       end
     end
+
+    context "when upscaling is enabled" do
+      subject(:vector) { original.fit(comp, upscale: true) }
+
+      let(:comp) { Vector2d.new(600, 600) }
+
+      its(:x) { is_expected.to eq(600) }
+      its(:y) { is_expected.to eq(600) }
+    end
+
+    context "when upscaling is disabled and the vector is larger" do
+      subject(:vector) { original.fit(comp, upscale: false) }
+
+      let(:comp) { Vector2d.new(200, 150) }
+
+      its(:x) { is_expected.to eq(150) }
+      its(:y) { is_expected.to eq(150) }
+    end
+
+    context "when upscaling is disabled and the vector already fits" do
+      subject(:vector) { original.fit(comp, upscale: false) }
+
+      let(:comp) { Vector2d.new(600, 600) }
+
+      it { is_expected.to equal(original) }
+    end
+
+    context "when upscaling is disabled and the vector fits exactly" do
+      subject(:vector) { original.fit(comp, upscale: false) }
+
+      let(:comp) { Vector2d.new(300, 300) }
+
+      it { is_expected.to equal(original) }
+    end
+
+    context "when upscaling is disabled and only one axis fits" do
+      subject(:vector) { original.fit(comp, upscale: false) }
+
+      let(:comp) { Vector2d.new(600, 150) }
+
+      its(:x) { is_expected.to eq(150) }
+      its(:y) { is_expected.to eq(150) }
+    end
+
+    context "when upscaling is disabled and the vector is negative" do
+      subject(:vector) { original.fit(comp, upscale: false) }
+
+      let(:original) { Vector2d.new(-20, -10) }
+      let(:comp) { Vector2d.new(5, 5) }
+
+      its(:x) { is_expected.to eq(-5) }
+      its(:y) { is_expected.to eq(-2.5) }
+    end
+
+    context "when upscaling is disabled and the vector is unconstrained" do
+      subject(:vector) { original.fit(comp, upscale: false) }
+
+      let(:original) { Vector2d.new(20, 10) }
+      let(:comp) { Vector2d.new(0, 0) }
+
+      it { is_expected.to equal(original) }
+    end
   end
 
-  describe "#fit_either" do
-    subject(:vector) { original.fit_either(comp) }
-
-    let(:original) { Vector2d.new(300, 300) }
+  describe "#cover" do
+    subject(:vector) { original.cover(comp) }
 
     context "when width is largest" do
       let(:comp) { Vector2d.new(200, 150) }
@@ -328,6 +297,157 @@ describe Vector2d::Fitting do
 
       it "matches #fit" do
         expect(vector).to eq(original.fit(comp))
+      end
+    end
+
+    context "when upscaling is enabled" do
+      subject(:vector) { original.cover(comp, upscale: true) }
+
+      let(:comp) { Vector2d.new(600, 450) }
+
+      its(:x) { is_expected.to eq(600) }
+      its(:y) { is_expected.to eq(600) }
+    end
+
+    context "when upscaling is disabled and the vector is larger" do
+      subject(:vector) { original.cover(comp, upscale: false) }
+
+      let(:comp) { Vector2d.new(200, 150) }
+
+      its(:x) { is_expected.to eq(200) }
+      its(:y) { is_expected.to eq(200) }
+    end
+
+    context "when upscaling is disabled and the vector already covers" do
+      subject(:vector) { original.cover(comp, upscale: false) }
+
+      let(:comp) { Vector2d.new(600, 450) }
+
+      it { is_expected.to equal(original) }
+    end
+
+    context "when upscaling is disabled and the vector covers exactly" do
+      subject(:vector) { original.cover(comp, upscale: false) }
+
+      let(:comp) { Vector2d.new(300, 200) }
+
+      it { is_expected.to equal(original) }
+    end
+
+    context "when upscaling is disabled and a single axis constrains" do
+      subject(:vector) { original.cover(comp, upscale: false) }
+
+      let(:original) { Vector2d.new(0, 300) }
+      let(:comp) { Vector2d.new(10, 600) }
+
+      it { is_expected.to equal(original) }
+    end
+
+    context "when upscaling is disabled and a single axis scales it down" do
+      subject(:vector) { original.cover(comp, upscale: false) }
+
+      let(:original) { Vector2d.new(0, 300) }
+      let(:comp) { Vector2d.new(10, 150) }
+
+      its(:x) { is_expected.to eq(0) }
+      its(:y) { is_expected.to eq(150) }
+    end
+  end
+
+  describe "#fit_either" do
+    it "is an alias of #cover" do
+      expect(original.fit_either(Vector2d.new(200, 150)))
+        .to eq(Vector2d.new(200, 200))
+    end
+  end
+
+  describe "#contain" do
+    subject(:vector) { original.contain(comp) }
+
+    context "when vector is smaller" do
+      let(:comp) { Vector2d.new(150, 100) }
+
+      its(:x) { is_expected.to eq(150) }
+      its(:y) { is_expected.to eq(100) }
+    end
+
+    context "when vector is wider" do
+      let(:comp) { Vector2d.new(400, 300) }
+
+      its(:x) { is_expected.to eq(300) }
+      its(:y) { is_expected.to eq(225) }
+    end
+
+    context "when vector is higher" do
+      let(:comp) { Vector2d.new(300, 400) }
+
+      its(:x) { is_expected.to eq(225) }
+      its(:y) { is_expected.to eq(300) }
+    end
+
+    context "when the argument is an array" do
+      let(:comp) { [400, 300] }
+
+      its(:x) { is_expected.to eq(300) }
+      its(:y) { is_expected.to eq(225) }
+    end
+
+    context "when the argument is a string" do
+      let(:comp) { "400x300" }
+
+      its(:x) { is_expected.to eq(300) }
+      its(:y) { is_expected.to eq(225) }
+    end
+
+    context "when the argument is a hash" do
+      let(:comp) { { x: 400, y: 300 } }
+
+      its(:x) { is_expected.to eq(300) }
+      its(:y) { is_expected.to eq(225) }
+    end
+
+    context "when the coerced argument already fits" do
+      let(:comp) { [150, 100] }
+
+      it { is_expected.to be_a(Vector2d) }
+      its(:x) { is_expected.to eq(150) }
+      its(:y) { is_expected.to eq(100) }
+    end
+
+    context "when the vector is negative and wider" do
+      let(:comp) { Vector2d.new(-400, 300) }
+
+      its(:x) { is_expected.to eq(-300) }
+      its(:y) { is_expected.to eq(225) }
+    end
+
+    context "when the vector is negative and higher" do
+      let(:comp) { Vector2d.new(300, -400) }
+
+      its(:x) { is_expected.to eq(225) }
+      its(:y) { is_expected.to eq(-300) }
+    end
+
+    context "when both coordinates are negative" do
+      let(:comp) { Vector2d.new(-400, -300) }
+
+      its(:x) { is_expected.to eq(-300) }
+      its(:y) { is_expected.to eq(-225) }
+    end
+
+    context "when the negative vector already fits" do
+      let(:comp) { Vector2d.new(-150, -100) }
+
+      its(:x) { is_expected.to eq(-150) }
+      its(:y) { is_expected.to eq(-100) }
+    end
+
+    context "when the vector is unconstrained" do
+      let(:original) { Vector2d.new(0, 0) }
+      let(:comp) { Vector2d.new(40, 20) }
+
+      it "returns the argument unchanged" do
+        expect(vector).to eq(Vector2d.new(40, 20))
       end
     end
   end
