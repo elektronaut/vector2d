@@ -91,6 +91,25 @@ class Vector2d
   def ==(other)
     other.is_a?(Vector2d) && other.x == x && other.y == y
   end
+
+  # Compares two vectors for hash equality. Unlike #==, the other object
+  # must be a vector of the same class, and the coordinates must be of
+  # the same type.
+  #
+  #   Vector2d(2, 3).eql?(Vector2d(2, 3))     # => true
+  #   Vector2d(2, 3).eql?(Vector2d(2.0, 3.0)) # => false
+  #
+  def eql?(other)
+    other.instance_of?(self.class) && x.eql?(other.x) && y.eql?(other.y)
+  end
+
+  # Hash value of the vector, consistent with #eql?.
+  #
+  #   Vector2d(2, 3).hash == Vector2d(2, 3).hash # => true
+  #
+  def hash
+    [self.class, x, y].hash
+  end
 end
 
 # Instantiates a Vector2d
