@@ -246,10 +246,26 @@ describe Vector2d do
       end
     end
 
-    context "with nil as the second argument of two" do
+    context "with a non-numeric second argument" do
       it "raises an error" do
         expect { described_class.parse(1, "2") }.to(
           raise_error(ArgumentError, 'not a valid coordinate: "2"')
+        )
+      end
+    end
+
+    context "with nil as the second argument" do
+      it "raises an error" do
+        expect { described_class.parse(5, nil) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: nil")
+        )
+      end
+    end
+
+    context "with nil as the second argument of the global method" do
+      it "raises an error" do
+        expect { Vector2d(5, nil) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: nil")
         )
       end
     end
