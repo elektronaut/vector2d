@@ -208,6 +208,22 @@ describe Vector2d::Transformations do
         expect(resized).to eq(Vector2d.new(0.0, 0.0))
       end
     end
+
+    context "with a negative length" do
+      subject(:resized) { vector.resize(-2.0) }
+
+      it "modifies the vector length" do
+        expect(resized.length).to be_within(0.0001).of(2.0)
+      end
+
+      it "reverses the x property" do
+        expect(resized.x).to be_within(0.0001).of(-1.1094)
+      end
+
+      it "reverses the y property" do
+        expect(resized.y).to be_within(0.0001).of(-1.6641)
+      end
+    end
   end
 
   describe "#reverse" do
@@ -311,6 +327,20 @@ describe Vector2d::Transformations do
 
       it "returns the zero vector" do
         expect(vector.clamp_length(5.0)).to eq(Vector2d.new(0, 0))
+      end
+    end
+
+    context "when argument is negative" do
+      it "raises an error" do
+        expect { vector.clamp_length(-1.0) }.to raise_error(ArgumentError)
+      end
+    end
+
+    context "when argument is negative and vector is zero" do
+      subject(:vector) { Vector2d.new(0, 0) }
+
+      it "raises an error" do
+        expect { vector.clamp_length(-1.0) }.to raise_error(ArgumentError)
       end
     end
   end
