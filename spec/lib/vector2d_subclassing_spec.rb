@@ -33,6 +33,13 @@ describe Vector2d do
   it_behaves_like "a class preserving method", :rotate_around, 0, Math::PI
   it_behaves_like "a class preserving method", :round
 
+  describe ".from_angle" do
+    it "returns an instance of the receiver's class" do
+      expect(subclass.from_angle(Math::PI / 2))
+        .to be_an_instance_of(subclass)
+    end
+  end
+
   describe "#contain" do
     it "returns an instance of the argument's class" do
       expect(described_class.new(2, 3).contain(subclass.new(4, 5)))

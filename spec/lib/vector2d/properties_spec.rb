@@ -100,4 +100,29 @@ describe Vector2d::Properties do
       expect(vectors).to all(be_normalized)
     end
   end
+
+  describe "#to_polar" do
+    it "returns the length first" do
+      expect(vector.to_polar.first).to be_within(0.0001).of(3.6055)
+    end
+
+    it "returns the angle second" do
+      expect(vector.to_polar.last).to be_within(0.0001).of(0.9827)
+    end
+
+    it "is the inverse of Vector2d.from_angle" do
+      length, angle = vector.to_polar
+
+      expect(Vector2d.from_angle(angle, length))
+        .to eq(Vector2d.new(2.0, 3.0))
+    end
+
+    context "with the zero vector" do
+      let(:vector) { Vector2d.new(0, 0) }
+
+      it "returns zero length and angle" do
+        expect(vector.to_polar).to eq([0.0, 0.0])
+      end
+    end
+  end
 end
