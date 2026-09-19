@@ -218,6 +218,105 @@ describe Vector2d::Calculations do
     end
   end
 
+  describe "#manhattan_distance" do
+    let(:comp) { Vector2d.new(5, 7) }
+
+    it "returns the sum of the absolute differences" do
+      expect(vector.manhattan_distance(comp)).to eq(7)
+    end
+
+    it "is symmetric" do
+      expect(comp.manhattan_distance(vector))
+        .to eq(vector.manhattan_distance(comp))
+    end
+
+    it "returns zero for the same vector" do
+      expect(vector.manhattan_distance(vector)).to eq(0)
+    end
+
+    it "coerces the argument" do
+      expect(vector.manhattan_distance([5, 7])).to eq(7)
+    end
+  end
+
+  describe "#chebyshev_distance" do
+    let(:comp) { Vector2d.new(5, 7) }
+
+    it "returns the largest absolute difference" do
+      expect(vector.chebyshev_distance(comp)).to eq(4)
+    end
+
+    it "is symmetric" do
+      expect(comp.chebyshev_distance(vector))
+        .to eq(vector.chebyshev_distance(comp))
+    end
+
+    it "returns zero for the same vector" do
+      expect(vector.chebyshev_distance(vector)).to eq(0)
+    end
+
+    it "coerces the argument" do
+      expect(vector.chebyshev_distance([5, 7])).to eq(4)
+    end
+  end
+
+  describe "#lerp" do
+    subject(:vector) { Vector2d.new(0, 0) }
+
+    let(:comp) { Vector2d.new(10, 20) }
+
+    it "returns this vector at zero" do
+      expect(vector.lerp(comp, 0)).to eq(Vector2d.new(0, 0))
+    end
+
+    it "returns the other vector at one" do
+      expect(vector.lerp(comp, 1)).to eq(Vector2d.new(10, 20))
+    end
+
+    it "interpolates between the vectors" do
+      expect(vector.lerp(comp, 0.25)).to eq(Vector2d.new(2.5, 5.0))
+    end
+
+    it "extrapolates past the other vector" do
+      expect(vector.lerp(comp, 2.0)).to eq(Vector2d.new(20.0, 40.0))
+    end
+
+    it "extrapolates behind this vector" do
+      expect(vector.lerp(comp, -0.5)).to eq(Vector2d.new(-5.0, -10.0))
+    end
+
+    it "interpolates from negative coordinates" do
+      expect(Vector2d.new(-4, 6).lerp(Vector2d.new(4, -2), 0.5))
+        .to eq(Vector2d.new(0.0, 2.0))
+    end
+
+    it "coerces the argument" do
+      expect(vector.lerp([10, 20], 0.5)).to eq(Vector2d.new(5.0, 10.0))
+    end
+  end
+
+  describe "#midpoint" do
+    subject(:vector) { Vector2d.new(0, 0) }
+
+    let(:comp) { Vector2d.new(10, 20) }
+
+    it "returns the point halfway between the vectors" do
+      expect(vector.midpoint(comp)).to eq(Vector2d.new(5.0, 10.0))
+    end
+
+    it "is symmetric" do
+      expect(comp.midpoint(vector)).to eq(vector.midpoint(comp))
+    end
+
+    it "matches #lerp at one half" do
+      expect(vector.midpoint(comp)).to eq(vector.lerp(comp, 0.5))
+    end
+
+    it "coerces the argument" do
+      expect(vector.midpoint([10, 20])).to eq(Vector2d.new(5.0, 10.0))
+    end
+  end
+
   describe "#dot_product" do
     let(:comp) { Vector2d.new(3, 4) }
 
