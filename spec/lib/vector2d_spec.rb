@@ -87,6 +87,76 @@ describe Vector2d do
 
       it_behaves_like "a parsed vector", [1, 2]
     end
+
+    context "with nil argument" do
+      it "raises an error" do
+        expect { described_class.parse(nil) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: nil")
+        )
+      end
+    end
+
+    context "with a non-numeric argument" do
+      it "raises an error" do
+        expect { described_class.parse(:foo) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: :foo")
+        )
+      end
+    end
+
+    context "with nil as the second argument of two" do
+      it "raises an error" do
+        expect { described_class.parse(1, "2") }.to(
+          raise_error(ArgumentError, 'not a valid coordinate: "2"')
+        )
+      end
+    end
+
+    context "with empty hash argument" do
+      it "raises an error" do
+        expect { described_class.parse({}) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: nil")
+        )
+      end
+    end
+
+    context "with hash argument missing y" do
+      it "raises an error" do
+        expect { described_class.parse(x: 1) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: nil")
+        )
+      end
+    end
+
+    context "with hash argument holding a non-numeric value" do
+      it "raises an error" do
+        expect { described_class.parse(x: 1, y: "2") }.to(
+          raise_error(ArgumentError, 'not a valid coordinate: "2"')
+        )
+      end
+    end
+
+    context "with array argument holding nil" do
+      it "raises an error" do
+        expect { described_class.parse([1, nil]) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: nil")
+        )
+      end
+    end
+
+    context "with array argument of the wrong size" do
+      it "raises an error" do
+        expect { described_class.parse([1, 2, 3]) }.to(
+          raise_error(ArgumentError, "expected 1 or 2 coordinates, got 3")
+        )
+      end
+    end
+
+    context "with hash argument, nil symbol key falling back to string key" do
+      subject(:vector) { described_class.parse(x: nil, "x" => 1, y: 2) }
+
+      it_behaves_like "a parsed vector", [1, 2]
+    end
   end
 
   describe "#==" do
