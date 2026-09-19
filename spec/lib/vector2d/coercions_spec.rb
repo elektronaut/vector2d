@@ -31,6 +31,16 @@ describe Vector2d::Coercions do
     it "renders a string representation" do
       expect(vector.inspect).to eq("Vector2d(2,3)")
     end
+
+    context "when the vector is a subclass" do
+      subject(:vector) { SubVector.new(2, 3) }
+
+      before { stub_const("SubVector", Class.new(Vector2d)) }
+
+      it "renders the name of the subclass" do
+        expect(vector.inspect).to eq("SubVector(2,3)")
+      end
+    end
   end
 
   describe "#to_a" do
