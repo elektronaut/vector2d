@@ -29,6 +29,26 @@ class Vector2d
   private_constant :COORDINATE_EXPRESSION, :STRING_EXPRESSION
 
   class << self
+    # Creates a vector from an angle in radians, with an optional
+    # length. Angles are measured counterclockwise from the positive x
+    # axis, the same convention #angle follows.
+    #
+    #   Vector2d.from_angle(0)                 # => Vector2d(1.0,0.0)
+    #   Vector2d.from_angle(Math::PI / 4)      # => Vector2d(0.7071..,0.7071..)
+    #   Vector2d.from_angle(Math::PI / 4, 2.0) # => Vector2d(1.4142..,1.4142..)
+    #
+    # Coordinates are always floats. This is the inverse of #to_polar.
+    #
+    #   length, angle = Vector2d(2, 3).to_polar
+    #   Vector2d.from_angle(angle, length) # => Vector2d(2.0,3.0)
+    #
+    # Raises ArgumentError unless both arguments are numbers.
+    def from_angle(angle, length = 1.0)
+      angle = coordinate(angle)
+      length = coordinate(length)
+      new(Math.cos(angle) * length, Math.sin(angle) * length)
+    end
+
     # Creates a new vector.
     # The following examples are all valid:
     #

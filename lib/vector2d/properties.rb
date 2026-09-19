@@ -62,5 +62,18 @@ class Vector2d
     def normalized?
       (length - 1.0).abs < (4 * Float::EPSILON)
     end
+
+    # Polar coordinates of vector, as a [length, angle] array.
+    #
+    #   Vector2d(2, 3).to_polar # => [3.6055.., 0.9827..]
+    #
+    # Vector2d.from_angle takes the same pair back.
+    #
+    #   length, angle = Vector2d(2, 3).to_polar
+    #   Vector2d.from_angle(angle, length) # => Vector2d(2.0,3.0)
+    #
+    def to_polar
+      [length, angle]
+    end
   end
 end
