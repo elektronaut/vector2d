@@ -179,5 +179,29 @@ describe Vector2d do
 
       it { is_expected.to be(false) }
     end
+
+    context "with a number argument" do
+      let(:comp) { 5 }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "with an array argument" do
+      let(:comp) { [2, 3] }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "with a string argument" do
+      let(:comp) { "2x3" }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "with a nil argument" do
+      let(:comp) { nil }
+
+      it { is_expected.to be(false) }
+    end
   end
 end
