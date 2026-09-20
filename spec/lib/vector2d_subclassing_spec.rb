@@ -14,6 +14,9 @@ describe Vector2d do
   it_behaves_like "a class preserving method", :-, 2
   it_behaves_like "a class preserving method", :-@
   it_behaves_like "a class preserving method", :+@
+  it_behaves_like "a class preserving method", :direction_to, 2
+  it_behaves_like "a class preserving method", :move_toward, 2, 0.5
+  it_behaves_like "a class preserving method", :move_toward, 2, 10
   it_behaves_like "a class preserving method", :project, 2
   it_behaves_like "a class preserving method", :reflect, 2
   it_behaves_like "a class preserving method", :reject, 2
@@ -34,8 +37,11 @@ describe Vector2d do
   it_behaves_like "a class preserving method", :clamp, 0, 10
   it_behaves_like "a class preserving method", :clamp, 0..10
   it_behaves_like "a class preserving method", :clamp_length, 1.0
+  it_behaves_like "a class preserving method", :clamp_length, 1.0, 10.0
+  it_behaves_like "a class preserving method", :clamp_length, 1.0..10.0
   it_behaves_like "a class preserving method", :floor
   it_behaves_like "a class preserving method", :lerp, 2, 0.5
+  it_behaves_like "a class preserving method", :slerp, 2, 0.5
   it_behaves_like "a class preserving method", :max, 2
   it_behaves_like "a class preserving method", :midpoint, 2
   it_behaves_like "a class preserving method", :min, 2
@@ -49,7 +55,10 @@ describe Vector2d do
   it_behaves_like "a class preserving method", :rotate_degrees, 180
   it_behaves_like "a class preserving method", :rotate_around, 0, Math::PI
   it_behaves_like "a class preserving method", :round
+  it_behaves_like "a class preserving method", :sign
   it_behaves_like "a class preserving method", :snap, 1
+  it_behaves_like "a class preserving method", :with_x, 5
+  it_behaves_like "a class preserving method", :with_y, 5
 
   describe ".from_angle" do
     it "returns an instance of the receiver's class" do

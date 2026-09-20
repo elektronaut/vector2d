@@ -119,6 +119,88 @@ class Vector2d
       length_squared.zero?
     end
 
+    # Is this the zero vector, give or take floating point drift? See
+    # #approx_equal? for what the tolerance is.
+    #
+    #   Vector2d(0, 0).approx_zero?     # => true
+    #   Vector2d(1e-17, 0).approx_zero? # => true
+    #   Vector2d(1e-15, 0).approx_zero? # => false
+    #
+    # An explicit tolerance is an absolute length.
+    #
+    #   Vector2d(0.2, 0).approx_zero?(0.5) # => true
+    #
+    def approx_zero?(tolerance = nil)
+      return length <= coordinate(tolerance) unless tolerance.nil?
+
+      near_zero?(length)
+    end
+
+    # Are the two vectors equal, give or take floating point drift?
+    # Arithmetic that should land on a given vector usually lands a few
+    # ulps off it instead, which #== reports as a difference.
+    #
+    #   v1 = Vector2d(0.1, 0.2) + Vector2d(0.2, 0.4)
+    #   v2 = Vector2d(0.3, 0.6)
+    #   v1                   # => Vector2d(0.30000000000000004,0.6000..)
+    #   v1 == v2             # => false
+    #   v1.approx_equal?(v2) # => true
+    #
+    # The other vector is coerced, unlike in #==, so anything .parse
+    # accepts is compared as a vector.
+    #
+    #   v1.approx_equal?([0.3, 0.6]) # => true
+    #   v1 == [0.3, 0.6]             # => false
+    #
+    # The default tolerance is the one #parallel? and #perpendicular_to?
+    # use, a few ulps scaled by the magnitude of the vectors, so the
+    # same amount of drift is absorbed whatever the coordinates are
+    # sized like. It covers rounding error, and nothing more.
+    #
+    #   big = Vector2d(1e8, 2e8)
+    #   big.approx_equal?(big.rotate(2 * Math::PI)) # => true
+    #   big.approx_equal?(Vector2d(1e8, 2.1e8))     # => false
+    #
+    # Pass a tolerance for anything looser. It is an absolute distance
+    # between the two vectors, and is not scaled.
+    #
+    #   v3 = Vector2d(2, 3)
+    #   v3.approx_equal?(Vector2d(2, 4), 1.5) # => true
+    #   v3.approx_equal?(Vector2d(2, 4), 0.5) # => false
+    #
+    # Note that this is not a replacement for #==. Approximate equality
+    # is not transitive, and vectors that are approximately equal do not
+    # have the same #hash.
+    #
+    def approx_equal?(other, tolerance = nil)
+      v = coerce_vector(other)
+      return distance(v) <= coordinate(tolerance) unless tolerance.nil?
+
+      near_zero?(distance(v), [1.0, length, v.length].max)
+    end
+
+    # Are both coordinates finite?
+    #
+    #   Vector2d(2, 3).finite?               # => true
+    #   Vector2d(2, Float::INFINITY).finite? # => false
+    #   Vector2d(2, Float::NAN).finite?      # => false
+    #
+    def finite?
+      x.finite? && y.finite?
+    end
+
+    # Is either coordinate NaN? Nothing else in the library produces
+    # one, but arithmetic on infinities does.
+    #
+    #   Vector2d(2, 3).nan?          # => false
+    #   Vector2d(2, Float::NAN).nan? # => true
+    #
+    #   (Vector2d(2, 3) * Float::INFINITY * 0).nan? # => true
+    #
+    def nan?
+      coordinate_nan?(x) || coordinate_nan?(y)
+    end
+
     # Is this a normalized vector?
     #
     #   Vector2d(0, 1).normalized? # => true
@@ -225,6 +307,12 @@ class Vector2d
     end
 
     private
+
+    # Is the coordinate NaN? Only floats and decimals can be, the rest
+    # of Numeric has no answer to give.
+    def coordinate_nan?(value)
+      value.respond_to?(:nan?) && value.nan?
+    end
 
     # Is a value close enough to zero to count as zero? The tolerance
     # scales with the magnitudes the value was calculated from.
