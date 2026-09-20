@@ -109,16 +109,34 @@ class Vector2d
       self * (new_length / length)
     end
 
-    # Clamps the length of the vector, scaling it down if it is longer
-    # than max. A single argument is a maximum.
+    # Limits the length of the vector, scaling it down if it is longer
+    # than max. The direction is kept.
     #
     #   vector = Vector2d(2.0, 3.0)
-    #   vector.clamp_length(5.0) # => Vector2d(2.0, 3.0)
-    #   vector.clamp_length(1.0) # => Vector2d(0.5547.., 0.8320..)
+    #   vector.limit_length(5.0) # => Vector2d(2.0, 3.0)
+    #   vector.limit_length(1.0) # => Vector2d(0.5547.., 0.8320..)
     #
-    # Given two, the length is clamped between them, scaling the vector
-    # up if it is shorter than min.
+    # #clamp_length bounds the length at both ends.
     #
+    # The zero vector has no direction, and is returned unchanged.
+    #
+    #   Vector2d(0, 0).limit_length(1.0) # => Vector2d(0,0)
+    #
+    # Lengths can't be negative.
+    #
+    #   Vector2d(2, 3).limit_length(-1.0) # => ArgumentError
+    #
+    # @param max [Integer, Float, Rational, BigDecimal] the maximum length
+    # @return [self]
+    def limit_length(max)
+      resize(length.clamp(..length_bound(max, "max")))
+    end
+
+    # Clamps the length of the vector between a minimum and a maximum,
+    # scaling it up if it is shorter than min and down if it is longer
+    # than max. The direction is kept.
+    #
+    #   vector = Vector2d(2.0, 3.0)
     #   vector.clamp_length(5.0, 10.0) # => Vector2d(2.7735.., 4.1602..)
     #   vector.clamp_length(1.0, 10.0) # => Vector2d(2.0, 3.0)
     #
@@ -129,6 +147,8 @@ class Vector2d
     #   vector.clamp_length(..1.0)     # => Vector2d(0.5547.., 0.8320..)
     #   vector.clamp_length(5.0..)     # => Vector2d(2.7735.., 4.1602..)
     #
+    # A maximum on its own is #limit_length.
+    #
     # The range must not exclude its end, as with Comparable#clamp.
     #
     #   vector.clamp_length(5.0...10.0) # => ArgumentError
@@ -136,16 +156,13 @@ class Vector2d
     # The zero vector has no direction, and is returned unchanged. It
     # can't be scaled up to a minimum length.
     #
-    #   Vector2d(0, 0).clamp_length(1.0)      # => Vector2d(0,0)
     #   Vector2d(0, 0).clamp_length(1.0, 2.0) # => Vector2d(0,0)
     #
     # Lengths can't be negative, and min can't exceed max.
     #
-    #   Vector2d(2, 3).clamp_length(-1.0)     # => ArgumentError
-    #   Vector2d(2, 3).clamp_length(4.0, 2.0) # => ArgumentError
+    #   Vector2d(2, 3).clamp_length(-1.0, 1.0) # => ArgumentError
+    #   Vector2d(2, 3).clamp_length(4.0, 2.0)  # => ArgumentError
     #
-    # @overload clamp_length(max)
-    #   @param max [Integer, Float, Rational, BigDecimal] the maximum length
     # @overload clamp_length(min, max)
     #   @param min [Integer, Float, Rational, BigDecimal] the minimum length
     #   @param max [Integer, Float, Rational, BigDecimal] the maximum length
@@ -242,12 +259,10 @@ class Vector2d
 
     private
 
-    # Splits the bounds of #clamp_length into a [min, max] pair, either
-    # of which can be nil for a one sided clamp. A single argument is a
-    # maximum, so a minimum on its own has to come from a range.
     def clamp_length_bounds(min, max)
       return range_length_bounds(min, max) if min.is_a?(Range)
-      return [nil, length_bound(min, "max")] if max.nil?
+
+      raise ArgumentError, "wrong number of arguments (given 1, expected 2)" if max.nil?
 
       [length_bound(min, "min"), length_bound(max, "max")]
     end

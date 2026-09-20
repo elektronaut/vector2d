@@ -35,12 +35,12 @@ describe Vector2d do
   it_behaves_like "a class preserving method", :ceil
   it_behaves_like "a class preserving method", :clamp, 0, 10
   it_behaves_like "a class preserving method", :clamp, 0..10
-  it_behaves_like "a class preserving method", :clamp_length, 1.0
   it_behaves_like "a class preserving method", :clamp_length, 1.0, 10.0
   it_behaves_like "a class preserving method", :clamp_length, 1.0..10.0
   it_behaves_like "a class preserving method", :floor
   it_behaves_like "a class preserving method", :lerp, 2, 0.5
   it_behaves_like "a class preserving method", :slerp, 2, 0.5
+  it_behaves_like "a class preserving method", :limit_length, 1.0
   it_behaves_like "a class preserving method", :max, 2
   it_behaves_like "a class preserving method", :midpoint, 2
   it_behaves_like "a class preserving method", :min, 2
