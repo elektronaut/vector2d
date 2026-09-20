@@ -19,6 +19,7 @@ module DocExamples
   MARKER = /\A(.*?)\s*#\s*=>\s*(.+)\z/
   DEFINITION = /\A\s*def\s+(self\.)?([^\s(]+)/
   EXCEPTION = /\A(?:[A-Z]\w*::)*[A-Z]\w*Error\z/
+  HASH_ROCKET = /:(\w+)=>/
 
   # A single line of an example. Setup lines have no expectation.
   Example = Struct.new(:location, :code, :expected) do
@@ -28,11 +29,20 @@ module DocExamples
 
     def exception = Object.const_get(expected)
 
-    # Values are compared with whitespace removed, so the doc comments
-    # are free to align the markers.
     def pattern
-      escaped = Regexp.escape(expected.delete(" "))
+      escaped = Regexp.escape(normalize(expected))
       Regexp.new("\\A#{escaped.gsub('\.\.') { '\d*' }}\\z")
+    end
+
+    def inspected(value) = normalize(value.inspect)
+
+    private
+
+    # Values are compared with whitespace removed, so the doc comments
+    # are free to align the markers, and with hashes in the {key: value}
+    # form Ruby 3.4 and up print.
+    def normalize(inspected)
+      inspected.delete(" ").gsub(HASH_ROCKET) { "#{Regexp.last_match(1)}:" }
     end
   end
 

@@ -13,7 +13,7 @@ describe Vector2d do
     return scope.eval(doc.code) unless doc.expectation?
     return expect_raise(scope, doc) if doc.raises?
 
-    expect(scope.eval(doc.code).inspect.delete(" "))
+    expect(doc.inspected(scope.eval(doc.code)))
       .to match(doc.pattern), failure_message(doc)
   end
 
