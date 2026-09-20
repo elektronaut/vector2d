@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 class Vector2d
-  module Coercions
+  # Conversions to and from other Ruby objects, including the coercion
+  # protocol and pattern matching. Conversions to the standard library
+  # Matrix and Vector are in Vector2d::MatrixInterop.
+  module Conversions
     # Implements Ruby's coercion protocol, so a vector can be the right
     # hand operand of a scalar.
     #
@@ -84,19 +87,6 @@ class Vector2d
     #
     def to_f_vector
       build(x.to_f, y.to_f)
-    end
-
-    # Polar coordinates of vector, as a [length, angle] array.
-    #
-    #   Vector2d(2, 3).to_polar # => [3.6055.., 0.9827..]
-    #
-    # Vector2d.from_angle takes the same pair back.
-    #
-    #   length, angle = Vector2d(2, 3).to_polar
-    #   Vector2d.from_angle(angle, length) # => Vector2d(2.0,3.0)
-    #
-    def to_polar
-      [length, angle]
     end
 
     # Converts vector to string.

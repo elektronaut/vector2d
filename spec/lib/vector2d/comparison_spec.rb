@@ -2,239 +2,8 @@
 
 require "spec_helper"
 
-describe Vector2d::Properties do
+describe Vector2d::Comparison do
   subject(:vector) { Vector2d.new(2, 3) }
-
-  describe "#angle" do
-    it "returns the angle" do
-      expect(vector.angle).to be_within(0.0001).of(0.9827)
-    end
-  end
-
-  describe "#area" do
-    it "multiplies the coordinates" do
-      expect(vector.area).to eq(6)
-    end
-
-    it "is never negative" do
-      expect(Vector2d.new(-2, 3).area).to eq(6)
-    end
-
-    it "is zero without width or height" do
-      expect(Vector2d.new(2, 0).area).to eq(0)
-    end
-  end
-
-  describe "#aspect_ratio" do
-    it "returns the aspect_ratio" do
-      expect(vector.aspect_ratio).to be_within(0.0001).of(0.6667)
-    end
-
-    context "when y is zero" do
-      let(:vector) { Vector2d.new(2, 0) }
-
-      it "raises an ArgumentError" do
-        expect { vector.aspect_ratio }
-          .to raise_error(ArgumentError,
-                          "Vector2d(2,0) has no aspect ratio, y is zero")
-      end
-    end
-
-    context "with the zero vector" do
-      let(:vector) { Vector2d.new(0, 0) }
-
-      it "raises an ArgumentError" do
-        expect { vector.aspect_ratio }
-          .to raise_error(ArgumentError,
-                          "the zero vector has no aspect ratio")
-      end
-    end
-  end
-
-  describe "#landscape?" do
-    subject { vector.landscape? }
-
-    context "when the vector is wider than it is tall" do
-      let(:vector) { Vector2d.new(3, 2) }
-
-      it { is_expected.to be(true) }
-    end
-
-    context "when the vector is taller than it is wide" do
-      let(:vector) { Vector2d.new(2, 3) }
-
-      it { is_expected.to be(false) }
-    end
-
-    context "when the vector is square" do
-      let(:vector) { Vector2d.new(2, 2) }
-
-      it { is_expected.to be(false) }
-    end
-
-    context "when the coordinates are negative" do
-      let(:vector) { Vector2d.new(-3, -2) }
-
-      it { is_expected.to be(true) }
-    end
-  end
-
-  describe "#portrait?" do
-    subject { vector.portrait? }
-
-    context "when the vector is taller than it is wide" do
-      let(:vector) { Vector2d.new(2, 3) }
-
-      it { is_expected.to be(true) }
-    end
-
-    context "when the vector is wider than it is tall" do
-      let(:vector) { Vector2d.new(3, 2) }
-
-      it { is_expected.to be(false) }
-    end
-
-    context "when the vector is square" do
-      let(:vector) { Vector2d.new(2, 2) }
-
-      it { is_expected.to be(false) }
-    end
-
-    context "when the coordinates are negative" do
-      let(:vector) { Vector2d.new(-2, -3) }
-
-      it { is_expected.to be(true) }
-    end
-  end
-
-  describe "#square?" do
-    subject { vector.square? }
-
-    context "when the coordinates are equal" do
-      let(:vector) { Vector2d.new(2, 2) }
-
-      it { is_expected.to be(true) }
-    end
-
-    context "when the coordinates differ" do
-      let(:vector) { Vector2d.new(2, 3) }
-
-      it { is_expected.to be(false) }
-    end
-
-    context "when the coordinates differ only in sign" do
-      let(:vector) { Vector2d.new(-2, 2) }
-
-      it { is_expected.to be(true) }
-    end
-
-    context "with the zero vector" do
-      let(:vector) { Vector2d.new(0, 0) }
-
-      it { is_expected.to be(true) }
-    end
-  end
-
-  describe "the shape predicates" do
-    it "are exclusive" do
-      [Vector2d.new(3, 2), Vector2d.new(2, 3), Vector2d.new(2, 2),
-       Vector2d.new(0, 0)].each do |v|
-        expect([v.landscape?, v.portrait?, v.square?].count(true)).to eq(1)
-      end
-    end
-  end
-
-  describe "#length" do
-    it "calculates the length" do
-      expect(vector.length).to be_within(0.0001).of(3.6055)
-    end
-  end
-
-  describe "#magnitude" do
-    it "is an alias of #length" do
-      expect(vector.magnitude).to be_within(0.0001).of(3.6055)
-    end
-  end
-
-  describe "#norm" do
-    it "is an alias of #length" do
-      expect(vector.norm).to be_within(0.0001).of(3.6055)
-    end
-  end
-
-  describe "#length_squared" do
-    it "calculates the squared length" do
-      expect(vector.length_squared).to eq(13)
-    end
-  end
-
-  describe "#squared_length" do
-    subject(:vector) { Vector2d.new(2, 3).squared_length }
-
-    it_behaves_like "a deprecated method", "squared_length", "#length_squared"
-
-    it "returns the squared length, as #length_squared does" do
-      expect(vector).to eq(13)
-    end
-  end
-
-  describe "#zero?" do
-    subject { vector.zero? }
-
-    context "when vector is the zero vector" do
-      let(:vector) { Vector2d.new(0, 0) }
-
-      it { is_expected.to be(true) }
-    end
-
-    context "when vector isn't the zero vector" do
-      let(:vector) { Vector2d.new(2, 3) }
-
-      it { is_expected.to be(false) }
-    end
-  end
-
-  describe "#approx_zero?" do
-    subject { vector.approx_zero? }
-
-    context "when vector is the zero vector" do
-      let(:vector) { Vector2d.new(0, 0) }
-
-      it { is_expected.to be(true) }
-    end
-
-    context "when vector is a rounding error away from zero" do
-      let(:vector) { Vector2d.new(1e-17, 0) }
-
-      it { is_expected.to be(true) }
-    end
-
-    context "when vector is small but not that small" do
-      let(:vector) { Vector2d.new(1e-15, 0) }
-
-      it { is_expected.to be(false) }
-    end
-
-    context "when vector isn't the zero vector" do
-      it { is_expected.to be(false) }
-    end
-
-    context "with a tolerance" do
-      it "takes it as an absolute length" do
-        expect(Vector2d.new(0.2, 0)).to be_approx_zero(0.5)
-      end
-
-      it "is false outside the tolerance" do
-        expect(Vector2d.new(0.6, 0)).not_to be_approx_zero(0.5)
-      end
-
-      it "raises an error on a complex tolerance" do
-        expect { vector.approx_zero?(Complex(1, 2)) }.to(
-          raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
-        )
-      end
-    end
-  end
 
   describe "#approx_equal?" do
     subject { vector.approx_equal?(other) }
@@ -303,88 +72,6 @@ describe Vector2d::Properties do
           raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
         )
       end
-    end
-  end
-
-  describe "#finite?" do
-    subject { vector.finite? }
-
-    context "when both coordinates are finite" do
-      it { is_expected.to be(true) }
-    end
-
-    context "when x is infinite" do
-      let(:vector) { Vector2d.new(Float::INFINITY, 3) }
-
-      it { is_expected.to be(false) }
-    end
-
-    context "when y is infinite" do
-      let(:vector) { Vector2d.new(2, -Float::INFINITY) }
-
-      it { is_expected.to be(false) }
-    end
-
-    context "when a coordinate is NaN" do
-      let(:vector) { Vector2d.new(2, Float::NAN) }
-
-      it { is_expected.to be(false) }
-    end
-  end
-
-  describe "#nan?" do
-    subject { vector.nan? }
-
-    context "when neither coordinate is NaN" do
-      it { is_expected.to be(false) }
-    end
-
-    context "when x is NaN" do
-      let(:vector) { Vector2d.new(Float::NAN, 3) }
-
-      it { is_expected.to be(true) }
-    end
-
-    context "when y is NaN" do
-      let(:vector) { Vector2d.new(2, Float::NAN) }
-
-      it { is_expected.to be(true) }
-    end
-
-    context "when a coordinate is infinite" do
-      let(:vector) { Vector2d.new(2, Float::INFINITY) }
-
-      it { is_expected.to be(false) }
-    end
-  end
-
-  describe "#normalized?" do
-    subject { vector.normalized? }
-
-    context "when vector is normalized" do
-      let(:vector) { Vector2d.new(2, 3).normalize }
-
-      it { is_expected.to be(true) }
-    end
-
-    context "when vector isn't normalized" do
-      let(:vector) { Vector2d.new(2, 3) }
-
-      it { is_expected.to be(false) }
-    end
-
-    context "when vector is barely longer than a unit vector" do
-      let(:vector) { Vector2d.new(1 + 1e-9, 0) }
-
-      it { is_expected.to be(false) }
-    end
-
-    it "is true for any normalized vector" do
-      vectors = (1..50).flat_map do |x|
-        (1..50).map { |y| Vector2d.new(x, y).normalize }
-      end
-
-      expect(vectors).to all(be_normalized)
     end
   end
 
@@ -614,6 +301,58 @@ describe Vector2d::Properties do
         expect(vector.perpendicular?(Vector2d.new(-7.7e8, 1.3e8 + 1)))
           .to be(false)
       end
+    end
+  end
+
+  describe "#finite?" do
+    subject { vector.finite? }
+
+    context "when both coordinates are finite" do
+      it { is_expected.to be(true) }
+    end
+
+    context "when x is infinite" do
+      let(:vector) { Vector2d.new(Float::INFINITY, 3) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "when y is infinite" do
+      let(:vector) { Vector2d.new(2, -Float::INFINITY) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "when a coordinate is NaN" do
+      let(:vector) { Vector2d.new(2, Float::NAN) }
+
+      it { is_expected.to be(false) }
+    end
+  end
+
+  describe "#nan?" do
+    subject { vector.nan? }
+
+    context "when neither coordinate is NaN" do
+      it { is_expected.to be(false) }
+    end
+
+    context "when x is NaN" do
+      let(:vector) { Vector2d.new(Float::NAN, 3) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when y is NaN" do
+      let(:vector) { Vector2d.new(2, Float::NAN) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when a coordinate is infinite" do
+      let(:vector) { Vector2d.new(2, Float::INFINITY) }
+
+      it { is_expected.to be(false) }
     end
   end
 end

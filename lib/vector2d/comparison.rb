@@ -1,146 +1,10 @@
 # frozen_string_literal: true
 
 class Vector2d
-  module Properties
-    # Angle of vector.
-    #
-    #   Vector2d(2, 3).angle # => 0.9827..
-    #
-    def angle
-      Math.atan2(y, x)
-    end
-
-    # Area covered by the vector, the product of its coordinates.
-    # Coordinates are taken by magnitude, as in #aspect_ratio, so the
-    # area is never negative.
-    #
-    #   Vector2d(2, 3).area  # => 6
-    #   Vector2d(-2, 3).area # => 6
-    #
-    # A vector without width or height covers nothing.
-    #
-    #   Vector2d(2, 0).area # => 0
-    #
-    def area
-      (x * y).abs
-    end
-
-    # Aspect ratio of vector.
-    #
-    #   Vector2d(2, 3).aspect_ratio # => 0.6666..
-    #
-    # A vector without height has no aspect ratio, so ArgumentError is
-    # raised.
-    #
-    #   Vector2d(2, 0).aspect_ratio # => ArgumentError
-    #   Vector2d(0, 0).aspect_ratio # => ArgumentError
-    #
-    def aspect_ratio
-      raise ArgumentError, "the zero vector has no aspect ratio" if zero?
-      raise ArgumentError, "#{inspect} has no aspect ratio, y is zero" if y.zero?
-
-      (x.to_f / y).abs
-    end
-
-    # Is the vector wider than it is tall?
-    #
-    #   Vector2d(3, 2).landscape? # => true
-    #   Vector2d(2, 3).landscape? # => false
-    #   Vector2d(2, 2).landscape? # => false
-    #
-    # Coordinates are compared by magnitude, as in #aspect_ratio.
-    #
-    #   Vector2d(-3, 2).landscape? # => true
-    #
-    def landscape?
-      x.abs > y.abs
-    end
-
-    # Is the vector taller than it is wide?
-    #
-    #   Vector2d(2, 3).portrait? # => true
-    #   Vector2d(3, 2).portrait? # => false
-    #   Vector2d(2, 2).portrait? # => false
-    #
-    # Coordinates are compared by magnitude, as in #aspect_ratio.
-    #
-    #   Vector2d(2, -3).portrait? # => true
-    #
-    def portrait?
-      x.abs < y.abs
-    end
-
-    # Is the vector as wide as it is tall?
-    #
-    #   Vector2d(2, 2).square? # => true
-    #   Vector2d(2, 3).square? # => false
-    #
-    # Coordinates are compared by magnitude, as in #aspect_ratio.
-    # Exactly one of #square?, #landscape? and #portrait? holds for any
-    # vector.
-    #
-    #   Vector2d(-2, 2).square? # => true
-    #
-    # Unlike #aspect_ratio, these three don't single out the zero
-    # vector. It is square.
-    #
-    #   Vector2d(0, 0).square? # => true
-    #
-    def square?
-      x.abs == y.abs
-    end
-
-    # Length of vector.
-    #
-    #   Vector2d(2, 3).length # => 3.6055..
-    #
-    def length
-      Math.sqrt(length_squared)
-    end
-    alias magnitude length
-    alias norm length
-
-    # Squared length of vector. Avoids the square root when lengths are
-    # only being compared to each other.
-    #
-    #   Vector2d(2, 3).length_squared # => 13
-    #
-    def length_squared
-      (x * x) + (y * y)
-    end
-
-    # @deprecated Use #length_squared instead.
-    def squared_length
-      warn_deprecated("Vector2d#squared_length is deprecated. Use #length_squared instead.")
-      length_squared
-    end
-
-    # Is this the zero vector?
-    #
-    #   Vector2d(0, 0).zero? # => true
-    #   Vector2d(2, 3).zero? # => false
-    #
-    def zero?
-      length_squared.zero?
-    end
-
-    # Is this the zero vector, give or take floating point drift? See
-    # #approx_equal? for what the tolerance is.
-    #
-    #   Vector2d(0, 0).approx_zero?     # => true
-    #   Vector2d(1e-17, 0).approx_zero? # => true
-    #   Vector2d(1e-15, 0).approx_zero? # => false
-    #
-    # An explicit tolerance is an absolute length.
-    #
-    #   Vector2d(0.2, 0).approx_zero?(0.5) # => true
-    #
-    def approx_zero?(tolerance = nil)
-      return length <= coordinate(tolerance) unless tolerance.nil?
-
-      near_zero?(length)
-    end
-
+  # Predicates relating two vectors, and the checks on coordinates that
+  # arithmetic can take out of range. Where #== compares exactly, the
+  # predicates here allow for floating point drift.
+  module Comparison
     # Are the two vectors equal, give or take floating point drift?
     # Arithmetic that should land on a given vector usually lands a few
     # ulps off it instead, which #== reports as a difference.
@@ -182,37 +46,6 @@ class Vector2d
       return distance(v) <= coordinate(tolerance) unless tolerance.nil?
 
       near_zero?(distance(v), [1.0, length, v.length].max)
-    end
-
-    # Are both coordinates finite?
-    #
-    #   Vector2d(2, 3).finite?               # => true
-    #   Vector2d(2, Float::INFINITY).finite? # => false
-    #   Vector2d(2, Float::NAN).finite?      # => false
-    #
-    def finite?
-      x.finite? && y.finite?
-    end
-
-    # Is either coordinate NaN? Nothing else in the library produces
-    # one, but arithmetic on infinities does.
-    #
-    #   Vector2d(2, 3).nan?          # => false
-    #   Vector2d(2, Float::NAN).nan? # => true
-    #
-    #   (Vector2d(2, 3) * Float::INFINITY * 0).nan? # => true
-    #
-    def nan?
-      coordinate_nan?(x) || coordinate_nan?(y)
-    end
-
-    # Is this a normalized vector?
-    #
-    #   Vector2d(0, 1).normalized? # => true
-    #   Vector2d(2, 3).normalized? # => false
-    #
-    def normalized?
-      near_zero?(length - 1.0)
     end
 
     # Are the two vectors parallel? Vectors pointing in opposite
@@ -296,6 +129,28 @@ class Vector2d
       return true if zero? || v.zero?
 
       near_zero?(dot_product(v), length * v.length)
+    end
+
+    # Are both coordinates finite?
+    #
+    #   Vector2d(2, 3).finite?               # => true
+    #   Vector2d(2, Float::INFINITY).finite? # => false
+    #   Vector2d(2, Float::NAN).finite?      # => false
+    #
+    def finite?
+      x.finite? && y.finite?
+    end
+
+    # Is either coordinate NaN? Nothing else in the library produces
+    # one, but arithmetic on infinities does.
+    #
+    #   Vector2d(2, 3).nan?          # => false
+    #   Vector2d(2, Float::NAN).nan? # => true
+    #
+    #   (Vector2d(2, 3) * Float::INFINITY * 0).nan? # => true
+    #
+    def nan?
+      coordinate_nan?(x) || coordinate_nan?(y)
     end
 
     private

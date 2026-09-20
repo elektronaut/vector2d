@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Vector2d::Coercions do
+describe Vector2d::Conversions do
   subject(:vector) { Vector2d.new(2, 3) }
 
   describe "#coerce" do
@@ -192,13 +192,6 @@ describe Vector2d::Coercions do
     end
   end
 
-  describe "#to_f_vector" do
-    subject { vector.to_f_vector }
-
-    its(:x) { is_expected.to be_a(Float) }
-    its(:y) { is_expected.to be_a(Float) }
-  end
-
   describe "#to_hash" do
     it "returns a hash" do
       expect(vector.to_hash).to eq(x: 2, y: 3)
@@ -214,29 +207,11 @@ describe Vector2d::Coercions do
     its(:y) { is_expected.to be_a(Integer) }
   end
 
-  describe "#to_polar" do
-    it "returns the length first" do
-      expect(vector.to_polar.first).to be_within(0.0001).of(3.6055)
-    end
+  describe "#to_f_vector" do
+    subject { vector.to_f_vector }
 
-    it "returns the angle second" do
-      expect(vector.to_polar.last).to be_within(0.0001).of(0.9827)
-    end
-
-    it "is the inverse of Vector2d.from_angle" do
-      length, angle = vector.to_polar
-
-      expect(Vector2d.from_angle(angle, length))
-        .to eq(Vector2d.new(2.0, 3.0))
-    end
-
-    context "with the zero vector" do
-      let(:vector) { Vector2d.new(0, 0) }
-
-      it "returns zero length and angle" do
-        expect(vector.to_polar).to eq([0.0, 0.0])
-      end
-    end
+    its(:x) { is_expected.to be_a(Float) }
+    its(:y) { is_expected.to be_a(Float) }
   end
 
   describe "#to_s" do
