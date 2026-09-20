@@ -2,11 +2,12 @@
 
 require "ripper"
 
-# Extracts the runnable examples from the doc comments in lib/.
+# Extracts the runnable examples from the documentation.
 #
-# An example is an indented line inside a comment. Lines carrying a
-# "# =>" marker assert on the value of the expression to their left,
-# the rest are setup. The examples in one comment share a binding:
+# The doc comments under lib/ and the fenced Ruby blocks in the README
+# are read the same way. Lines carrying a "# =>" marker assert on the
+# value of the expression to their left, the rest are setup, and the
+# examples in one block share a binding:
 #
 #   v = Vector2d(2, 3)
 #   v.length # => 3.6055..
@@ -15,18 +16,9 @@ require "ripper"
 # trailing ".." stands in for any digits, and an exception class means
 # the expression is expected to raise. An example spanning several
 # lines, like a class definition, is evaluated as one expression.
-#
-# Tag blocks are skipped. A block runs from the first tag at the left
-# margin of the comment to the next blank comment line, so the type
-# lists in @param and @return are not mistaken for examples.
 module DocExamples
   ROOT = File.expand_path("../..", __dir__)
-  COMMENT = /\A\s*#(?:\s|\z)/
-  INDENTED = /\A\s*#\s{3}(\s*\S.*)\z/
   MARKER = /\A(.*?)\s*#\s*=>\s*(.+)\z/
-  DEFINITION = /\A\s*def\s+(self\.)?([^\s(]+)/
-  TAG = /\A\s*#\s@/
-  BLANK = /\A\s*#\s*\z/
   EXCEPTION = /\A(?:[A-Z]\w*::)*[A-Z]\w*Error\z/
   HASH_ROCKET = /:(\w+)=>/
 
@@ -53,44 +45,34 @@ module DocExamples
 
     private
 
-    # Values are compared with whitespace removed, so the doc comments
-    # are free to align the markers, and with hashes in the {key: value}
+    # Values are compared with whitespace removed, so the documentation
+    # is free to align the markers, and with hashes in the {key: value}
     # form Ruby 3.4 and up print.
     def normalize(inspected)
       inspected.delete(" ").gsub(HASH_ROCKET) { "#{Regexp.last_match(1)}:" }
     end
   end
 
-  # The examples from a single doc comment.
+  # The examples from a single doc comment or README section.
   Block = Struct.new(:file, :line, :name, :examples)
 
   class << self
-    def blocks
-      Dir[File.join(ROOT, "lib/**/*.rb")].flat_map { |path| parse(path) }
+    def blocks = Comments.blocks + Markdown.blocks
+
+    # A block built from its code lines, or nil if none of them assert
+    # on anything.
+    def block(file, line, name, lines)
+      examples = examples(file, lines)
+      return unless examples.any?(&:expectation?)
+
+      Block.new(file, line, name, examples)
     end
 
     private
 
-    def parse(path)
-      chunks = File.readlines(path, chomp: true).each_with_index.to_a
-                   .chunk { |line, _| line.match?(COMMENT) }.to_a
-      chunks.each_with_index.filter_map do |(comment, lines), index|
-        block(path, lines, chunks.dig(index + 1, 1)) if comment
-      end
-    end
-
-    def block(path, lines, following)
-      file = path.delete_prefix("#{ROOT}/")
-      examples = extract(file, lines)
-      return unless examples.any?(&:expectation?)
-
-      Block.new(file, lines.first[1] + 1, name(following), examples)
-    end
-
-    def extract(file, lines)
-      untagged(lines).each_with_object([]) do |(line, index), found|
-        body = line[INDENTED, 1]
-        append(found, "#{file}:#{index + 1}", body) if body
+    def examples(file, lines)
+      lines.each_with_object([]) do |(body, index), found|
+        append(found, "#{file}:#{index + 1}", body)
       end
     end
 
@@ -105,27 +87,8 @@ module DocExamples
       end
     end
 
-    # Drops the tag blocks, each running from its first tag to the
-    # next blank comment line.
-    def untagged(lines)
-      tagged = false
-      lines.reject do |line, _|
-        tagged = true if line.match?(TAG)
-        tagged &&= !line.match?(BLANK)
-      end
-    end
-
     def continues?(example) = example && !complete?(example.code)
 
     def complete?(code) = !Ripper.sexp(code).nil?
-
-    # The method a doc comment sits above, for naming the example.
-    def name(following)
-      code = Array(following).map(&:first).find { |line| !line.strip.empty? }
-      match = code&.match(DEFINITION)
-      return "the examples" unless match
-
-      "#{match[1] ? '.' : '#'}#{match[2]}"
-    end
   end
 end
