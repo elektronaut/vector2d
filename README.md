@@ -145,7 +145,7 @@ vector.round(1) # => Vector2d(2.4,3.7)
 ```
 
 There is no component-wise truncation toward zero yet. `#truncate` is
-deprecated and still means `#clamp_length`, which scales the whole
+deprecated and still means `#limit_length`, which scales the whole
 vector down to a maximum length rather than working per axis, so the
 name stays occupied until that deprecation is removed.
 
@@ -179,16 +179,18 @@ vector.resize(2)  # => Vector2d(1.1094003924504583,1.6641005886756874)
 vector.normalize  # => Vector2d(0.5547001962252291,0.8320502943378437)
 ```
 
-`#clamp_length` constrains the length while keeping the direction. A
-single argument is a maximum; two, or a range, bound it at both ends,
-scaling a short vector up to the minimum.
+`#limit_length` caps the length at a maximum, keeping the direction.
+`#clamp_length` bounds it at both ends, scaling a short vector up to the
+minimum, and takes its bounds the same way `#clamp` does: as two
+arguments or as a range, which may be beginless or endless.
 
 ```ruby
 vector = Vector2d(2.0, 3.0)
 
-vector.clamp_length(1.0)       # => Vector2d(0.5547001962252291,0.8320502943378437)
+vector.limit_length(1.0)       # => Vector2d(0.5547001962252291,0.8320502943378437)
 vector.clamp_length(5.0, 10.0) # => Vector2d(2.773500981126146,4.160251471689219)
 vector.clamp_length(1.0..10.0) # => Vector2d(2.0,3.0)
+vector.clamp_length(..1.0)     # => Vector2d(0.5547001962252291,0.8320502943378437)
 ```
 
 The zero vector has no direction to keep, and all of these return it

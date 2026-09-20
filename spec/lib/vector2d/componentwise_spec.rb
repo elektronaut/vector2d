@@ -72,9 +72,9 @@ describe Vector2d::Componentwise do
   describe "#truncate" do
     subject(:vector) { Vector2d.new(2, 3).truncate(2.5) }
 
-    it_behaves_like "a deprecated method", "truncate", "#clamp_length"
+    it_behaves_like "a deprecated method", "truncate", "#limit_length"
 
-    it "clamps the length, as #clamp_length does" do
+    it "limits the length, as #limit_length does" do
       expect(vector.length).to be_within(0.0001).of(2.5)
     end
   end

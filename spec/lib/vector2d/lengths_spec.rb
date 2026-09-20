@@ -208,12 +208,12 @@ describe Vector2d::Lengths do
     end
   end
 
-  describe "#clamp_length" do
+  describe "#limit_length" do
     context "when argument is longer than length" do
       let(:arg) { 5.0 }
 
       it "does not change the length" do
-        expect(vector.clamp_length(arg).length).to be_within(0.0001).of(3.6055)
+        expect(vector.limit_length(arg).length).to be_within(0.0001).of(3.6055)
       end
     end
 
@@ -221,7 +221,7 @@ describe Vector2d::Lengths do
       let(:arg) { 2.5 }
 
       it "changes the length" do
-        expect(vector.clamp_length(arg).length).to be_within(0.0001).of(arg)
+        expect(vector.limit_length(arg).length).to be_within(0.0001).of(arg)
       end
     end
 
@@ -229,13 +229,15 @@ describe Vector2d::Lengths do
       subject(:vector) { Vector2d.new(0, 0) }
 
       it "returns the zero vector" do
-        expect(vector.clamp_length(5.0)).to eq(Vector2d.new(0, 0))
+        expect(vector.limit_length(5.0)).to eq(Vector2d.new(0, 0))
       end
     end
 
     context "when argument is negative" do
       it "raises an error" do
-        expect { vector.clamp_length(-1.0) }.to raise_error(ArgumentError)
+        expect { vector.limit_length(-1.0) }.to(
+          raise_error(ArgumentError, "negative max length: -1.0")
+        )
       end
     end
 
@@ -243,13 +245,13 @@ describe Vector2d::Lengths do
       subject(:vector) { Vector2d.new(0, 0) }
 
       it "raises an error" do
-        expect { vector.clamp_length(-1.0) }.to raise_error(ArgumentError)
+        expect { vector.limit_length(-1.0) }.to raise_error(ArgumentError)
       end
     end
 
     context "when argument is complex" do
       it "raises an error" do
-        expect { vector.clamp_length(Complex(1, 2)) }.to(
+        expect { vector.limit_length(Complex(1, 2)) }.to(
           raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
         )
       end
@@ -257,10 +259,19 @@ describe Vector2d::Lengths do
 
     context "when argument is nil" do
       it "raises an error" do
-        expect { vector.clamp_length(nil) }.to(
+        expect { vector.limit_length(nil) }.to(
           raise_error(ArgumentError, "not a valid coordinate: nil")
         )
       end
+    end
+  end
+
+  describe "#clamp_length" do
+    it "raises an error without a maximum" do
+      expect { vector.clamp_length(2.5) }.to(
+        raise_error(ArgumentError,
+                    "wrong number of arguments (given 1, expected 2)")
+      )
     end
 
     context "with a minimum and a maximum" do
@@ -279,8 +290,8 @@ describe Vector2d::Lengths do
           .to be_within(0.0001).of(3.6055)
       end
 
-      it "matches the single argument form" do
-        expect(vector.clamp_length(0, 2.5)).to eq(vector.clamp_length(2.5))
+      it "matches #limit_length when the minimum is zero" do
+        expect(vector.clamp_length(0, 2.5)).to eq(vector.limit_length(2.5))
       end
 
       it "raises an error when the minimum is negative" do
@@ -316,6 +327,10 @@ describe Vector2d::Lengths do
 
       it "clamps only the lower bound of an endless range" do
         expect(vector.clamp_length(5.0..).length).to be_within(0.0001).of(5.0)
+      end
+
+      it "matches #limit_length for a beginless range" do
+        expect(vector.clamp_length(..1.0)).to eq(vector.limit_length(1.0))
       end
 
       it "raises an error with an exclusive range" do

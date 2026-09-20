@@ -48,15 +48,15 @@ class Vector2d
       build(x.round(digits), y.round(digits))
     end
 
-    # @deprecated Use #clamp_length instead. The name belongs to the
+    # @deprecated Use #limit_length instead. The name belongs to the
     # #ceil/#floor/#round family, which maps Numeric over both
     # coordinates.
     #
     # @param max [Integer, Float, Rational, BigDecimal] the maximum length
     # @return [self]
     def truncate(max)
-      warn_deprecated("Vector2d#truncate is deprecated. Use #clamp_length instead.")
-      clamp_length(max)
+      warn_deprecated("Vector2d#truncate is deprecated. Use #limit_length instead.")
+      limit_length(max)
     end
 
     # Returns the sign of each axis, -1, 0 or 1.
