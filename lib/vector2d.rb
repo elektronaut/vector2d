@@ -35,7 +35,7 @@ class Vector2d
 
   # Stands in for an omitted second argument to .parse, so an explicit
   # nil can be rejected as a coordinate.
-  NO_ARGUMENT = Object.new
+  NO_ARGUMENT = Object.new.freeze
 
   private_constant :COORDINATE_EXPRESSION, :STRING_EXPRESSION, :NO_ARGUMENT
 
@@ -182,14 +182,26 @@ class Vector2d
 
   # Creates a vector from two coordinates, which must be real numbers.
   # Every vector is constructed through here, so this is what keeps a
-  # coordinate from being anything else.
+  # coordinate from being anything else. Instances are frozen.
   #
-  #   Vector2d.new(2, 3)             # => Vector2d(2,3)
-  #   Vector2d.new(Complex(1, 2), 3) # => ArgumentError
+  #   Vector2d.new(2, 3)                    # => Vector2d(2,3)
+  #   Vector2d.new(Complex(1, 2), 3)        # => ArgumentError
+  #   Vector2d.new(2, 3).frozen?            # => true
+  #   Ractor.shareable?(Vector2d.new(2, 3)) # => true
   #
   def initialize(x, y)
     @x = coordinate(x)
     @y = coordinate(y)
+    freeze
+  end
+
+  # Copies are frozen too.
+  #
+  #   Vector2d(2, 3).dup.frozen? # => true
+  #
+  def initialize_copy(other)
+    super
+    freeze
   end
 
   # Compares two vectors
