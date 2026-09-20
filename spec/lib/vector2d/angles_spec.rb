@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require "bigdecimal"
 
 describe Vector2d::Angles do
   subject(:vector) { Vector2d.new(2, 3) }
@@ -26,6 +27,18 @@ describe Vector2d::Angles do
       expect { Vector2d.radians(Complex(1, 2)) }
         .to raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
     end
+
+    [90, 90.0, Rational(90, 1), BigDecimal("90")].each do |angle|
+      context "with a #{angle.class} angle" do
+        subject(:radians) { Vector2d.radians(angle) }
+
+        it { is_expected.to be_an_instance_of(Float) }
+
+        it "converts the angle" do
+          expect(radians).to be_within(0.0001).of(Math::PI / 2)
+        end
+      end
+    end
   end
 
   describe ".degrees" do
@@ -44,6 +57,18 @@ describe Vector2d::Angles do
     it "raises an ArgumentError unless the angle is a real number" do
       expect { Vector2d.degrees(Complex(1, 2)) }
         .to raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
+    end
+
+    [1, 1.0, Rational(1, 1), BigDecimal("1")].each do |angle|
+      context "with a #{angle.class} angle" do
+        subject(:degrees) { Vector2d.degrees(angle) }
+
+        it { is_expected.to be_an_instance_of(Float) }
+
+        it "converts the angle" do
+          expect(degrees).to be_within(0.0001).of(57.2957)
+        end
+      end
     end
   end
 
@@ -73,6 +98,34 @@ describe Vector2d::Angles do
     it "raises an ArgumentError unless the length is a real number" do
       expect { Vector2d.from_degrees(30, Complex(1, 2)) }
         .to raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
+    end
+
+    [45, 45.0, Rational(45, 1), BigDecimal("45")].each do |angle|
+      context "with a #{angle.class} angle" do
+        subject(:vector) { Vector2d.from_degrees(angle) }
+
+        it "returns float coordinates" do
+          expect(vector.to_a).to all(be_an_instance_of(Float))
+        end
+
+        it "converts the angle" do
+          expect(vector.angle_in_degrees).to be_within(0.0001).of(45.0)
+        end
+      end
+    end
+
+    [2, 2.0, Rational(2, 1), BigDecimal("2")].each do |length|
+      context "with a #{length.class} length" do
+        subject(:vector) { Vector2d.from_degrees(45, length) }
+
+        it "returns float coordinates" do
+          expect(vector.to_a).to all(be_an_instance_of(Float))
+        end
+
+        it "applies the length" do
+          expect(vector.length).to be_within(0.0001).of(2.0)
+        end
+      end
     end
   end
 
@@ -186,6 +239,19 @@ describe Vector2d::Angles do
 
     it "is zero for the zero vector" do
       expect(Vector2d.new(0, 0).angle_in_degrees).to eq(0.0)
+    end
+
+    [[0, 1], [0.0, 1.0], [Rational(0, 1), Rational(1, 1)],
+     [BigDecimal("0"), BigDecimal("1")]].each do |(x, y)|
+      context "with #{y.class} coordinates" do
+        subject(:degrees) { Vector2d.new(x, y).angle_in_degrees }
+
+        it { is_expected.to be_an_instance_of(Float) }
+
+        it "returns the angle in degrees" do
+          expect(degrees).to be_within(0.0001).of(90.0)
+        end
+      end
     end
   end
 
@@ -308,6 +374,20 @@ describe Vector2d::Angles do
     it "raises an ArgumentError unless the angle is a real number" do
       expect { vector.rotate_degrees(Complex(1, 2)) }
         .to raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
+    end
+
+    [90, 90.0, Rational(90, 1), BigDecimal("90")].each do |angle|
+      context "with a #{angle.class} angle" do
+        subject(:rotated) { vector.rotate_degrees(angle) }
+
+        it "returns float coordinates" do
+          expect(rotated.to_a).to all(be_an_instance_of(Float))
+        end
+
+        it "rotates the vector" do
+          expect(rotated).to eq(Vector2d.new(-3.0, 2.0))
+        end
+      end
     end
   end
 
