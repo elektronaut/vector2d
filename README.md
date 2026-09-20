@@ -118,25 +118,24 @@ Vector2d(300, 300).fit(Vector2d(200, 0)) # => Vector2d(200.0,200.0)
 
 ## Rounding
 
-`#round`, `#ceil`, `#floor` and `#trunc` work one axis at a time, and
-round the way their counterparts on Ruby's numerics do. All four take
-an optional number of digits.
+`#round`, `#ceil` and `#floor` work one axis at a time, and round the
+way their counterparts on Ruby's numerics do. All three take an
+optional number of digits.
 
 ```ruby
-vector = Vector2d(2.7, -2.7)
+vector = Vector2d(2.44, 3.66)
 
-vector.round # => Vector2d(3,-3)
-vector.ceil  # => Vector2d(3,-2)
-vector.floor # => Vector2d(2,-3)
-vector.trunc # => Vector2d(2,-2)
+vector.round # => Vector2d(2,4)
+vector.ceil  # => Vector2d(3,4)
+vector.floor # => Vector2d(2,3)
 
-Vector2d(2.77, -2.77).trunc(1) # => Vector2d(2.7,-2.7)
+vector.round(1) # => Vector2d(2.4,3.7)
 ```
 
-`#trunc` is the one that rounds toward zero. It carries the short name
-because `#truncate` is deprecated and still means `#clamp_length`,
-which scales the whole vector down to a maximum length rather than
-working per axis.
+There is no component-wise truncation toward zero yet. `#truncate` is
+deprecated and still means `#clamp_length`, which scales the whole
+vector down to a maximum length rather than working per axis, so the
+name stays occupied until that deprecation is removed.
 
 `#snap` rounds each axis to the nearest multiple of a step. The step is
 coerced like any other argument, and a vector gives each axis its own.
