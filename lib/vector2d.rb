@@ -3,10 +3,12 @@
 require_relative "vector2d/angles"
 require_relative "vector2d/calculations"
 require_relative "vector2d/coercions"
+require_relative "vector2d/constructors"
 require_relative "vector2d/coordinates"
 require_relative "vector2d/deprecation"
 require_relative "vector2d/fitting"
 require_relative "vector2d/matrix_interop"
+require_relative "vector2d/optics"
 require_relative "vector2d/properties"
 require_relative "vector2d/transformations"
 require_relative "vector2d/version"
@@ -14,6 +16,7 @@ require_relative "vector2d/version"
 class Vector2d
   extend Vector2d::Angles::ClassMethods
   extend Vector2d::Calculations::ClassMethods
+  extend Vector2d::Constructors
   extend Vector2d::Coordinates
   include Vector2d::Angles
   include Vector2d::Calculations
@@ -22,6 +25,7 @@ class Vector2d
   include Vector2d::Deprecation
   include Vector2d::Fitting
   include Vector2d::MatrixInterop
+  include Vector2d::Optics
   include Vector2d::Properties
   include Vector2d::Transformations
 
@@ -63,29 +67,6 @@ class Vector2d
     #
     def build(x, y)
       new(x, y)
-    end
-
-    # Creates a vector from an angle in radians, with an optional
-    # length. Angles are measured counterclockwise from the positive x
-    # axis, the same convention #angle follows.
-    #
-    #   Vector2d.from_angle(0)                 # => Vector2d(1.0,0.0)
-    #   Vector2d.from_angle(Math::PI / 4)      # => Vector2d(0.7071..,0.7071..)
-    #   Vector2d.from_angle(Math::PI / 4, 2.0) # => Vector2d(1.4142..,1.4142..)
-    #
-    # Coordinates are always floats. This is the inverse of #to_polar.
-    #
-    #   length, angle = Vector2d(2, 3).to_polar
-    #   Vector2d.from_angle(angle, length) # => Vector2d(2.0,3.0)
-    #
-    # Raises ArgumentError unless both arguments are real numbers.
-    # Complex numbers are not coordinates, and are rejected.
-    #
-    #   Vector2d.from_angle(Complex(1, 2)) # => ArgumentError
-    def from_angle(angle, length = 1.0)
-      angle = coordinate(angle)
-      length = coordinate(length)
-      build(Math.cos(angle) * length, Math.sin(angle) * length)
     end
 
     # Creates a new vector.
