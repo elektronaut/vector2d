@@ -127,6 +127,20 @@ describe Vector2d::Calculations do
       it "multiplies both members" do
         expect(vector).to eq(Vector2d.new(6, 9))
       end
+
+      its(:x) { is_expected.to be_a(Integer) }
+      its(:y) { is_expected.to be_a(Integer) }
+    end
+
+    context "with a float" do
+      subject(:vector) { Vector2d.new(2, 3) * 3.0 }
+
+      it "multiplies both members" do
+        expect(vector).to eq(Vector2d.new(6.0, 9.0))
+      end
+
+      its(:x) { is_expected.to be_a(Float) }
+      its(:y) { is_expected.to be_a(Float) }
     end
 
     context "with a complex number" do
@@ -153,6 +167,9 @@ describe Vector2d::Calculations do
       it "divides both members" do
         expect(vector).to eq(Vector2d.new(2, 4))
       end
+
+      its(:x) { is_expected.to be_a(Integer) }
+      its(:y) { is_expected.to be_a(Integer) }
     end
   end
 
@@ -171,6 +188,9 @@ describe Vector2d::Calculations do
       it "adds to both members" do
         expect(vector).to eq(Vector2d.new(4, 5))
       end
+
+      its(:x) { is_expected.to be_a(Integer) }
+      its(:y) { is_expected.to be_a(Integer) }
     end
   end
 
@@ -189,6 +209,9 @@ describe Vector2d::Calculations do
       it "subtracts from both members" do
         expect(vector).to eq(Vector2d.new(0, 1))
       end
+
+      its(:x) { is_expected.to be_a(Integer) }
+      its(:y) { is_expected.to be_a(Integer) }
     end
   end
 
