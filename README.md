@@ -148,8 +148,8 @@ Vector2d(2.3, 3.7).snap(0.5)           # => Vector2d(2.5,3.5)
 
 ## Angles
 
-Every angle in this library is in radians, both in and out. There are no
-degree variants; use `* 180 / Math::PI` to convert when you need to.
+Every angle in this library is in radians, both in and out. That is the
+native unit, and nothing switches it.
 
 Positive angles turn counterclockwise, which is the direction `#rotate`
 and `#perpendicular` turn in.

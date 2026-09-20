@@ -45,6 +45,7 @@ describe Vector2d do
   it_behaves_like "a class preserving method", :resize, 2.0
   it_behaves_like "a class preserving method", :reverse
   it_behaves_like "a class preserving method", :rotate, Math::PI
+  it_behaves_like "a class preserving method", :rotate_degrees, 180
   it_behaves_like "a class preserving method", :rotate_around, 0, Math::PI
   it_behaves_like "a class preserving method", :round
   it_behaves_like "a class preserving method", :snap, 1
@@ -52,6 +53,13 @@ describe Vector2d do
   describe ".from_angle" do
     it "returns an instance of the receiver's class" do
       expect(subclass.from_angle(Math::PI / 2))
+        .to be_an_instance_of(subclass)
+    end
+  end
+
+  describe ".from_degrees" do
+    it "returns an instance of the receiver's class" do
+      expect(subclass.from_degrees(90))
         .to be_an_instance_of(subclass)
     end
   end

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "vector2d/angles"
 require_relative "vector2d/calculations"
 require_relative "vector2d/coercions"
 require_relative "vector2d/coordinates"
@@ -11,8 +12,10 @@ require_relative "vector2d/transformations"
 require_relative "vector2d/version"
 
 class Vector2d
+  extend Vector2d::Angles::ClassMethods
   extend Vector2d::Calculations::ClassMethods
   extend Vector2d::Coordinates
+  include Vector2d::Angles
   include Vector2d::Calculations
   include Vector2d::Coercions
   include Vector2d::Coordinates
