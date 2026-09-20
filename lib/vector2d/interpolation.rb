@@ -23,6 +23,10 @@ class Vector2d
     #
     #   v1.lerp(v2, Vector2d(0.25, 0.5)) # => ArgumentError
     #
+    # @!macro coercible
+    # @param amount [Integer, Float, Rational, BigDecimal]
+    #   the position along the segment
+    # @return [self]
     def lerp(other, amount)
       v = coerce_vector(other)
       amount = coordinate(amount)
@@ -62,6 +66,11 @@ class Vector2d
     #
     #   v1.inverse_lerp(v1, Vector2d(2.5, 5.0)) # => 0.0
     #
+    # @!macro coercible
+    # @param value [Vector2d, Array, String, Hash, Integer, Float, Rational,
+    #   BigDecimal, ::Vector, ::Matrix] the value to locate, anything
+    #   Vector2d.parse accepts
+    # @return [Float] the amount #lerp would take to reach the value
     def inverse_lerp(other, value)
       segment = coerce_vector(other) - self
       return 0.0 if segment.zero?
@@ -104,6 +113,10 @@ class Vector2d
     #
     #   v1.slerp(v2, 2.0).angle # => 3.1415..
     #
+    # @!macro coercible
+    # @param amount [Integer, Float, Rational, BigDecimal]
+    #   the position along the segment
+    # @return [self]
     def slerp(other, amount)
       v = coerce_vector(other)
       amount = coordinate(amount)
@@ -119,6 +132,8 @@ class Vector2d
     #   v2 = Vector2d(10, 20)
     #   v1.midpoint(v2) # => Vector2d(5.0,10.0)
     #
+    # @!macro coercible
+    # @return [self]
     def midpoint(other)
       lerp(other, 0.5)
     end
@@ -146,6 +161,9 @@ class Vector2d
     #
     #   v2.move_toward(v2, 2) # => Vector2d(10,0)
     #
+    # @!macro coercible
+    # @param distance [Integer, Float, Rational, BigDecimal] how far to move
+    # @return [self]
     def move_toward(target, distance)
       v = coerce_vector(target)
       distance = coordinate(distance)

@@ -17,6 +17,7 @@ class Vector2d
     #
     #   Vector2d(2, 0).area # => 0
     #
+    # @return [Integer, Float, Rational, BigDecimal]
     def area
       (x * y).abs
     end
@@ -31,6 +32,7 @@ class Vector2d
     #   Vector2d(2, 0).aspect_ratio # => ArgumentError
     #   Vector2d(0, 0).aspect_ratio # => ArgumentError
     #
+    # @return [Float]
     def aspect_ratio
       raise ArgumentError, "the zero vector has no aspect ratio" if zero?
       raise ArgumentError, "#{inspect} has no aspect ratio, y is zero" if y.zero?
@@ -48,6 +50,7 @@ class Vector2d
     #
     #   Vector2d(-3, 2).landscape? # => true
     #
+    # @return [Boolean]
     def landscape?
       x.abs > y.abs
     end
@@ -62,6 +65,7 @@ class Vector2d
     #
     #   Vector2d(2, -3).portrait? # => true
     #
+    # @return [Boolean]
     def portrait?
       x.abs < y.abs
     end
@@ -82,6 +86,7 @@ class Vector2d
     #
     #   Vector2d(0, 0).square? # => true
     #
+    # @return [Boolean]
     def square?
       x.abs == y.abs
     end
@@ -115,6 +120,10 @@ class Vector2d
     #
     #   Vector2d(0, 0).fit(Vector2d(10, 10)) # => Vector2d(0,0)
     #
+    # @!macro coercible
+    # @param upscale [Boolean] whether to scale a vector that already
+    #   fits up to the constraint
+    # @return [self]
     def fit(other, upscale: true)
       scale_by(fit_factors(coerce_vector(other)).min, upscale: upscale)
     end
@@ -143,6 +152,8 @@ class Vector2d
     #
     #   Vector2d(0, 0).fits?(constraint) # => true
     #
+    # @!macro coercible
+    # @return [Boolean]
     def fits?(other)
       factor = fit_factors(coerce_vector(other)).min
       factor.nil? || factor >= 1
@@ -177,6 +188,10 @@ class Vector2d
     #
     #   Vector2d(0, 0).cover(Vector2d(5, 5)) # => Vector2d(0,0)
     #
+    # @!macro coercible
+    # @param upscale [Boolean] whether to scale a vector that already
+    #   covers up to the constraint
+    # @return [self]
     def cover(other, upscale: true)
       scale_by(fit_factors(coerce_vector(other)).max, upscale: upscale)
     end
@@ -200,12 +215,17 @@ class Vector2d
     #   Vector2d(0, 10).covers?(constraint)  # => true
     #   Vector2d(0, 0).covers?(constraint)   # => true
     #
+    # @!macro coercible
+    # @return [Boolean]
     def covers?(other)
       factor = fit_factors(coerce_vector(other)).max
       factor.nil? || factor <= 1
     end
 
     # @deprecated Use #cover instead.
+    #
+    # @!macro coercible
+    # @return [self]
     def fit_either(other)
       warn_deprecated("Vector2d#fit_either is deprecated. Use #cover instead.")
       cover(other)
@@ -230,6 +250,8 @@ class Vector2d
     #
     #   Vector2d(0, 0).contain(Vector2d(40, 20)) # => Vector2d(40,20)
     #
+    # @!macro coercible
+    # @return [Vector2d] a vector of the argument's class, not of this one
     def contain(other)
       warn_deprecated("Vector2d#contain is deprecated. " \
                       "Use `other.fit(self, upscale: false)` instead.")
@@ -237,12 +259,18 @@ class Vector2d
     end
 
     # @deprecated Use #fit instead.
+    #
+    # @!macro coercible
+    # @return [self]
     def constrain_both(other)
       warn_deprecated("Vector2d#constrain_both is deprecated. Use #fit instead.")
       fit(other)
     end
 
     # @deprecated Use #cover instead.
+    #
+    # @!macro coercible
+    # @return [self]
     def constrain_one(other)
       warn_deprecated("Vector2d#constrain_one is deprecated. Use #cover instead.")
       cover(other)

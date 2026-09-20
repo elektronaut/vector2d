@@ -41,6 +41,10 @@ class Vector2d
     # is not transitive, and vectors that are approximately equal do not
     # have the same #hash.
     #
+    # @!macro coercible
+    # @param tolerance [Integer, Float, Rational, BigDecimal, nil]
+    #   an absolute distance, or nil for the default scaled tolerance
+    # @return [Boolean]
     def approx_equal?(other, tolerance = nil)
       v = coerce_vector(other)
       return distance(v) <= coordinate(tolerance) unless tolerance.nil?
@@ -61,6 +65,8 @@ class Vector2d
     #
     #   v.parallel?(Vector2d(0, 0)) # => true
     #
+    # @!macro coercible
+    # @return [Boolean]
     def parallel?(other)
       v = coerce_vector(other)
       return true if zero? || v.zero?
@@ -82,6 +88,8 @@ class Vector2d
     #
     #   v.independent?(Vector2d(0, 0)) # => false
     #
+    # @!macro coercible
+    # @return [Boolean]
     def independent?(other)
       !parallel?(other)
     end
@@ -106,6 +114,8 @@ class Vector2d
     #
     #   v.opposite?(Vector2d(0, 0)) # => false
     #
+    # @!macro coercible
+    # @return [Boolean]
     def opposite?(other)
       v = coerce_vector(other)
       return false if zero? || v.zero?
@@ -124,6 +134,8 @@ class Vector2d
     #
     #   v.perpendicular?(Vector2d(0, 0)) # => true
     #
+    # @!macro coercible
+    # @return [Boolean]
     def perpendicular?(other)
       v = coerce_vector(other)
       return true if zero? || v.zero?
@@ -137,6 +149,7 @@ class Vector2d
     #   Vector2d(2, Float::INFINITY).finite? # => false
     #   Vector2d(2, Float::NAN).finite?      # => false
     #
+    # @return [Boolean]
     def finite?
       x.finite? && y.finite?
     end
@@ -149,6 +162,7 @@ class Vector2d
     #
     #   (Vector2d(2, 3) * Float::INFINITY * 0).nan? # => true
     #
+    # @return [Boolean]
     def nan?
       coordinate_nan?(x) || coordinate_nan?(y)
     end

@@ -24,6 +24,13 @@ class Vector2d
   # Rust's glam are radians like this library, and their angles carry
   # over unconverted.
   module Angles
+    # The angle methods taking both vectors as arguments, and the
+    # conversions between radians and degrees. Extended into Vector2d,
+    # so they are called on the class.
+    #
+    #   Vector2d.angle_between(Vector2d(2, 3), Vector2d(4, 5))
+    #   # => 0.0867..
+    #
     module ClassMethods
       # Calculates the signed angle in radians from the first vector to
       # the second, in the range -PI..PI. The angle is positive when the
@@ -40,6 +47,9 @@ class Vector2d
       #
       #   Vector2d.angle_to(v1, Vector2d(0, 0)) # => 0.0
       #
+      # @param vector1 [Vector2d] the vector the angle is measured from
+      # @param vector2 [Vector2d] the vector the angle is measured to
+      # @return [Float] the angle in radians, in -PI..PI
       def angle_to(vector1, vector2)
         Math.atan2(cross_product(vector1, vector2),
                    dot_product(vector1, vector2))
@@ -59,6 +69,9 @@ class Vector2d
       #
       #   Vector2d.angle_between(v1, Vector2d(0, 0)) # => 0.0
       #
+      # @param vector1 [Vector2d] one of the vectors
+      # @param vector2 [Vector2d] the other vector
+      # @return [Float] the angle in radians, in 0..PI
       def angle_between(vector1, vector2)
         angle_to(vector1, vector2).abs
       end
@@ -79,6 +92,9 @@ class Vector2d
       #
       #   Vector2d.radians(Complex(1, 2)) # => ArgumentError
       #
+      # @param degrees [Integer, Float, Rational, BigDecimal]
+      #   the angle in degrees
+      # @return [Float] the angle in radians
       def radians(degrees)
         coordinate(degrees).to_f * Math::PI / 180
       end
@@ -101,6 +117,9 @@ class Vector2d
       #
       #   Vector2d.degrees(Complex(1, 2)) # => ArgumentError
       #
+      # @param radians [Integer, Float, Rational, BigDecimal]
+      #   the angle in radians
+      # @return [Float] the angle in degrees
       def degrees(radians)
         coordinate(radians).to_f * 180 / Math::PI
       end
@@ -123,6 +142,10 @@ class Vector2d
       #
       #   Vector2d.from_degrees(Complex(1, 2)) # => ArgumentError
       #
+      # @param angle [Integer, Float, Rational, BigDecimal] the angle in degrees
+      # @param length [Integer, Float, Rational, BigDecimal]
+      #   the length of the vector
+      # @return [Vector2d] a vector of the receiver's class
       def from_degrees(angle, length = 1.0)
         from_angle(radians(angle), length)
       end
@@ -132,6 +155,7 @@ class Vector2d
     #
     #   Vector2d(2, 3).angle # => 0.9827..
     #
+    # @return [Float] the angle in radians
     def angle
       Math.atan2(y, x)
     end
@@ -150,6 +174,8 @@ class Vector2d
     #
     #   v1.angle_to(Vector2d(0, 0)) # => 0.0
     #
+    # @!macro coercible
+    # @return [Float] the angle in radians, in -PI..PI
     def angle_to(other)
       v = coerce_vector(other)
       self.class.angle_to(self, v)
@@ -169,6 +195,8 @@ class Vector2d
     #
     #   v1.angle_between(Vector2d(0, 0)) # => 0.0
     #
+    # @!macro coercible
+    # @return [Float] the angle in radians, in 0..PI
     def angle_between(other)
       angle_to(other).abs
     end
@@ -183,6 +211,7 @@ class Vector2d
     #   length, angle = Vector2d(2, 3).to_polar
     #   Vector2d.from_angle(angle, length) # => Vector2d(2.0,3.0)
     #
+    # @return [Array(Float, Float)] the length and the angle in radians
     def to_polar
       [length, angle]
     end
@@ -196,6 +225,8 @@ class Vector2d
     #
     #   Vector2d(2, 3).rotate(Complex(1, 2)) # => ArgumentError
     #
+    # @param angle [Integer, Float, Rational, BigDecimal] the angle in radians
+    # @return [self]
     def rotate(angle)
       angle = coordinate(angle)
       cos = Math.cos(angle)
@@ -210,6 +241,9 @@ class Vector2d
     #   Vector2d(2, 1).rotate_around(Vector2d(1, 1), Math::PI / 2)
     #   # => Vector2d(1.0,2.0)
     #
+    # @!macro coercible
+    # @param angle [Integer, Float, Rational, BigDecimal] the angle in radians
+    # @return [self]
     def rotate_around(center, angle)
       center_v = coerce_vector(center)
       (self - center_v).rotate(angle) + center_v
@@ -222,6 +256,7 @@ class Vector2d
     # Counterclockwise is the same positive direction #rotate turns in.
     # Use #perpendicular_cw for the other one.
     #
+    # @return [self]
     def perpendicular
       build(-y, x)
     end
@@ -230,6 +265,7 @@ class Vector2d
     #
     #   Vector2d(2, 3).perpendicular_cw # => Vector2d(3,-2)
     #
+    # @return [self]
     def perpendicular_cw
       build(y, -x)
     end
@@ -249,6 +285,7 @@ class Vector2d
     #   Vector2d.from_degrees(Vector2d(2, 3).angle_in_degrees, 5.0)
     #   # => Vector2d(2.7735..,4.1602..)
     #
+    # @return [Float] the angle in degrees, in -180..180
     def angle_in_degrees
       self.class.degrees(angle)
     end
@@ -269,6 +306,8 @@ class Vector2d
     #
     #   Vector2d(2, 3).rotate_degrees(Complex(1, 2)) # => ArgumentError
     #
+    # @param angle [Integer, Float, Rational, BigDecimal] the angle in degrees
+    # @return [self]
     def rotate_degrees(angle)
       rotate(self.class.radians(angle))
     end

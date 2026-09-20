@@ -22,6 +22,11 @@ class Vector2d
     # Complex numbers are not coordinates, and are rejected.
     #
     #   Vector2d.from_angle(Complex(1, 2)) # => ArgumentError
+    #
+    # @param angle [Integer, Float, Rational, BigDecimal] the angle in radians
+    # @param length [Integer, Float, Rational, BigDecimal]
+    #   the length of the vector
+    # @return [Vector2d] a vector of the receiver's class
     def from_angle(angle, length = 1.0)
       angle = coordinate(angle).to_f
       length = coordinate(length).to_f
@@ -44,6 +49,11 @@ class Vector2d
     # Raises ArgumentError unless the length is a real number.
     #
     #   Vector2d.random(Complex(1, 2)) # => ArgumentError
+    #
+    # @param length [Integer, Float, Rational, BigDecimal]
+    #   the length of the vector
+    # @param random [#rand] the source of randomness
+    # @return [Vector2d] a vector of the receiver's class
     def random(length = 1.0, random: Random)
       from_angle(random.rand * 2 * Math::PI, length)
     end
@@ -62,6 +72,7 @@ class Vector2d
     #   (Vector2d.up * 2).y   # => 2
     #   (Vector2d.up * 0.5).y # => 0.5
     #
+    # @return [Vector2d] a vector of the receiver's class
     def zero
       build(0, 0)
     end
@@ -70,6 +81,7 @@ class Vector2d
     #
     #   Vector2d.one # => Vector2d(1,1)
     #
+    # @return [Vector2d] a vector of the receiver's class
     def one
       build(1, 1)
     end
@@ -85,6 +97,7 @@ class Vector2d
     # in screen coordinates grow the y axis downwards and call (0, -1)
     # up, so flip the y axis at that boundary.
     #
+    # @return [Vector2d] a vector of the receiver's class
     def up
       build(0, 1)
     end
@@ -95,6 +108,7 @@ class Vector2d
     #   Vector2d.down       # => Vector2d(0,-1)
     #   Vector2d.down.angle # => -1.5707..
     #
+    # @return [Vector2d] a vector of the receiver's class
     def down
       build(0, -1)
     end
@@ -104,6 +118,7 @@ class Vector2d
     #   Vector2d.left       # => Vector2d(-1,0)
     #   Vector2d.left.angle # => 3.1415..
     #
+    # @return [Vector2d] a vector of the receiver's class
     def left
       build(-1, 0)
     end
@@ -114,6 +129,7 @@ class Vector2d
     #   Vector2d.right       # => Vector2d(1,0)
     #   Vector2d.right.angle # => 0.0
     #
+    # @return [Vector2d] a vector of the receiver's class
     def right
       build(1, 0)
     end

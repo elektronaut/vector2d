@@ -13,6 +13,8 @@ class Vector2d
     # Matrices are coerced the other way around, see
     # Vector2d::MatrixInterop#coerce.
     #
+    # @!macro coercible
+    # @return [Array(Vector2d, self)] the coerced operand and this vector
     def coerce(other)
       [coerce_vector(other), self]
     end
@@ -27,6 +29,7 @@ class Vector2d
     #   in [Integer => a, Integer => b] then a + b
     #   end # => 7
     #
+    # @return [Array<Integer, Float, Rational, BigDecimal>] the [x, y] pair
     def deconstruct
       to_a
     end
@@ -42,6 +45,10 @@ class Vector2d
     #   in {y: 0} then :on_x_axis
     #   end # => :on_y_axis
     #
+    # @param _keys [Array<Symbol>, nil] ignored, both components are
+    #   always returned
+    # @return [Hash{Symbol => Integer, Float, Rational, BigDecimal}]
+    #   the x and y coordinates
     def deconstruct_keys(_keys)
       to_hash
     end
@@ -50,6 +57,7 @@ class Vector2d
     #
     #   Vector2d(2, 3).inspect # => "Vector2d(2,3)"
     #
+    # @return [String]
     def inspect
       "#{self.class}(#{x},#{y})"
     end
@@ -58,6 +66,7 @@ class Vector2d
     #
     #   Vector2d(2, 3).to_a # => [2,3]
     #
+    # @return [Array<Integer, Float, Rational, BigDecimal>] the [x, y] pair
     def to_a
       [x, y]
     end
@@ -66,6 +75,8 @@ class Vector2d
     #
     #   Vector2d(2, 3).to_hash # => {x: 2, y: 3}
     #
+    # @return [Hash{Symbol => Integer, Float, Rational, BigDecimal}]
+    #   the x and y coordinates
     def to_hash
       { x: x, y: y }
     end
@@ -76,6 +87,7 @@ class Vector2d
     #
     #   Vector2d(2.0, 3.0).to_i_vector # => Vector2d(2,3)
     #
+    # @return [self]
     def to_i_vector
       build(x.to_i, y.to_i)
     end
@@ -85,6 +97,7 @@ class Vector2d
     #
     #   Vector2d(2, 3).to_f_vector # => Vector2d(2.0,3.0)
     #
+    # @return [self]
     def to_f_vector
       build(x.to_f, y.to_f)
     end
@@ -93,6 +106,7 @@ class Vector2d
     #
     #   Vector2d.new(150, 100).to_s # => "150x100"
     #
+    # @return [String]
     def to_s
       "#{x}x#{y}"
     end

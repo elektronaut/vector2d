@@ -4,6 +4,11 @@ class Vector2d
   # Products of two vectors, and the projection, reflection and
   # refraction built on them.
   module Projection
+    # The products taking both vectors as arguments. Extended into
+    # Vector2d, so they are called on the class.
+    #
+    #   Vector2d.dot_product(Vector2d(2, 1), Vector2d(2, 3)) # => 7
+    #
     module ClassMethods
       # Calculates dot product of two vectors.
       #
@@ -11,6 +16,9 @@ class Vector2d
       #   v2 = Vector2d(2, 3)
       #   Vector2d.dot_product(v1, v2) # => 7
       #
+      # @param vector1 [Vector2d] one of the vectors
+      # @param vector2 [Vector2d] the other vector
+      # @return [Integer, Float, Rational, BigDecimal] a scalar
       def dot_product(vector1, vector2)
         (vector1.x * vector2.x) + (vector1.y * vector2.y)
       end
@@ -21,6 +29,9 @@ class Vector2d
       #   v2 = Vector2d(2, 3)
       #   Vector2d.cross_product(v1, v2) # => 4
       #
+      # @param vector1 [Vector2d] the vector the product is measured from
+      # @param vector2 [Vector2d] the vector the product is measured to
+      # @return [Integer, Float, Rational, BigDecimal] a scalar
       def cross_product(vector1, vector2)
         (vector1.x * vector2.y) - (vector1.y * vector2.x)
       end
@@ -32,6 +43,8 @@ class Vector2d
     #   v2 = Vector2d(2, 3)
     #   v1.dot_product(v2) # => 7
     #
+    # @!macro coercible
+    # @return [Integer, Float, Rational, BigDecimal] a scalar
     def dot_product(other)
       v = coerce_vector(other)
       self.class.dot_product(self, v)
@@ -48,6 +61,8 @@ class Vector2d
     #   v2 = Vector2d(2, 3)
     #   v1.cross_product(v2) # => 4
     #
+    # @!macro coercible
+    # @return [Integer, Float, Rational, BigDecimal] a scalar
     def cross_product(other)
       v = coerce_vector(other)
       self.class.cross_product(self, v)
@@ -65,6 +80,8 @@ class Vector2d
     #
     #   v1.project(Vector2d(0, 0)) # => Vector2d(0.0,0.0)
     #
+    # @!macro coercible
+    # @return [self]
     def project(other)
       v = coerce_vector(other)
       return build(0.0, 0.0) if v.zero?
@@ -84,6 +101,8 @@ class Vector2d
     #
     #   v1.reject(Vector2d(0, 0)) # => Vector2d(2.0,3.0)
     #
+    # @!macro coercible
+    # @return [self]
     def reject(other)
       self - project(other)
     end
@@ -102,6 +121,8 @@ class Vector2d
     #
     #   v1.scalar_projection(Vector2d(0, 0)) # => 0.0
     #
+    # @!macro coercible
+    # @return [Float] a scalar, the signed length of the projection
     def scalar_projection(other)
       v = coerce_vector(other)
       return 0.0 if v.zero?
@@ -122,6 +143,8 @@ class Vector2d
     #
     #   vector.reflect(Vector2d(0, 0)) # => Vector2d(2.0,3.0)
     #
+    # @!macro coercible
+    # @return [self]
     def reflect(normal)
       v = coerce_vector(normal)
       return to_f_vector if v.zero?
@@ -158,6 +181,10 @@ class Vector2d
     #
     #   ray.refract(Vector2d(0, 1), Complex(1, 2)) # => ArgumentError
     #
+    # @!macro coercible
+    # @param refractive_index [Integer, Float, Rational, BigDecimal]
+    #   the ratio of refractive indices
+    # @return [self]
     def refract(normal, refractive_index)
       v = coerce_vector(normal)
       eta = coordinate(refractive_index)

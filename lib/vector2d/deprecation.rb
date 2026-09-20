@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Vector2d
+  # The warning issued by the methods deprecated for 3.0. Each of them
+  # names its replacement, and forwards to it.
   module Deprecation
     private
 

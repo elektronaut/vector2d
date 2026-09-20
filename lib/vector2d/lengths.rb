@@ -8,6 +8,7 @@ class Vector2d
     #
     #   Vector2d(2, 3).length # => 3.6055..
     #
+    # @return [Float]
     def length
       Math.sqrt(length_squared)
     end
@@ -19,11 +20,14 @@ class Vector2d
     #
     #   Vector2d(2, 3).length_squared # => 13
     #
+    # @return [Integer, Float, Rational, BigDecimal]
     def length_squared
       (x * x) + (y * y)
     end
 
     # @deprecated Use #length_squared instead.
+    #
+    # @return [Integer, Float, Rational, BigDecimal]
     def squared_length
       warn_deprecated("Vector2d#squared_length is deprecated. Use #length_squared instead.")
       length_squared
@@ -34,6 +38,7 @@ class Vector2d
     #   Vector2d(0, 0).zero? # => true
     #   Vector2d(2, 3).zero? # => false
     #
+    # @return [Boolean]
     def zero?
       length_squared.zero?
     end
@@ -49,6 +54,9 @@ class Vector2d
     #
     #   Vector2d(0.2, 0).approx_zero?(0.5) # => true
     #
+    # @param tolerance [Integer, Float, Rational, BigDecimal, nil]
+    #   an absolute length, or nil for the default scaled tolerance
+    # @return [Boolean]
     def approx_zero?(tolerance = nil)
       return length <= coordinate(tolerance) unless tolerance.nil?
 
@@ -60,6 +68,7 @@ class Vector2d
     #   Vector2d(0, 1).normalized? # => true
     #   Vector2d(2, 3).normalized? # => false
     #
+    # @return [Boolean]
     def normalized?
       near_zero?(length - 1.0)
     end
@@ -74,6 +83,7 @@ class Vector2d
     #
     #   Vector2d(0, 0).normalize # => Vector2d(0,0)
     #
+    # @return [self]
     def normalize
       resize(1.0)
     end
@@ -90,6 +100,8 @@ class Vector2d
     #
     #   Vector2d(2, 3).resize(-1.0) # => Vector2d(-0.5547..,-0.8320..)
     #
+    # @param new_length [Integer, Float, Rational, BigDecimal] the new length
+    # @return [self]
     def resize(new_length)
       new_length = coordinate(new_length)
       return self if zero?
@@ -132,6 +144,14 @@ class Vector2d
     #   Vector2d(2, 3).clamp_length(-1.0)     # => ArgumentError
     #   Vector2d(2, 3).clamp_length(4.0, 2.0) # => ArgumentError
     #
+    # @overload clamp_length(max)
+    #   @param max [Integer, Float, Rational, BigDecimal] the maximum length
+    # @overload clamp_length(min, max)
+    #   @param min [Integer, Float, Rational, BigDecimal] the minimum length
+    #   @param max [Integer, Float, Rational, BigDecimal] the maximum length
+    # @overload clamp_length(range)
+    #   @param range [Range] both bounds, and may be beginless or endless
+    # @return [self]
     def clamp_length(min, max = nil)
       min_length, max_length = clamp_length_bounds(min, max)
       resize(length.clamp(Range.new(min_length, max_length)))
@@ -143,6 +163,8 @@ class Vector2d
     #   v2 = Vector2d(3, 4)
     #   v1.distance(v2) # => 1.4142..
     #
+    # @!macro coercible
+    # @return [Float]
     def distance(other)
       (self - other).length
     end
@@ -154,11 +176,16 @@ class Vector2d
     #   v2 = Vector2d(5, 6)
     #   v1.distance_squared(v2) # => 18
     #
+    # @!macro coercible
+    # @return [Integer, Float, Rational, BigDecimal]
     def distance_squared(other)
       (self - other).length_squared
     end
 
     # @deprecated Use #distance_squared instead.
+    #
+    # @!macro coercible
+    # @return [Integer, Float, Rational, BigDecimal]
     def squared_distance(other)
       warn_deprecated("Vector2d#squared_distance is deprecated. Use #distance_squared instead.")
       distance_squared(other)
@@ -171,6 +198,8 @@ class Vector2d
     #   v2 = Vector2d(5, 7)
     #   v1.manhattan_distance(v2) # => 7
     #
+    # @!macro coercible
+    # @return [Integer, Float, Rational, BigDecimal]
     def manhattan_distance(other)
       (self - other).abs.to_a.sum
     end
@@ -182,6 +211,8 @@ class Vector2d
     #   v2 = Vector2d(5, 7)
     #   v1.chebyshev_distance(v2) # => 4
     #
+    # @!macro coercible
+    # @return [Integer, Float, Rational, BigDecimal]
     def chebyshev_distance(other)
       (self - other).abs.to_a.max
     end
@@ -202,6 +233,8 @@ class Vector2d
     #
     #   v1.direction_to(v1) # => Vector2d(0,0)
     #
+    # @!macro coercible
+    # @return [self]
     def direction_to(other)
       v = coerce_vector(other)
       build(v.x - x, v.y - y).normalize
