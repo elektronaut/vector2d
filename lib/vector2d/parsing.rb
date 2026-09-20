@@ -47,6 +47,13 @@ class Vector2d
     #   Vector2d.parse("150, 100") # => Vector2d(150,100)
     #   Vector2d.parse("x100")     # => Vector2d(0,100)
     #
+    # A vector is returned as it is, as long as it is an instance of
+    # the class parsing it. A vector of any other class is rebuilt, so
+    # a subclass is always handed back its own kind.
+    #
+    #   v = Vector2d(150, 100)
+    #   Vector2d.parse(v).equal?(v) # => true
+    #
     # Raises ArgumentError unless both coordinates resolve to real
     # numbers. Complex numbers are not coordinates, and are rejected.
     #
@@ -58,8 +65,8 @@ class Vector2d
     #   the forms above, or its x coordinate
     # @param second_arg [Integer, Float, Rational, BigDecimal]
     #   the y coordinate, when the first argument is the x coordinate
-    # @return [Vector2d] a vector of this class, unless the argument is
-    #   already a vector, which is returned as it is
+    # @return [Vector2d] a vector of this class, or the argument itself
+    #   when it already is one
     def parse(arg, second_arg = NO_ARGUMENT)
       return parse_single_arg(arg) if NO_ARGUMENT.equal?(second_arg)
 
@@ -69,7 +76,7 @@ class Vector2d
     private
 
     def parse_single_arg(arg)
-      return arg if arg.is_a?(Vector2d)
+      return parse_vector2d(arg) if arg.is_a?(Vector2d)
       return parse_array(arg) if arg.is_a?(Array)
       return parse_str(arg) if arg.is_a?(String)
       return parse_hash(arg) if arg.is_a?(Hash)
@@ -109,6 +116,14 @@ class Vector2d
       raise ArgumentError, "expected 2 coordinates, got #{vector.size}" unless vector.size == 2
 
       build(coordinate(vector[0]), coordinate(vector[1]))
+    end
+
+    # Returns a vector of this class as it is, and rebuilds one of any
+    # other class.
+    def parse_vector2d(vector)
+      return vector if vector.is_a?(self)
+
+      build(vector.x, vector.y)
     end
 
     def parse_str(str)
