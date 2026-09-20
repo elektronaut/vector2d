@@ -34,6 +34,8 @@ class Vector2d
     def length
       Math.sqrt(length_squared)
     end
+    alias magnitude length
+    alias norm length
 
     # Squared length of vector. Avoids the square root when lengths are
     # only being compared to each other.
@@ -81,6 +83,24 @@ class Vector2d
       return true if zero? || v.zero?
 
       near_zero?(cross_product(v), length * v.length)
+    end
+
+    # Are the two vectors linearly independent? This is the inverse of
+    # #parallel?, and matches Vector#independent? in the standard
+    # library.
+    #
+    #   v = Vector2d(2, 3)
+    #   v.independent?(Vector2d(3, 2))   # => true
+    #   v.independent?(Vector2d(4, 6))   # => false
+    #   v.independent?(Vector2d(-4, -6)) # => false
+    #
+    # The zero vector is parallel to everything, so nothing is
+    # independent of it.
+    #
+    #   v.independent?(Vector2d(0, 0)) # => false
+    #
+    def independent?(other)
+      !parallel?(other)
     end
 
     # Are the two vectors perpendicular to each other?

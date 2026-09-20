@@ -197,8 +197,13 @@ class Vector2d
       v = coerce_vector(other)
       self.class.dot_product(self, v)
     end
+    alias inner_product dot_product
+    alias dot dot_product
 
-    # Cross product of this vector and another vector.
+    # Cross product of this vector and another vector. In two
+    # dimensions this is a scalar, the z component of the equivalent
+    # three dimensional cross product. Vector#cross_product returns a
+    # perpendicular vector instead, which is #perpendicular here.
     #
     #   v1 = Vector2d(2, 1)
     #   v2 = Vector2d(2, 3)
@@ -245,6 +250,7 @@ class Vector2d
     def angle_between(other)
       angle_to(other).abs
     end
+    alias angle_with angle_between
 
     # Vector projection of this vector onto another vector. The
     # argument is coerced, so scalars work too.
