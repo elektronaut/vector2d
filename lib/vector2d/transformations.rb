@@ -9,7 +9,7 @@ class Vector2d
     #   Vector2d(-2, -3).abs # => Vector2d(2,3)
     #
     def abs
-      self.class.new(x.abs, y.abs)
+      build(x.abs, y.abs)
     end
 
     # Rounds vector up to nearest integer.
@@ -17,7 +17,7 @@ class Vector2d
     #   Vector2d(2.4, 3.6).ceil # => Vector2d(3,4)
     #
     def ceil
-      self.class.new(x.ceil, y.ceil)
+      build(x.ceil, y.ceil)
     end
 
     # Clamps the vector between two others, one axis at a time. The
@@ -40,7 +40,7 @@ class Vector2d
     #
     def clamp(min, max = nil)
       min_v, max_v = clamp_bounds(min, max)
-      self.class.new(
+      build(
         x.clamp(Range.new(min_v&.x, max_v&.x)),
         y.clamp(Range.new(min_v&.y, max_v&.y))
       )
@@ -73,7 +73,7 @@ class Vector2d
     #   Vector2d(2.4, 3.6).floor # => Vector2d(2,3)
     #
     def floor
-      self.class.new(x.floor, y.floor)
+      build(x.floor, y.floor)
     end
 
     # Returns the larger value of each axis. The other vector is
@@ -85,7 +85,7 @@ class Vector2d
     #
     def max(other)
       v = to_vector(other)
-      self.class.new([x, v.x].max, [y, v.y].max)
+      build([x, v.x].max, [y, v.y].max)
     end
 
     # Returns the smaller value of each axis. The other vector is
@@ -97,7 +97,7 @@ class Vector2d
     #
     def min(other)
       v = to_vector(other)
-      self.class.new([x, v.x].min, [y, v.y].min)
+      build([x, v.x].min, [y, v.y].min)
     end
 
     # Normalizes the vector.
@@ -122,7 +122,7 @@ class Vector2d
     # Use #perpendicular_cw for the other one.
     #
     def perpendicular
-      self.class.new(-y, x)
+      build(-y, x)
     end
     alias perpendicular_ccw perpendicular
 
@@ -131,7 +131,7 @@ class Vector2d
     #   Vector2d(2, 3).perpendicular_cw # => Vector2d(3,-2)
     #
     def perpendicular_cw
-      self.class.new(y, -x)
+      build(y, -x)
     end
 
     # Changes magnitude of vector.
@@ -157,7 +157,7 @@ class Vector2d
     #   Vector2d(2, 3).reverse # => Vector2d(-2,-3)
     #
     def reverse
-      self.class.new(-x, -y)
+      build(-x, -y)
     end
 
     # Rotates the vector around the origin. The angle is in radians, and
@@ -166,7 +166,7 @@ class Vector2d
     #   Vector2d(2, 3).rotate(Math::PI / 2) # => Vector2d(-3.0,2.0)
     #
     def rotate(angle)
-      self.class.new(
+      build(
         (x * Math.cos(angle)) - (y * Math.sin(angle)),
         (x * Math.sin(angle)) + (y * Math.cos(angle))
       )
@@ -190,7 +190,7 @@ class Vector2d
     #   Vector2d(2.4444, 3.666).round(2) # => Vector2d(2.44, 3.67)
     #
     def round(digits = 0)
-      self.class.new(x.round(digits), y.round(digits))
+      build(x.round(digits), y.round(digits))
     end
 
     private
