@@ -10,6 +10,21 @@ class Vector2d
       Math.atan2(y, x)
     end
 
+    # Area covered by the vector, the product of its coordinates.
+    # Coordinates are taken by magnitude, as in #aspect_ratio, so the
+    # area is never negative.
+    #
+    #   Vector2d(2, 3).area  # => 6
+    #   Vector2d(-2, 3).area # => 6
+    #
+    # A vector without width or height covers nothing.
+    #
+    #   Vector2d(2, 0).area # => 0
+    #
+    def area
+      (x * y).abs
+    end
+
     # Aspect ratio of vector.
     #
     #   Vector2d(2, 3).aspect_ratio # => 0.6666..
@@ -25,6 +40,54 @@ class Vector2d
       raise ArgumentError, "#{inspect} has no aspect ratio, y is zero" if y.zero?
 
       (x.to_f / y).abs
+    end
+
+    # Is the vector wider than it is tall?
+    #
+    #   Vector2d(3, 2).landscape? # => true
+    #   Vector2d(2, 3).landscape? # => false
+    #   Vector2d(2, 2).landscape? # => false
+    #
+    # Coordinates are compared by magnitude, as in #aspect_ratio.
+    #
+    #   Vector2d(-3, 2).landscape? # => true
+    #
+    def landscape?
+      x.abs > y.abs
+    end
+
+    # Is the vector taller than it is wide?
+    #
+    #   Vector2d(2, 3).portrait? # => true
+    #   Vector2d(3, 2).portrait? # => false
+    #   Vector2d(2, 2).portrait? # => false
+    #
+    # Coordinates are compared by magnitude, as in #aspect_ratio.
+    #
+    #   Vector2d(2, -3).portrait? # => true
+    #
+    def portrait?
+      x.abs < y.abs
+    end
+
+    # Is the vector as wide as it is tall?
+    #
+    #   Vector2d(2, 2).square? # => true
+    #   Vector2d(2, 3).square? # => false
+    #
+    # Coordinates are compared by magnitude, as in #aspect_ratio.
+    # Exactly one of #square?, #landscape? and #portrait? holds for any
+    # vector.
+    #
+    #   Vector2d(-2, 2).square? # => true
+    #
+    # Unlike #aspect_ratio, these three don't single out the zero
+    # vector. It is square.
+    #
+    #   Vector2d(0, 0).square? # => true
+    #
+    def square?
+      x.abs == y.abs
     end
 
     # Length of vector.
