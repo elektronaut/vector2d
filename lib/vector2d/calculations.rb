@@ -173,7 +173,7 @@ class Vector2d
     #   v1.lerp(v2, -0.5) # => Vector2d(-5.0,-10.0)
     #
     def lerp(other, amount)
-      v = as_vector(other)
+      v = coerce_vector(other)
       return self + ((v - self) * amount) unless real_number?(amount)
 
       build(interpolate(x, v.x, amount), interpolate(y, v.y, amount))
@@ -196,7 +196,7 @@ class Vector2d
     #   v1.dot_product(v2) # => 7
     #
     def dot_product(other)
-      v = as_vector(other)
+      v = coerce_vector(other)
       self.class.dot_product(self, v)
     end
     alias inner_product dot_product
@@ -212,7 +212,7 @@ class Vector2d
     #   v1.cross_product(v2) # => 4
     #
     def cross_product(other)
-      v = as_vector(other)
+      v = coerce_vector(other)
       self.class.cross_product(self, v)
     end
 
@@ -231,7 +231,7 @@ class Vector2d
     #   v1.angle_to(Vector2d(0, 0)) # => 0.0
     #
     def angle_to(other)
-      v = as_vector(other)
+      v = coerce_vector(other)
       self.class.angle_to(self, v)
     end
 
@@ -267,7 +267,7 @@ class Vector2d
     #   v1.project(Vector2d(0, 0)) # => Vector2d(0.0,0.0)
     #
     def project(other)
-      v = as_vector(other)
+      v = coerce_vector(other)
       return build(0.0, 0.0) if v.zero?
 
       scale = dot_product(v).to_f / v.length_squared
@@ -304,7 +304,7 @@ class Vector2d
     #   v1.scalar_projection(Vector2d(0, 0)) # => 0.0
     #
     def scalar_projection(other)
-      v = as_vector(other)
+      v = coerce_vector(other)
       return 0.0 if v.zero?
 
       dot_product(v) / v.length
@@ -324,7 +324,7 @@ class Vector2d
     #   vector.reflect(Vector2d(0, 0)) # => Vector2d(2.0,3.0)
     #
     def reflect(normal)
-      v = as_vector(normal)
+      v = coerce_vector(normal)
       return to_f_vector if v.zero?
 
       n = v.normalize
@@ -332,12 +332,6 @@ class Vector2d
     end
 
     private
-
-    # Coerces anything Vector2d.parse accepts into a vector. A vector
-    # is returned as it is.
-    def as_vector(other)
-      other.is_a?(Vector2d) ? other : coerce_vector(other)
-    end
 
     def interpolate(start, finish, amount)
       start + ((finish - start) * amount)
@@ -352,7 +346,7 @@ class Vector2d
     def calculate_each(method, other)
       return build(x.send(method, other), y.send(method, other)) if real_number?(other)
 
-      v = as_vector(other)
+      v = coerce_vector(other)
       build(
         x.send(method, v.x),
         y.send(method, v.y)
