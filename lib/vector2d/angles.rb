@@ -80,7 +80,7 @@ class Vector2d
       #   Vector2d.radians(Complex(1, 2)) # => ArgumentError
       #
       def radians(degrees)
-        coordinate(degrees) * Math::PI / 180
+        coordinate(degrees).to_f * Math::PI / 180
       end
 
       # Converts an angle from radians to degrees, the inverse of
@@ -102,7 +102,7 @@ class Vector2d
       #   Vector2d.degrees(Complex(1, 2)) # => ArgumentError
       #
       def degrees(radians)
-        coordinate(radians) * 180 / Math::PI
+        coordinate(radians).to_f * 180 / Math::PI
       end
 
       # Creates a vector from an angle in degrees, with an optional

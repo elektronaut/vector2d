@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require "bigdecimal"
 
 describe Vector2d::Constructors do
   describe ".from_angle" do
@@ -41,6 +42,34 @@ describe Vector2d::Constructors do
 
       its(:x) { is_expected.to be_a(Float) }
       its(:y) { is_expected.to be_a(Float) }
+    end
+
+    [2, Math::PI / 2, Rational(1, 2), BigDecimal("1.5707963267948966")].each do |angle|
+      context "with a #{angle.class} angle" do
+        subject(:vector) { Vector2d.from_angle(angle) }
+
+        it "returns float coordinates" do
+          expect(vector.to_a).to all(be_an_instance_of(Float))
+        end
+
+        it "returns the angle it was given" do
+          expect(vector.angle).to be_within(0.0001).of(angle.to_f)
+        end
+      end
+    end
+
+    [2, 2.0, Rational(2, 1), BigDecimal("2")].each do |length|
+      context "with a #{length.class} length" do
+        subject(:vector) { Vector2d.from_angle(0.9827, length) }
+
+        it "returns float coordinates" do
+          expect(vector.to_a).to all(be_an_instance_of(Float))
+        end
+
+        it "applies the length" do
+          expect(vector.length).to be_within(0.0001).of(2.0)
+        end
+      end
     end
 
     it "is the inverse of #to_polar" do
@@ -159,6 +188,20 @@ describe Vector2d::Constructors do
       end
 
       expect(quadrants.uniq.size).to eq(4)
+    end
+
+    [2, 2.0, Rational(2, 1), BigDecimal("2")].each do |length|
+      context "with a #{length.class} length" do
+        subject(:vector) { Vector2d.random(length, random: Random.new(42)) }
+
+        it "returns float coordinates" do
+          expect(vector.to_a).to all(be_an_instance_of(Float))
+        end
+
+        it "applies the length" do
+          expect(vector.length).to be_within(1e-12).of(2.0)
+        end
+      end
     end
 
     context "with a non-numeric length" do

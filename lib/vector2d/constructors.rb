@@ -23,8 +23,8 @@ class Vector2d
     #
     #   Vector2d.from_angle(Complex(1, 2)) # => ArgumentError
     def from_angle(angle, length = 1.0)
-      angle = coordinate(angle)
-      length = coordinate(length)
+      angle = coordinate(angle).to_f
+      length = coordinate(length).to_f
       build(Math.cos(angle) * length, Math.sin(angle) * length)
     end
 
