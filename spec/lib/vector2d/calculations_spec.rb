@@ -348,6 +348,30 @@ describe Vector2d::Calculations do
     it "coerces the argument" do
       expect(vector.lerp([10, 20], 0.5)).to eq(Vector2d.new(5.0, 10.0))
     end
+
+    context "with a complex amount" do
+      it "raises an error" do
+        expect { vector.lerp(comp, Complex(1, 2)) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
+        )
+      end
+    end
+
+    context "with a vector amount" do
+      it "raises an error" do
+        expect { vector.lerp(comp, Vector2d.new(0.25, 0.5)) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: Vector2d(0.25,0.5)")
+        )
+      end
+    end
+
+    context "with a string amount" do
+      it "raises an error" do
+        expect { vector.lerp(comp, "2x3") }.to(
+          raise_error(ArgumentError, 'not a valid coordinate: "2x3"')
+        )
+      end
+    end
   end
 
   describe "#midpoint" do

@@ -172,10 +172,14 @@ class Vector2d
     #   v1.lerp(v2, 2.0)  # => Vector2d(20.0,40.0)
     #   v1.lerp(v2, -0.5) # => Vector2d(-5.0,-10.0)
     #
+    # Raises ArgumentError unless the amount is a real number. One
+    # amount applies to both axes.
+    #
+    #   v1.lerp(v2, Vector2d(0.25, 0.5)) # => ArgumentError
+    #
     def lerp(other, amount)
       v = coerce_vector(other)
-      return self + ((v - self) * amount) unless real_number?(amount)
-
+      amount = coordinate(amount)
       build(interpolate(x, v.x, amount), interpolate(y, v.y, amount))
     end
 
