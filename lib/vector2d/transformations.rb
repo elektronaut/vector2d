@@ -57,7 +57,13 @@ class Vector2d
     #
     #   Vector2d(0, 0).clamp_length(1.0) # => Vector2d(0,0)
     #
+    # The max length can't be negative.
+    #
+    #   Vector2d(2, 3).clamp_length(-1.0) # => ArgumentError
+    #
     def clamp_length(max)
+      raise ArgumentError, "negative max length: #{max}" if max.negative?
+
       resize([max, length].min)
     end
     alias truncate clamp_length
@@ -135,6 +141,10 @@ class Vector2d
     # The zero vector has no direction, and is returned unchanged.
     #
     #   Vector2d(0, 0).resize(1.0) # => Vector2d(0,0)
+    #
+    # A negative length reverses the vector.
+    #
+    #   Vector2d(2, 3).resize(-1.0) # => Vector2d(-0.5547..,-0.8320..)
     #
     def resize(new_length)
       return self if zero?

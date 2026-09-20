@@ -26,7 +26,11 @@ class Vector2d
     \A\s*(#{COORDINATE_EXPRESSION})?\s*[x,]\s*(#{COORDINATE_EXPRESSION})?\s*\z
   /xi
 
-  private_constant :COORDINATE_EXPRESSION, :STRING_EXPRESSION
+  # Stands in for an omitted second argument to .parse, so an explicit
+  # nil can be rejected as a coordinate.
+  NO_ARGUMENT = Object.new
+
+  private_constant :COORDINATE_EXPRESSION, :STRING_EXPRESSION, :NO_ARGUMENT
 
   class << self
     # Builds a new vector of this class from two coordinates, the way
@@ -86,8 +90,10 @@ class Vector2d
     #   Vector2d.parse("x100")     # => Vector2d(0,100)
     #
     # Raises ArgumentError unless both coordinates resolve to numbers.
-    def parse(arg, second_arg = nil)
-      return parse_single_arg(arg) if second_arg.nil?
+    #
+    #   Vector2d.parse(150, nil) # => ArgumentError
+    def parse(arg, second_arg = NO_ARGUMENT)
+      return parse_single_arg(arg) if NO_ARGUMENT.equal?(second_arg)
 
       build(coordinate(arg), coordinate(second_arg))
     end

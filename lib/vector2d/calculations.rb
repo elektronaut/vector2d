@@ -256,11 +256,11 @@ class Vector2d
     # The zero vector has no direction, and there is nothing to project
     # onto. The zero vector is returned.
     #
-    #   v1.project(Vector2d(0, 0)) # => Vector2d(0,0)
+    #   v1.project(Vector2d(0, 0)) # => Vector2d(0.0,0.0)
     #
     def project(other)
       v = to_vector(other)
-      return build(0, 0) if v.zero?
+      return build(0.0, 0.0) if v.zero?
 
       scale = dot_product(v).to_f / v.length_squared
       build(v.x * scale, v.y * scale)
@@ -275,7 +275,7 @@ class Vector2d
     #
     # The zero vector has no direction, and nothing is projected away.
     #
-    #   v1.reject(Vector2d(0, 0)) # => Vector2d(2,3)
+    #   v1.reject(Vector2d(0, 0)) # => Vector2d(2.0,3.0)
     #
     def reject(other)
       self - project(other)
@@ -311,12 +311,15 @@ class Vector2d
     #   vector.reflect(Vector2d(0, 5)) # => Vector2d(2.0,-3.0)
     #
     # The zero vector has no direction, and defines no surface to
-    # reflect off. The vector is returned unchanged.
+    # reflect off. Nothing is reflected, and the vector is returned.
     #
-    #   vector.reflect(Vector2d(0, 0)) # => Vector2d(2,3)
+    #   vector.reflect(Vector2d(0, 0)) # => Vector2d(2.0,3.0)
     #
     def reflect(normal)
-      n = to_vector(normal).normalize
+      v = to_vector(normal)
+      return to_f_vector if v.zero?
+
+      n = v.normalize
       self - (n * (2 * dot_product(n)))
     end
 
