@@ -43,6 +43,18 @@ describe Vector2d::Properties do
     end
   end
 
+  describe "#magnitude" do
+    it "is an alias of #length" do
+      expect(vector.magnitude).to be_within(0.0001).of(3.6055)
+    end
+  end
+
+  describe "#norm" do
+    it "is an alias of #length" do
+      expect(vector.norm).to be_within(0.0001).of(3.6055)
+    end
+  end
+
   describe "#length_squared" do
     it "calculates the squared length" do
       expect(vector.length_squared).to eq(13)
@@ -157,6 +169,28 @@ describe Vector2d::Properties do
       it "is false for a vector that is barely off" do
         expect(vector.parallel?(Vector2d.new(1.3e8, 7.7e8 + 1))).to be(false)
       end
+    end
+  end
+
+  describe "#independent?" do
+    subject { vector.independent?(other) }
+
+    context "when the vectors aren't parallel" do
+      let(:other) { Vector2d.new(3, 2) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when the other vector points the same way" do
+      let(:other) { Vector2d.new(4, 6) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "with the zero vector" do
+      let(:other) { Vector2d.new(0, 0) }
+
+      it { is_expected.to be(false) }
     end
   end
 

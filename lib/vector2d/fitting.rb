@@ -32,7 +32,7 @@ class Vector2d
     #   Vector2d(0, 0).fit(Vector2d(10, 10)) # => Vector2d(0,0)
     #
     def fit(other, upscale: true)
-      scale_by(fit_factors(to_vector(other)).min, upscale: upscale)
+      scale_by(fit_factors(coerce_vector(other)).min, upscale: upscale)
     end
 
     # Scales the vector to cover another vector, retaining the aspect
@@ -65,7 +65,7 @@ class Vector2d
     #   Vector2d(0, 0).cover(Vector2d(5, 5)) # => Vector2d(0,0)
     #
     def cover(other, upscale: true)
-      scale_by(fit_factors(to_vector(other)).max, upscale: upscale)
+      scale_by(fit_factors(coerce_vector(other)).max, upscale: upscale)
     end
     alias fit_either cover
 
@@ -91,7 +91,7 @@ class Vector2d
     def contain(other)
       warn_deprecated("Vector2d#contain is deprecated. " \
                       "Use `other.fit(self, upscale: false)` instead.")
-      to_vector(other).fit(self, upscale: false)
+      coerce_vector(other).fit(self, upscale: false)
     end
 
     # @deprecated Use #fit instead.

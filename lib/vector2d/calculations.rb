@@ -173,7 +173,7 @@ class Vector2d
     #   v1.lerp(v2, -0.5) # => Vector2d(-5.0,-10.0)
     #
     def lerp(other, amount)
-      v = to_vector(other)
+      v = coerce_vector(other)
       self + ((v - self) * amount)
     end
 
@@ -194,18 +194,23 @@ class Vector2d
     #   v1.dot_product(v2) # => 7
     #
     def dot_product(other)
-      v = to_vector(other)
+      v = coerce_vector(other)
       self.class.dot_product(self, v)
     end
+    alias inner_product dot_product
+    alias dot dot_product
 
-    # Cross product of this vector and another vector.
+    # Cross product of this vector and another vector. In two
+    # dimensions this is a scalar, the z component of the equivalent
+    # three dimensional cross product. Vector#cross_product returns a
+    # perpendicular vector instead, which is #perpendicular here.
     #
     #   v1 = Vector2d(2, 1)
     #   v2 = Vector2d(2, 3)
     #   v1.cross_product(v2) # => 4
     #
     def cross_product(other)
-      v = to_vector(other)
+      v = coerce_vector(other)
       self.class.cross_product(self, v)
     end
 
@@ -224,7 +229,7 @@ class Vector2d
     #   v1.angle_to(Vector2d(0, 0)) # => 0.0
     #
     def angle_to(other)
-      v = to_vector(other)
+      v = coerce_vector(other)
       self.class.angle_to(self, v)
     end
 
@@ -245,6 +250,7 @@ class Vector2d
     def angle_between(other)
       angle_to(other).abs
     end
+    alias angle_with angle_between
 
     # Vector projection of this vector onto another vector. The
     # argument is coerced, so scalars work too.
@@ -259,7 +265,7 @@ class Vector2d
     #   v1.project(Vector2d(0, 0)) # => Vector2d(0.0,0.0)
     #
     def project(other)
-      v = to_vector(other)
+      v = coerce_vector(other)
       return build(0.0, 0.0) if v.zero?
 
       scale = dot_product(v).to_f / v.length_squared
@@ -296,7 +302,7 @@ class Vector2d
     #   v1.scalar_projection(Vector2d(0, 0)) # => 0.0
     #
     def scalar_projection(other)
-      v = to_vector(other)
+      v = coerce_vector(other)
       return 0.0 if v.zero?
 
       dot_product(v) / v.length
@@ -316,7 +322,7 @@ class Vector2d
     #   vector.reflect(Vector2d(0, 0)) # => Vector2d(2.0,3.0)
     #
     def reflect(normal)
-      v = to_vector(normal)
+      v = coerce_vector(normal)
       return to_f_vector if v.zero?
 
       n = v.normalize
@@ -326,7 +332,7 @@ class Vector2d
     private
 
     def calculate_each(method, other)
-      v = to_vector(other)
+      v = coerce_vector(other)
       build(
         x.send(method, v.x),
         y.send(method, v.y)

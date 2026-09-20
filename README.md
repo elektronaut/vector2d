@@ -74,6 +74,22 @@ magnitude of `#angle_to`, so the order does not matter.
 Both ignore the magnitudes of the vectors. The zero vector has no
 direction, so any angle involving it is zero.
 
+## Standard library compatibility
+
+Vectors convert to and from the `Matrix` and `Vector` classes in the
+standard library.
+
+```ruby
+Vector2d(2, 3).to_vector         # => Vector[2, 3]
+Vector2d(2, 3).to_matrix         # => Matrix[[2], [3]]
+Vector2d.parse(Vector[2, 3])     # => Vector2d(2,3)
+Vector2d.parse(Matrix[[2], [3]]) # => Vector2d(2,3)
+```
+
+The `matrix` library is a bundled gem, so applications using these
+methods need `gem "matrix"` in their Gemfile. It is only loaded when a
+conversion needs it.
+
 ## Documentation
 
 [API documentation](https://rubydoc.info/gems/vector2d)

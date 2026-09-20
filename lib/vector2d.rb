@@ -3,6 +3,7 @@
 require_relative "vector2d/calculations"
 require_relative "vector2d/coercions"
 require_relative "vector2d/fitting"
+require_relative "vector2d/matrix_interop"
 require_relative "vector2d/properties"
 require_relative "vector2d/transformations"
 require_relative "vector2d/version"
@@ -12,6 +13,7 @@ class Vector2d
   include Vector2d::Calculations
   include Vector2d::Coercions
   include Vector2d::Fitting
+  include Vector2d::MatrixInterop
   include Vector2d::Properties
   include Vector2d::Transformations
 
@@ -86,6 +88,8 @@ class Vector2d
     #   Vector2d.parse({x: 150, y: 100})
     #   Vector2d.parse({"x" => 150.0, "y" => 100.0})
     #   Vector2d.parse(Vector2d(150, 100))
+    #   Vector2d.parse(Vector[150, 100])
+    #   Vector2d.parse(Matrix[[150], [100]])
     #
     # Strings are either "150x100" or "150,100", optionally signed and
     # case insensitive. Coordinates keep their type, so "150x100" gives
@@ -112,6 +116,8 @@ class Vector2d
       return parse_array(arg) if arg.is_a?(Array)
       return parse_str(arg) if arg.is_a?(String)
       return parse_hash(arg) if arg.is_a?(Hash)
+      return parse_vector(arg) if MatrixInterop.vector?(arg)
+      return parse_matrix(arg) if MatrixInterop.matrix?(arg)
 
       value = coordinate(arg)
       build(value, value)
@@ -129,6 +135,23 @@ class Vector2d
     def parse_hash(hash)
       build(coordinate(hash[:x] || hash["x"]),
             coordinate(hash[:y] || hash["y"]))
+    end
+
+    def parse_matrix(matrix)
+      shape = [matrix.row_count, matrix.column_count]
+      unless [[2, 1], [1, 2]].include?(shape)
+        raise ArgumentError,
+              "expected a 2x1 or 1x2 matrix, got #{shape.join('x')}"
+      end
+
+      values = matrix.to_a.flatten
+      build(coordinate(values[0]), coordinate(values[1]))
+    end
+
+    def parse_vector(vector)
+      raise ArgumentError, "expected 2 coordinates, got #{vector.size}" unless vector.size == 2
+
+      build(coordinate(vector[0]), coordinate(vector[1]))
     end
 
     def coordinate(value)

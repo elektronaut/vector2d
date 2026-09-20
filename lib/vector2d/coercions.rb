@@ -7,8 +7,11 @@ class Vector2d
     #
     #   2 * Vector2d(3, 4) # => Vector2d(6,8)
     #
+    # Matrices are coerced the other way around, see
+    # Vector2d::MatrixInterop#coerce.
+    #
     def coerce(other)
-      [to_vector(other), self]
+      [coerce_vector(other), self]
     end
 
     # Renders vector as a pretty string.
@@ -62,12 +65,17 @@ class Vector2d
     private
 
     # Parses anything Vector2d.parse accepts into a vector.
-    def to_vector(other)
+    def coerce_vector(other)
+      return Vector2d.parse(other) if parseable?(other)
+
+      raise TypeError, "#{other.class} can't be coerced into #{self.class}"
+    end
+
+    # Can the object be parsed into a vector?
+    def parseable?(other)
       case other
-      when Vector2d, Array, Numeric, String, Hash
-        Vector2d.parse(other)
-      else
-        raise TypeError, "#{other.class} can't be coerced into #{self.class}"
+      when Vector2d, Array, Numeric, String, Hash then true
+      else MatrixInterop.vector?(other) || MatrixInterop.matrix?(other)
       end
     end
   end

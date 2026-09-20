@@ -349,6 +349,22 @@ describe Vector2d::Calculations do
     end
   end
 
+  describe "#inner_product" do
+    let(:comp) { Vector2d.new(3, 4) }
+
+    it "is an alias of #dot_product" do
+      expect(vector.inner_product(comp)).to eq(vector.dot_product(comp))
+    end
+  end
+
+  describe "#dot" do
+    let(:comp) { Vector2d.new(3, 4) }
+
+    it "is an alias of #dot_product" do
+      expect(vector.dot(comp)).to eq(vector.dot_product(comp))
+    end
+  end
+
   describe "#angle_to" do
     let(:comp) { Vector2d.new(3, 4) }
 
@@ -374,6 +390,14 @@ describe Vector2d::Calculations do
 
     it "coerces the argument" do
       expect(vector.angle_between([3, 4])).to eq(vector.angle_between(comp))
+    end
+  end
+
+  describe "#angle_with" do
+    let(:comp) { Vector2d.new(3, 4) }
+
+    it "is an alias of #angle_between" do
+      expect(vector.angle_with(comp)).to eq(vector.angle_between(comp))
     end
   end
 
