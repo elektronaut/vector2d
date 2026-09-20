@@ -202,7 +202,58 @@ class Vector2d
       clamp_length(max)
     end
 
+    # Snaps each axis to the nearest multiple of a step. The step is
+    # coerced, so scalars work too, and a vector gives each axis its
+    # own step.
+    #
+    #   vector = Vector2d(23, 47)
+    #   vector.snap(10)              # => Vector2d(20,50)
+    #   vector.snap(Vector2d(10, 5)) # => Vector2d(20,45)
+    #
+    # Coordinates take the type of the step, so an integer step snaps
+    # to integers.
+    #
+    #   Vector2d(2.3, 3.7).snap(1)   # => Vector2d(2,4)
+    #   Vector2d(2.3, 3.7).snap(0.5) # => Vector2d(2.5,3.5)
+    #
+    # A step of zero has no multiples to snap to, and leaves the axis
+    # unchanged.
+    #
+    #   vector.snap(0)               # => Vector2d(23,47)
+    #   vector.snap(Vector2d(10, 0)) # => Vector2d(20,47)
+    #
+    def snap(step)
+      v = coerce_vector(step)
+      build(snap_coordinate(x, v.x), snap_coordinate(y, v.y))
+    end
+
+    # Truncates each axis toward zero, the component-wise companion to
+    # #ceil and #floor.
+    #
+    #   Vector2d(2.7, -2.7).trunc # => Vector2d(2,-2)
+    #   Vector2d(2.7, -2.7).floor # => Vector2d(2,-3)
+    #
+    # An optional number of digits keeps that many decimals, as in
+    # #ceil, #floor and #round.
+    #
+    #   Vector2d(2.77, -2.77).trunc(1) # => Vector2d(2.7,-2.7)
+    #
+    # The shorter name leaves #truncate to its deprecated meaning of
+    # #clamp_length, which scales the whole vector.
+    #
+    def trunc(digits = 0)
+      build(x.truncate(digits), y.truncate(digits))
+    end
+
     private
+
+    # Rounds a coordinate to the nearest multiple of a step. A step of
+    # zero has no multiples, and the coordinate is left alone.
+    def snap_coordinate(value, step)
+      return value if step.zero?
+
+      (value / step.to_f).round * step
+    end
 
     def clamp_bounds(min, max)
       if min.is_a?(Range)
