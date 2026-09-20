@@ -2,6 +2,7 @@
 
 require_relative "vector2d/calculations"
 require_relative "vector2d/coercions"
+require_relative "vector2d/deprecation"
 require_relative "vector2d/fitting"
 require_relative "vector2d/properties"
 require_relative "vector2d/transformations"
@@ -11,6 +12,7 @@ class Vector2d
   extend Vector2d::Calculations::ClassMethods
   include Vector2d::Calculations
   include Vector2d::Coercions
+  include Vector2d::Deprecation
   include Vector2d::Fitting
   include Vector2d::Properties
   include Vector2d::Transformations
