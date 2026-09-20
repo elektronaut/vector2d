@@ -96,7 +96,12 @@ class Vector2d
     def cover(other, upscale: true)
       scale_by(fit_factors(coerce_vector(other)).max, upscale: upscale)
     end
-    alias fit_either cover
+
+    # @deprecated Use #cover instead.
+    def fit_either(other)
+      warn_deprecated("Vector2d#fit_either is deprecated. Use #cover instead.")
+      cover(other)
+    end
 
     # Does the vector already cover another vector? True whenever
     # #cover would shrink the vector or leave it alone, rather than

@@ -489,9 +489,18 @@ describe Vector2d::Fitting do
   end
 
   describe "#fit_either" do
-    it "is an alias of #cover" do
-      expect(original.fit_either(Vector2d.new(200, 150)))
-        .to eq(Vector2d.new(200, 200))
+    subject(:vector) { original.fit_either(comp) }
+
+    it_behaves_like "a deprecated method", "fit_either", "#cover" do
+      let(:comp) { Vector2d.new(200, 150) }
+    end
+
+    context "when width is largest" do
+      let(:comp) { Vector2d.new(200, 150) }
+
+      it "matches #cover" do
+        expect(vector).to eq(original.cover(comp))
+      end
     end
   end
 

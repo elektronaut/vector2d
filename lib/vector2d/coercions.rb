@@ -67,7 +67,9 @@ class Vector2d
       { x: x, y: y }
     end
 
-    # Converts vector to fixnums.
+    # Converts the coordinates to integers. The result is still a
+    # vector of this class, unlike #to_vector, which converts to the
+    # standard library Vector.
     #
     #   Vector2d(2.0, 3.0).to_i_vector # => Vector2d(2,3)
     #
@@ -75,12 +77,26 @@ class Vector2d
       build(x.to_i, y.to_i)
     end
 
-    # Converts vector to floats.
+    # Converts the coordinates to floats. As with #to_i_vector, the
+    # result is a vector of this class.
     #
     #   Vector2d(2, 3).to_f_vector # => Vector2d(2.0,3.0)
     #
     def to_f_vector
       build(x.to_f, y.to_f)
+    end
+
+    # Polar coordinates of vector, as a [length, angle] array.
+    #
+    #   Vector2d(2, 3).to_polar # => [3.6055.., 0.9827..]
+    #
+    # Vector2d.from_angle takes the same pair back.
+    #
+    #   length, angle = Vector2d(2, 3).to_polar
+    #   Vector2d.from_angle(angle, length) # => Vector2d(2.0,3.0)
+    #
+    def to_polar
+      [length, angle]
     end
 
     # Converts vector to string.

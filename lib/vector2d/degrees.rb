@@ -25,7 +25,7 @@ class Vector2d
   # degrees, so those angles need .radians on the way in. Godot and
   # Rust's glam are radians like this library, and their angles carry
   # over unconverted.
-  module Angles
+  module Degrees
     module ClassMethods
       # Converts an angle from degrees to radians, the unit the rest of
       # the library speaks. The result is always a float.

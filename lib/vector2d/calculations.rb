@@ -76,7 +76,12 @@ class Vector2d
     def distance_squared(other)
       (self - other).length_squared
     end
-    alias squared_distance distance_squared
+
+    # @deprecated Use #distance_squared instead.
+    def squared_distance(other)
+      warn_deprecated("Vector2d#squared_distance is deprecated. Use #distance_squared instead.")
+      distance_squared(other)
+    end
 
     # Calculates the Manhattan distance between two vectors, the sum of
     # the absolute differences along each axis.

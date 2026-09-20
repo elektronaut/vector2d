@@ -78,7 +78,6 @@ class Vector2d
     def perpendicular
       build(-y, x)
     end
-    alias perpendicular_ccw perpendicular
 
     # Returns the vector rotated a quarter turn clockwise.
     #

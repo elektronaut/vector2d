@@ -169,8 +169,12 @@ describe Vector2d::Properties do
   end
 
   describe "#squared_length" do
-    it "is an alias of #length_squared" do
-      expect(vector.squared_length).to eq(13)
+    subject(:vector) { Vector2d.new(2, 3).squared_length }
+
+    it_behaves_like "a deprecated method", "squared_length", "#length_squared"
+
+    it "returns the squared length, as #length_squared does" do
+      expect(vector).to eq(13)
     end
   end
 
@@ -551,8 +555,8 @@ describe Vector2d::Properties do
     end
   end
 
-  describe "#perpendicular_to?" do
-    subject { vector.perpendicular_to?(other) }
+  describe "#perpendicular?" do
+    subject { vector.perpendicular?(other) }
 
     context "when the other vector is perpendicular" do
       let(:other) { Vector2d.new(-3, 2) }
@@ -586,7 +590,7 @@ describe Vector2d::Properties do
     end
 
     it "coerces the argument" do
-      expect(vector.perpendicular_to?("-3x2")).to be(true)
+      expect(vector.perpendicular?("-3x2")).to be(true)
     end
 
     it "is true for any vector rotated a quarter turn" do
@@ -595,45 +599,20 @@ describe Vector2d::Properties do
       end
 
       expect(vectors)
-        .to all(satisfy { |v| v.perpendicular_to?(v.rotate(Math::PI / 2)) })
+        .to all(satisfy { |v| v.perpendicular?(v.rotate(Math::PI / 2)) })
     end
 
     context "with large vectors" do
       let(:vector) { Vector2d.new(1.3e8, 7.7e8) }
 
       it "is true for a quarter turn" do
-        expect(vector.perpendicular_to?(vector.rotate(Math::PI / 2)))
+        expect(vector.perpendicular?(vector.rotate(Math::PI / 2)))
           .to be(true)
       end
 
       it "is false for a vector that is barely off" do
-        expect(vector.perpendicular_to?(Vector2d.new(-7.7e8, 1.3e8 + 1)))
+        expect(vector.perpendicular?(Vector2d.new(-7.7e8, 1.3e8 + 1)))
           .to be(false)
-      end
-    end
-  end
-
-  describe "#to_polar" do
-    it "returns the length first" do
-      expect(vector.to_polar.first).to be_within(0.0001).of(3.6055)
-    end
-
-    it "returns the angle second" do
-      expect(vector.to_polar.last).to be_within(0.0001).of(0.9827)
-    end
-
-    it "is the inverse of Vector2d.from_angle" do
-      length, angle = vector.to_polar
-
-      expect(Vector2d.from_angle(angle, length))
-        .to eq(Vector2d.new(2.0, 3.0))
-    end
-
-    context "with the zero vector" do
-      let(:vector) { Vector2d.new(0, 0) }
-
-      it "returns zero length and angle" do
-        expect(vector.to_polar).to eq([0.0, 0.0])
       end
     end
   end

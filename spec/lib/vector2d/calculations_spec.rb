@@ -266,10 +266,12 @@ describe Vector2d::Calculations do
   end
 
   describe "#squared_distance" do
-    let(:comp) { Vector2d.new(5, 6) }
+    subject(:vector) { Vector2d.new(2, 3).squared_distance(Vector2d.new(5, 6)) }
 
-    it "is an alias of #distance_squared" do
-      expect(vector.squared_distance(comp)).to eq(18)
+    it_behaves_like "a deprecated method", "squared_distance", "#distance_squared"
+
+    it "returns the squared distance, as #distance_squared does" do
+      expect(vector).to eq(18)
     end
   end
 

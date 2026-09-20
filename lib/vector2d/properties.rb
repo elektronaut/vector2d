@@ -108,7 +108,12 @@ class Vector2d
     def length_squared
       (x * x) + (y * y)
     end
-    alias squared_length length_squared
+
+    # @deprecated Use #length_squared instead.
+    def squared_length
+      warn_deprecated("Vector2d#squared_length is deprecated. Use #length_squared instead.")
+      length_squared
+    end
 
     # Is this the zero vector?
     #
@@ -152,7 +157,7 @@ class Vector2d
     #   v1.approx_equal?([0.3, 0.6]) # => true
     #   v1 == [0.3, 0.6]             # => false
     #
-    # The default tolerance is the one #parallel? and #perpendicular_to?
+    # The default tolerance is the one #parallel? and #perpendicular?
     # use, a few ulps scaled by the magnitude of the vectors, so the
     # same amount of drift is absorbed whatever the coordinates are
     # sized like. It covers rounding error, and nothing more.
@@ -263,7 +268,7 @@ class Vector2d
     #   v.parallel?(Vector2d(-4, -6)) # => true
     #
     # The zero vector has no direction to be the opposite of, so unlike
-    # #parallel? and #perpendicular_to?, which it satisfies trivially,
+    # #parallel? and #perpendicular?, which it satisfies trivially,
     # it is opposite to nothing.
     #
     #   v.opposite?(Vector2d(0, 0)) # => false
@@ -278,32 +283,19 @@ class Vector2d
     # Are the two vectors perpendicular to each other?
     #
     #   v = Vector2d(2, 3)
-    #   v.perpendicular_to?(Vector2d(-3, 2)) # => true
-    #   v.perpendicular_to?(Vector2d(3, 2))  # => false
+    #   v.perpendicular?(Vector2d(-3, 2)) # => true
+    #   v.perpendicular?(Vector2d(3, 2))  # => false
     #
     # Only the directions matter, not the magnitudes. The zero vector
     # has no direction, and is perpendicular to everything.
     #
-    #   v.perpendicular_to?(Vector2d(0, 0)) # => true
+    #   v.perpendicular?(Vector2d(0, 0)) # => true
     #
-    def perpendicular_to?(other)
+    def perpendicular?(other)
       v = coerce_vector(other)
       return true if zero? || v.zero?
 
       near_zero?(dot_product(v), length * v.length)
-    end
-
-    # Polar coordinates of vector, as a [length, angle] array.
-    #
-    #   Vector2d(2, 3).to_polar # => [3.6055.., 0.9827..]
-    #
-    # Vector2d.from_angle takes the same pair back.
-    #
-    #   length, angle = Vector2d(2, 3).to_polar
-    #   Vector2d.from_angle(angle, length) # => Vector2d(2.0,3.0)
-    #
-    def to_polar
-      [length, angle]
     end
 
     private

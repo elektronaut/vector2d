@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Vector2d::Angles do
+describe Vector2d::Degrees do
   subject(:vector) { Vector2d.new(2, 3) }
 
   describe ".radians" do

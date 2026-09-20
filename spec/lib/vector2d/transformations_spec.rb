@@ -113,12 +113,6 @@ describe Vector2d::Transformations do
     end
   end
 
-  describe "#perpendicular_ccw" do
-    it "is an alias of #perpendicular" do
-      expect(vector.perpendicular_ccw).to eq(vector.perpendicular)
-    end
-  end
-
   describe "#perpendicular_cw" do
     it "returns a perpendicular vector" do
       expect(vector.perpendicular_cw).to eq(Vector2d.new(3, -2))

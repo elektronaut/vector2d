@@ -30,7 +30,6 @@ describe Vector2d do
 
   it_behaves_like "a class preserving method", :fit, 10
   it_behaves_like "a class preserving method", :cover, 10
-  it_behaves_like "a class preserving method", :fit_either, 10
 
   it_behaves_like "a class preserving method", :abs
   it_behaves_like "a class preserving method", :ceil
@@ -47,7 +46,6 @@ describe Vector2d do
   it_behaves_like "a class preserving method", :min, 2
   it_behaves_like "a class preserving method", :normalize
   it_behaves_like "a class preserving method", :perpendicular
-  it_behaves_like "a class preserving method", :perpendicular_ccw
   it_behaves_like "a class preserving method", :perpendicular_cw
   it_behaves_like "a class preserving method", :resize, 2.0
   it_behaves_like "a class preserving method", :reverse
