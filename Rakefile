@@ -23,3 +23,10 @@ desc "Generate API documentation"
 YARD::Rake::YardocTask.new(:doc) do |t|
   t.stats_options = ["--list-undoc"]
 end
+
+namespace :doc do
+  desc "Run the doc examples and check the type tags"
+  RSpec::Core::RakeTask.new(:check) do |t|
+    t.pattern = "spec/lib/vector2d_{documentation,tags}_spec.rb"
+  end
+end
