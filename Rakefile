@@ -2,6 +2,7 @@
 
 require "bundler/gem_tasks"
 require "rspec/core/rake_task"
+require "yard"
 
 # release-please creates the tag and the release commit.
 Rake::Task["release:source_control_push"].clear
@@ -16,4 +17,9 @@ task test: :spec
 desc "Benchmark against the standard library Vector"
 task :benchmark do
   ruby "benchmark/vector_comparison.rb"
+end
+
+desc "Generate API documentation"
+YARD::Rake::YardocTask.new(:doc) do |t|
+  t.stats_options = ["--list-undoc"]
 end
