@@ -48,7 +48,6 @@ describe Vector2d do
   it_behaves_like "a class preserving method", :rotate_around, 0, Math::PI
   it_behaves_like "a class preserving method", :round
   it_behaves_like "a class preserving method", :snap, 1
-  it_behaves_like "a class preserving method", :trunc
 
   describe ".from_angle" do
     it "returns an instance of the receiver's class" do

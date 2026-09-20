@@ -399,30 +399,6 @@ describe Vector2d::Transformations do
     end
   end
 
-  describe "#trunc" do
-    subject(:vector) { Vector2d.new(2.7, -2.7) }
-
-    it "truncates each axis toward zero" do
-      expect(vector.trunc).to eq(Vector2d.new(2, -2))
-    end
-
-    it "differs from #floor on negative coordinates" do
-      expect(vector.floor).to eq(Vector2d.new(2, -3))
-    end
-
-    it "leaves integers alone" do
-      expect(Vector2d.new(2, -3).trunc).to eq(Vector2d.new(2, -3))
-    end
-
-    context "with precision" do
-      subject(:vector) { Vector2d.new(2.77, -2.77) }
-
-      it "keeps that many decimals" do
-        expect(vector.trunc(1)).to eq(Vector2d.new(2.7, -2.7))
-      end
-    end
-  end
-
   describe "#clamp_length" do
     context "when argument is longer than length" do
       let(:arg) { 5.0 }

@@ -232,24 +232,6 @@ class Vector2d
       build(snap_coordinate(x, v.x), snap_coordinate(y, v.y))
     end
 
-    # Truncates each axis toward zero, the component-wise companion to
-    # #ceil and #floor.
-    #
-    #   Vector2d(2.7, -2.7).trunc # => Vector2d(2,-2)
-    #   Vector2d(2.7, -2.7).floor # => Vector2d(2,-3)
-    #
-    # An optional number of digits keeps that many decimals, as in
-    # #ceil, #floor and #round.
-    #
-    #   Vector2d(2.77, -2.77).trunc(1) # => Vector2d(2.7,-2.7)
-    #
-    # The shorter name leaves #truncate to its deprecated meaning of
-    # #clamp_length, which scales the whole vector.
-    #
-    def trunc(digits = 0)
-      build(x.truncate(digits), y.truncate(digits))
-    end
-
     private
 
     # Rounds a coordinate to the nearest multiple of a step. A step of
