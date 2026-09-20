@@ -42,6 +42,111 @@ Vector2d.parse("x70")     # => Vector2d(0,70)
 
 Anything else raises `ArgumentError`.
 
+## Dimensions
+
+Vector2d grew out of handling image dimensions, and a few properties
+describe a vector as a rectangle.
+
+```ruby
+vector = Vector2d(50, 70)
+
+vector.area         # => 3500
+vector.aspect_ratio # => 0.7142857142857143
+
+vector.portrait?    # => true
+vector.landscape?   # => false
+vector.square?      # => false
+```
+
+All of these compare coordinates by magnitude, so a negative vector
+describes the same rectangle as its positive twin.
+
+```ruby
+Vector2d(-50, 70).aspect_ratio # => 0.7142857142857143
+```
+
+Exactly one of `#square?`, `#landscape?` and `#portrait?` is true for
+any vector. `#aspect_ratio` raises when there is no height to divide
+by, but the predicates don't single out the zero vector. It is square.
+
+```ruby
+Vector2d(50, 0).aspect_ratio # => ArgumentError
+Vector2d(0, 0).square?       # => true
+```
+
+## Fitting
+
+`#fit` scales a vector until it is contained by another; `#cover`
+scales until it contains it. Both keep the aspect ratio and the
+direction, and both scale in either direction.
+
+```ruby
+vector = Vector2d(300, 300)
+
+vector.fit(Vector2d(200, 150))   # => Vector2d(150.0,150.0)
+vector.cover(Vector2d(200, 150)) # => Vector2d(200.0,200.0)
+```
+
+Pass `upscale: false` to scale down only, leaving a vector that is
+already small enough alone.
+
+```ruby
+vector = Vector2d(100, 100)
+
+vector.fit(Vector2d(200, 150))                 # => Vector2d(150.0,150.0)
+vector.fit(Vector2d(200, 150), upscale: false) # => Vector2d(100,100)
+```
+
+`#fits?` and `#covers?` ask the question without doing the scaling.
+
+```ruby
+constraint = Vector2d(200, 150)
+
+Vector2d(100, 100).fits?(constraint)   # => true
+Vector2d(300, 300).fits?(constraint)   # => false
+
+Vector2d(300, 300).covers?(constraint) # => true
+Vector2d(100, 100).covers?(constraint) # => false
+```
+
+An axis that is zero doesn't constrain anything. This is how you fit to
+a width and let the height follow.
+
+```ruby
+Vector2d(300, 300).fit(Vector2d(200, 0)) # => Vector2d(200.0,200.0)
+```
+
+## Rounding
+
+`#round`, `#ceil`, `#floor` and `#trunc` work one axis at a time, and
+round the way their counterparts on Ruby's numerics do. All four take
+an optional number of digits.
+
+```ruby
+vector = Vector2d(2.7, -2.7)
+
+vector.round # => Vector2d(3,-3)
+vector.ceil  # => Vector2d(3,-2)
+vector.floor # => Vector2d(2,-3)
+vector.trunc # => Vector2d(2,-2)
+
+Vector2d(2.77, -2.77).trunc(1) # => Vector2d(2.7,-2.7)
+```
+
+`#trunc` is the one that rounds toward zero. It carries the short name
+because `#truncate` is deprecated and still means `#clamp_length`,
+which scales the whole vector down to a maximum length rather than
+working per axis.
+
+`#snap` rounds each axis to the nearest multiple of a step. The step is
+coerced like any other argument, and a vector gives each axis its own.
+
+```ruby
+Vector2d(23, 47).snap(10)              # => Vector2d(20,50)
+Vector2d(23, 47).snap(Vector2d(10, 5)) # => Vector2d(20,45)
+Vector2d(2.3, 3.7).snap(0.5)           # => Vector2d(2.5,3.5)
+```
+
 ## Angles
 
 Every angle in this library is in radians, both in and out. There are no

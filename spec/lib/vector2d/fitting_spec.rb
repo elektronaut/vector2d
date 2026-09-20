@@ -178,6 +178,75 @@ describe Vector2d::Fitting do
     end
   end
 
+  describe "#fits?" do
+    subject { original.fits?(comp) }
+
+    let(:original) { Vector2d.new(20, 10) }
+
+    context "when the vector is smaller than the constraint" do
+      let(:comp) { Vector2d.new(40, 40) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when the vector overflows the x axis" do
+      let(:comp) { Vector2d.new(10, 40) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "when the vector overflows the y axis" do
+      let(:comp) { Vector2d.new(40, 5) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "when the vector matches the constraint" do
+      let(:comp) { Vector2d.new(20, 10) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when the coordinates are negative" do
+      let(:original) { Vector2d.new(-20, -10) }
+      let(:comp) { Vector2d.new(40, 40) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when an axis of the constraint is zero" do
+      let(:comp) { Vector2d.new(0, 40) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when the unconstrained axis is the overflowing one" do
+      let(:comp) { Vector2d.new(40, 0) }
+      let(:original) { Vector2d.new(20, 80) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "with the zero vector" do
+      let(:original) { Vector2d.new(0, 0) }
+      let(:comp) { Vector2d.new(40, 40) }
+
+      it { is_expected.to be(true) }
+    end
+
+    it "coerces the constraint" do
+      expect(original.fits?("40x40")).to be(true)
+    end
+
+    it "agrees with #fit" do
+      [Vector2d.new(40, 40), Vector2d.new(10, 40),
+       Vector2d.new(20, 10)].each do |c|
+        expect(original.fits?(c))
+          .to be(original.fit(c, upscale: false) == original)
+      end
+    end
+  end
+
   describe "#cover" do
     subject(:vector) { original.cover(comp) }
 
@@ -351,6 +420,71 @@ describe Vector2d::Fitting do
 
       its(:x) { is_expected.to eq(0) }
       its(:y) { is_expected.to eq(150) }
+    end
+  end
+
+  describe "#covers?" do
+    subject { original.covers?(comp) }
+
+    let(:original) { Vector2d.new(20, 10) }
+
+    context "when the vector is larger than the constraint" do
+      let(:comp) { Vector2d.new(5, 5) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when the vector falls short on the y axis" do
+      let(:original) { Vector2d.new(20, 1) }
+      let(:comp) { Vector2d.new(5, 5) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "when the vector falls short on the x axis" do
+      let(:original) { Vector2d.new(1, 20) }
+      let(:comp) { Vector2d.new(5, 5) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "when the vector matches the constraint" do
+      let(:comp) { Vector2d.new(20, 10) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when the coordinates are negative" do
+      let(:original) { Vector2d.new(-20, -10) }
+      let(:comp) { Vector2d.new(5, 5) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when an axis of the vector is zero" do
+      let(:original) { Vector2d.new(0, 10) }
+      let(:comp) { Vector2d.new(5, 5) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "with the zero vector" do
+      let(:original) { Vector2d.new(0, 0) }
+      let(:comp) { Vector2d.new(5, 5) }
+
+      it { is_expected.to be(true) }
+    end
+
+    it "coerces the constraint" do
+      expect(original.covers?("5x5")).to be(true)
+    end
+
+    it "is true exactly when #cover doesn't scale the vector up" do
+      [Vector2d.new(5, 5), Vector2d.new(40, 40),
+       Vector2d.new(20, 10)].each do |c|
+        expect(original.covers?(c))
+          .to be(original.cover(c, upscale: false) == original.cover(c))
+      end
     end
   end
 

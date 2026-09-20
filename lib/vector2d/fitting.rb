@@ -35,6 +35,35 @@ class Vector2d
       scale_by(fit_factors(coerce_vector(other)).min, upscale: upscale)
     end
 
+    # Does the vector already fit inside another vector? True whenever
+    # <tt>fit(other, upscale: false)</tt> would leave it unchanged.
+    #
+    #   constraint = Vector2d(20, 20)
+    #   Vector2d(20, 10).fits?(constraint) # => true
+    #   Vector2d(40, 10).fits?(constraint) # => false
+    #
+    # A vector that exactly matches the constraint fits.
+    #
+    #   Vector2d(20, 20).fits?(constraint) # => true
+    #
+    # Coordinates are compared by magnitude, as in #fit.
+    #
+    #   Vector2d(-20, 10).fits?(constraint) # => true
+    #
+    # Note: Either axis will be disregarded if zero or nil, as in #fit.
+    # An axis that doesn't constrain can't be overflowed either.
+    #
+    #   Vector2d(40, 10).fits?(Vector2d(0, 20)) # => true
+    #
+    # The zero vector has no size, and fits inside anything.
+    #
+    #   Vector2d(0, 0).fits?(constraint) # => true
+    #
+    def fits?(other)
+      factor = fit_factors(coerce_vector(other)).min
+      factor.nil? || factor >= 1
+    end
+
     # Scales the vector to cover another vector, retaining the aspect
     # ratio. Where #fit scales until the vector is contained by the
     # constraint, #cover scales until it contains the constraint.
@@ -68,6 +97,30 @@ class Vector2d
       scale_by(fit_factors(coerce_vector(other)).max, upscale: upscale)
     end
     alias fit_either cover
+
+    # Does the vector already cover another vector? True whenever
+    # #cover would shrink the vector or leave it alone, rather than
+    # scaling it up. This is the predicate to #cover that #fits? is to
+    # #fit.
+    #
+    #   constraint = Vector2d(5, 5)
+    #   Vector2d(20, 10).covers?(constraint) # => true
+    #   Vector2d(20, 1).covers?(constraint)  # => false
+    #
+    # Coordinates are compared by magnitude, as in #cover.
+    #
+    #   Vector2d(-20, 10).covers?(constraint) # => true
+    #
+    # Note: Either axis will be disregarded if zero or nil, as in
+    # #cover, so a vector flat on one axis still counts as covering.
+    #
+    #   Vector2d(0, 10).covers?(constraint)  # => true
+    #   Vector2d(0, 0).covers?(constraint)   # => true
+    #
+    def covers?(other)
+      factor = fit_factors(coerce_vector(other)).max
+      factor.nil? || factor <= 1
+    end
 
     # @deprecated Use <tt>other.fit(self, upscale: false)</tt> instead.
     #

@@ -349,6 +349,80 @@ describe Vector2d::Transformations do
     end
   end
 
+  describe "#snap" do
+    subject(:vector) { Vector2d.new(23, 47) }
+
+    it "snaps each axis to the nearest multiple" do
+      expect(vector.snap(10)).to eq(Vector2d.new(20, 50))
+    end
+
+    it "takes a step per axis" do
+      expect(vector.snap(Vector2d.new(10, 5))).to eq(Vector2d.new(20, 45))
+    end
+
+    it "coerces the step" do
+      expect(vector.snap("10x5")).to eq(Vector2d.new(20, 45))
+    end
+
+    it "leaves a vector on the grid alone" do
+      expect(Vector2d.new(20, 50).snap(10)).to eq(Vector2d.new(20, 50))
+    end
+
+    it "snaps negative coordinates away from zero at the halfway point" do
+      expect(Vector2d.new(-15, -25).snap(10)).to eq(Vector2d.new(-20, -30))
+    end
+
+    it "handles a negative step" do
+      expect(vector.snap(-10)).to eq(Vector2d.new(20, 50))
+    end
+
+    context "with a fractional step" do
+      subject(:vector) { Vector2d.new(2.3, 3.7) }
+
+      it "snaps to the fractional grid" do
+        expect(vector.snap(0.5)).to eq(Vector2d.new(2.5, 3.5))
+      end
+
+      it "keeps the type of the step" do
+        expect(vector.snap(1)).to eql(Vector2d.new(2, 4))
+      end
+    end
+
+    context "when the step is zero" do
+      it "leaves both axes unchanged" do
+        expect(vector.snap(0)).to eq(vector)
+      end
+
+      it "leaves only the unstepped axis unchanged" do
+        expect(vector.snap(Vector2d.new(10, 0))).to eq(Vector2d.new(20, 47))
+      end
+    end
+  end
+
+  describe "#trunc" do
+    subject(:vector) { Vector2d.new(2.7, -2.7) }
+
+    it "truncates each axis toward zero" do
+      expect(vector.trunc).to eq(Vector2d.new(2, -2))
+    end
+
+    it "differs from #floor on negative coordinates" do
+      expect(vector.floor).to eq(Vector2d.new(2, -3))
+    end
+
+    it "leaves integers alone" do
+      expect(Vector2d.new(2, -3).trunc).to eq(Vector2d.new(2, -3))
+    end
+
+    context "with precision" do
+      subject(:vector) { Vector2d.new(2.77, -2.77) }
+
+      it "keeps that many decimals" do
+        expect(vector.trunc(1)).to eq(Vector2d.new(2.7, -2.7))
+      end
+    end
+  end
+
   describe "#clamp_length" do
     context "when argument is longer than length" do
       let(:arg) { 5.0 }
