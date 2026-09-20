@@ -25,6 +25,15 @@ describe Vector2d::Transformations do
     it "rounds the vector up" do
       expect(vector.ceil).to eq(Vector2d.new(3, 4))
     end
+
+    it "rounds up to the given precision" do
+      expect(Vector2d.new(2.441, 3.666).ceil(2))
+        .to eq(Vector2d.new(2.45, 3.67))
+    end
+
+    it "rounds up to a negative precision" do
+      expect(Vector2d.new(24.4, 36.6).ceil(-1)).to eq(Vector2d.new(30, 40))
+    end
   end
 
   describe "#clamp" do
@@ -99,6 +108,15 @@ describe Vector2d::Transformations do
 
     it "rounds the vector down" do
       expect(vector.floor).to eq(Vector2d.new(2, 3))
+    end
+
+    it "rounds down to the given precision" do
+      expect(Vector2d.new(2.444, 3.669).floor(2))
+        .to eq(Vector2d.new(2.44, 3.66))
+    end
+
+    it "rounds down to a negative precision" do
+      expect(Vector2d.new(24.4, 36.6).floor(-1)).to eq(Vector2d.new(20, 30))
     end
   end
 
