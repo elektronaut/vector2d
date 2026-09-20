@@ -86,7 +86,7 @@ class Vector2d
     #   vector.max(5)              # => Vector2d(5,8)
     #
     def max(other)
-      v = to_vector(other)
+      v = coerce_vector(other)
       build([x, v.x].max, [y, v.y].max)
     end
 
@@ -98,7 +98,7 @@ class Vector2d
     #   vector.min(5)              # => Vector2d(2,5)
     #
     def min(other)
-      v = to_vector(other)
+      v = coerce_vector(other)
       build([x, v.x].min, [y, v.y].min)
     end
 
@@ -182,7 +182,7 @@ class Vector2d
     #   # => Vector2d(1.0,2.0)
     #
     def rotate_around(center, angle)
-      center_v = to_vector(center)
+      center_v = coerce_vector(center)
       (self - center_v).rotate(angle) + center_v
     end
 
@@ -206,13 +206,13 @@ class Vector2d
 
       raise ArgumentError, "wrong number of arguments (given 1, expected 2)" if max.nil?
 
-      [to_vector(min), to_vector(max)]
+      [coerce_vector(min), coerce_vector(max)]
     end
 
     def range_bounds(range)
       raise ArgumentError, "cannot clamp with an exclusive range" if range.exclude_end?
 
-      [range.begin && to_vector(range.begin), range.end && to_vector(range.end)]
+      [range.begin && coerce_vector(range.begin), range.end && coerce_vector(range.end)]
     end
   end
 end

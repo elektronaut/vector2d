@@ -8,7 +8,7 @@ class Vector2d
     #   2 * Vector2d(3, 4) # => Vector2d(6,8)
     #
     def coerce(other)
-      [to_vector(other), self]
+      [coerce_vector(other), self]
     end
 
     # Renders vector as a pretty string.
@@ -62,7 +62,7 @@ class Vector2d
     private
 
     # Parses anything Vector2d.parse accepts into a vector.
-    def to_vector(other)
+    def coerce_vector(other)
       case other
       when Vector2d, Array, Numeric, String, Hash
         Vector2d.parse(other)

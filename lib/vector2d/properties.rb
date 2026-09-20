@@ -77,7 +77,7 @@ class Vector2d
     #   v.parallel?(Vector2d(0, 0)) # => true
     #
     def parallel?(other)
-      v = to_vector(other)
+      v = coerce_vector(other)
       return true if zero? || v.zero?
 
       near_zero?(cross_product(v), length * v.length)
@@ -95,7 +95,7 @@ class Vector2d
     #   v.perpendicular_to?(Vector2d(0, 0)) # => true
     #
     def perpendicular_to?(other)
-      v = to_vector(other)
+      v = coerce_vector(other)
       return true if zero? || v.zero?
 
       near_zero?(dot_product(v), length * v.length)
