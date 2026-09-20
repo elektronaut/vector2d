@@ -93,8 +93,10 @@ class Vector2d
 
     private
 
-    # Parses anything Vector2d.parse accepts into a vector.
+    # Parses anything Vector2d.parse accepts into a vector. A vector is
+    # returned as it is.
     def coerce_vector(other)
+      return other if other.is_a?(Vector2d)
       return Vector2d.parse(other) if parseable?(other)
 
       raise TypeError, "#{other.class} can't be coerced into #{self.class}"

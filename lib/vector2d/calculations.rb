@@ -172,9 +172,15 @@ class Vector2d
     #   v1.lerp(v2, 2.0)  # => Vector2d(20.0,40.0)
     #   v1.lerp(v2, -0.5) # => Vector2d(-5.0,-10.0)
     #
+    # Raises ArgumentError unless the amount is a real number. One
+    # amount applies to both axes.
+    #
+    #   v1.lerp(v2, Vector2d(0.25, 0.5)) # => ArgumentError
+    #
     def lerp(other, amount)
       v = coerce_vector(other)
-      self + ((v - self) * amount)
+      amount = coordinate(amount)
+      build(interpolate(x, v.x, amount), interpolate(y, v.y, amount))
     end
 
     # Returns the point halfway between this vector and another vector.
@@ -331,7 +337,19 @@ class Vector2d
 
     private
 
+    def interpolate(start, finish, amount)
+      start + ((finish - start) * amount)
+    end
+
+    # Is the value a number both coordinates can be combined with
+    # directly? Complex is Numeric, but it is not a coordinate.
+    def real_number?(value)
+      value.is_a?(Numeric) && value.real?
+    end
+
     def calculate_each(method, other)
+      return build(x.send(method, other), y.send(method, other)) if real_number?(other)
+
       v = coerce_vector(other)
       build(
         x.send(method, v.x),

@@ -10,6 +10,7 @@ class Vector2d
     # ArgumentError otherwise. Coordinates are real numbers, so Complex
     # is rejected along with everything outside Numeric.
     def coordinate(value)
+      return value if value.is_a?(Float) || value.is_a?(Integer)
       raise ArgumentError, "not a valid coordinate: #{value.inspect}" unless value.is_a?(Numeric) && value.real?
 
       value
