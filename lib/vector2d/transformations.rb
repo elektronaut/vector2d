@@ -14,10 +14,11 @@ class Vector2d
 
     # Rounds vector up to nearest integer.
     #
-    #   Vector2d(2.4, 3.6).ceil # => Vector2d(3,4)
+    #   Vector2d(2.4, 3.6).ceil        # => Vector2d(3,4)
+    #   Vector2d(2.441, 3.666).ceil(2) # => Vector2d(2.45,3.67)
     #
-    def ceil
-      build(x.ceil, y.ceil)
+    def ceil(digits = 0)
+      build(x.ceil(digits), y.ceil(digits))
     end
 
     # Clamps the vector between two others, one axis at a time. The
@@ -70,10 +71,11 @@ class Vector2d
 
     # Rounds vector down to nearest integer.
     #
-    #   Vector2d(2.4, 3.6).floor # => Vector2d(2,3)
+    #   Vector2d(2.4, 3.6).floor        # => Vector2d(2,3)
+    #   Vector2d(2.444, 3.669).floor(2) # => Vector2d(2.44,3.66)
     #
-    def floor
-      build(x.floor, y.floor)
+    def floor(digits = 0)
+      build(x.floor(digits), y.floor(digits))
     end
 
     # Returns the larger value of each axis. The other vector is
@@ -186,8 +188,8 @@ class Vector2d
 
     # Rounds vector to nearest integer.
     #
-    #   Vector2d(2.4, 3.6).round # => Vector2d(2,4)
-    #   Vector2d(2.4444, 3.666).round(2) # => Vector2d(2.44, 3.67)
+    #   Vector2d(2.4, 3.6).round         # => Vector2d(2,4)
+    #   Vector2d(2.4444, 3.666).round(2) # => Vector2d(2.44,3.67)
     #
     def round(digits = 0)
       build(x.round(digits), y.round(digits))

@@ -4,8 +4,13 @@ require "spec_helper"
 
 describe Vector2d do
   # Examples are evaluated with +self+ set to a vector, so the ones
-  # documenting private instance methods need no receiver.
-  def new_scope = Vector2d.new(0, 0).instance_eval { binding }
+  # documenting private instance methods need no receiver. Each block
+  # gets its own namespace, so the classes they define stay local.
+  def new_scope
+    Module.new.module_eval(
+      "Vector2d.new(0, 0).instance_eval { binding }", __FILE__, __LINE__
+    )
+  end
 
   def failure_message(doc) = "#{doc.location}: #{doc.code}"
 

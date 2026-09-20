@@ -39,6 +39,13 @@ class Vector2d
     # the instance side.
     #
     #   class Labeled < Vector2d
+    #     attr_reader :label
+    #
+    #     def initialize(x, y, label = nil)
+    #       @label = label
+    #       super(x, y)
+    #     end
+    #
     #     def self.build(x, y) = new(x, y, "unlabeled")
     #   end
     #
