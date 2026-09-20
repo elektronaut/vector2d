@@ -56,6 +56,12 @@ describe Vector2d do
       it { is_expected.to be(true) }
     end
 
+    context "with a vector built by .from_degrees" do
+      let(:vector) { described_class.from_degrees(45) }
+
+      it { is_expected.to be(true) }
+    end
+
     context "with a vector built by the helper method" do
       let(:vector) { Vector2d(2, 3) }
 
