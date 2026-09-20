@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require "matrix"
 
 describe Vector2d do
   # Examples are evaluated with +self+ set to a vector, so the ones

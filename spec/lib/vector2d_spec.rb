@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require "matrix"
 
 describe Vector2d do
   subject(:vector) { described_class.new(2, 3) }
@@ -228,6 +229,40 @@ describe Vector2d do
       subject(:vector) { described_class.parse(described_class.new(1, 2)) }
 
       it_behaves_like "a parsed vector", [1, 2]
+    end
+
+    context "with a Vector argument" do
+      subject(:vector) { described_class.parse(Vector[1, 2]) }
+
+      it_behaves_like "a parsed vector", [1, 2]
+    end
+
+    context "with a Vector argument of the wrong size" do
+      it "raises an error" do
+        expect { described_class.parse(Vector[1, 2, 3]) }.to(
+          raise_error(ArgumentError, "expected 2 coordinates, got 3")
+        )
+      end
+    end
+
+    context "with a column Matrix argument" do
+      subject(:vector) { described_class.parse(Matrix[[1], [2]]) }
+
+      it_behaves_like "a parsed vector", [1, 2]
+    end
+
+    context "with a row Matrix argument" do
+      subject(:vector) { described_class.parse(Matrix[[1, 2]]) }
+
+      it_behaves_like "a parsed vector", [1, 2]
+    end
+
+    context "with a Matrix argument of the wrong shape" do
+      it "raises an error" do
+        expect { described_class.parse(Matrix[[1, 2], [3, 4]]) }.to(
+          raise_error(ArgumentError, "expected a 2x1 or 1x2 matrix, got 2x2")
+        )
+      end
     end
 
     context "with nil argument" do

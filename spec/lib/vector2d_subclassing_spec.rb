@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require "matrix"
 
 describe Vector2d do
   subject(:vector) { subclass.new(2.5, 3.5) }
@@ -16,6 +17,9 @@ describe Vector2d do
   it_behaves_like "a class preserving method", :project, 2
   it_behaves_like "a class preserving method", :reflect, 2
   it_behaves_like "a class preserving method", :reject, 2
+
+  it_behaves_like "a class preserving method", :transform,
+                  Matrix[[0, -1], [1, 0]]
 
   it_behaves_like "a class preserving method", :to_i_vector
   it_behaves_like "a class preserving method", :to_f_vector
@@ -93,10 +97,22 @@ describe Vector2d do
       its(:label) { is_expected.to eq("point") }
     end
 
+    describe "#transform" do
+      subject { vector.transform(Matrix[[0, -1], [1, 0]]) }
+
+      its(:label) { is_expected.to eq("point") }
+    end
+
     describe ".parse" do
       subject { labeled.parse("2x3") }
 
       it { is_expected.to be_an_instance_of(labeled) }
+      its(:label) { is_expected.to eq("unlabeled") }
+    end
+
+    describe ".parse with a Vector" do
+      subject { labeled.parse(Vector[2, 3]) }
+
       its(:label) { is_expected.to eq("unlabeled") }
     end
 
