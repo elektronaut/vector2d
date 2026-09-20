@@ -2,11 +2,13 @@
 
 require_relative "vector2d/angles"
 require_relative "vector2d/calculations"
+require_relative "vector2d/clamping"
 require_relative "vector2d/coercions"
 require_relative "vector2d/constructors"
 require_relative "vector2d/coordinates"
 require_relative "vector2d/deprecation"
 require_relative "vector2d/fitting"
+require_relative "vector2d/interpolation"
 require_relative "vector2d/matrix_interop"
 require_relative "vector2d/optics"
 require_relative "vector2d/properties"
@@ -20,10 +22,12 @@ class Vector2d
   extend Vector2d::Coordinates
   include Vector2d::Angles
   include Vector2d::Calculations
+  include Vector2d::Clamping
   include Vector2d::Coercions
   include Vector2d::Coordinates
   include Vector2d::Deprecation
   include Vector2d::Fitting
+  include Vector2d::Interpolation
   include Vector2d::MatrixInterop
   include Vector2d::Optics
   include Vector2d::Properties

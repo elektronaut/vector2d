@@ -190,6 +190,170 @@ describe Vector2d::Properties do
     end
   end
 
+  describe "#approx_zero?" do
+    subject { vector.approx_zero? }
+
+    context "when vector is the zero vector" do
+      let(:vector) { Vector2d.new(0, 0) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when vector is a rounding error away from zero" do
+      let(:vector) { Vector2d.new(1e-17, 0) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when vector is small but not that small" do
+      let(:vector) { Vector2d.new(1e-15, 0) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "when vector isn't the zero vector" do
+      it { is_expected.to be(false) }
+    end
+
+    context "with a tolerance" do
+      it "takes it as an absolute length" do
+        expect(Vector2d.new(0.2, 0)).to be_approx_zero(0.5)
+      end
+
+      it "is false outside the tolerance" do
+        expect(Vector2d.new(0.6, 0)).not_to be_approx_zero(0.5)
+      end
+
+      it "raises an error on a complex tolerance" do
+        expect { vector.approx_zero?(Complex(1, 2)) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
+        )
+      end
+    end
+  end
+
+  describe "#approx_equal?" do
+    subject { vector.approx_equal?(other) }
+
+    context "when the vectors are equal" do
+      let(:other) { Vector2d.new(2, 3) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when the vectors differ by a rounding error" do
+      let(:vector) { Vector2d.new(0.1, 0.2) + Vector2d.new(0.2, 0.4) }
+      let(:other) { Vector2d.new(0.3, 0.6) }
+
+      it { is_expected.to be(true) }
+
+      it "is more than #== accepts" do
+        expect(vector).not_to eq(other)
+      end
+    end
+
+    context "when the vectors differ" do
+      let(:other) { Vector2d.new(2, 4) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "when the other vector is coercible" do
+      let(:other) { [2, 3] }
+
+      it { is_expected.to be(true) }
+    end
+
+    it "is symmetric" do
+      other = Vector2d.new(0.1, 0.2) + Vector2d.new(0.2, 0.4)
+
+      expect(Vector2d.new(0.3, 0.6)).to be_approx_equal(other)
+    end
+
+    it "scales the tolerance with the magnitudes" do
+      big = Vector2d.new(1e8, 2e8)
+
+      expect(big).to be_approx_equal(big.rotate(2 * Math::PI))
+    end
+
+    it "doesn't accept the same drift at unit scale" do
+      expect(Vector2d.new(1, 2))
+        .not_to be_approx_equal(Vector2d.new(1, 2 + 5.5e-8))
+    end
+
+    context "with a tolerance" do
+      it "takes it as an absolute distance" do
+        expect(vector).to be_approx_equal(Vector2d.new(2, 4), 1.5)
+      end
+
+      it "is false outside the tolerance" do
+        expect(vector).not_to be_approx_equal(Vector2d.new(2, 4), 0.5)
+      end
+
+      it "includes the tolerance itself" do
+        expect(vector).to be_approx_equal(Vector2d.new(2, 4), 1.0)
+      end
+
+      it "raises an error on a complex tolerance" do
+        expect { vector.approx_equal?(vector, Complex(1, 2)) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
+        )
+      end
+    end
+  end
+
+  describe "#finite?" do
+    subject { vector.finite? }
+
+    context "when both coordinates are finite" do
+      it { is_expected.to be(true) }
+    end
+
+    context "when x is infinite" do
+      let(:vector) { Vector2d.new(Float::INFINITY, 3) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "when y is infinite" do
+      let(:vector) { Vector2d.new(2, -Float::INFINITY) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "when a coordinate is NaN" do
+      let(:vector) { Vector2d.new(2, Float::NAN) }
+
+      it { is_expected.to be(false) }
+    end
+  end
+
+  describe "#nan?" do
+    subject { vector.nan? }
+
+    context "when neither coordinate is NaN" do
+      it { is_expected.to be(false) }
+    end
+
+    context "when x is NaN" do
+      let(:vector) { Vector2d.new(Float::NAN, 3) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when y is NaN" do
+      let(:vector) { Vector2d.new(2, Float::NAN) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when a coordinate is infinite" do
+      let(:vector) { Vector2d.new(2, Float::INFINITY) }
+
+      it { is_expected.to be(false) }
+    end
+  end
+
   describe "#normalized?" do
     subject { vector.normalized? }
 

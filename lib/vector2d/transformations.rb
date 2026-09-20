@@ -21,53 +21,6 @@ class Vector2d
       build(x.ceil(digits), y.ceil(digits))
     end
 
-    # Clamps the vector between two others, one axis at a time. The
-    # bounds are coerced, so scalars work too.
-    #
-    #   vector = Vector2d(2, 8)
-    #   vector.clamp(Vector2d(3, 3), Vector2d(6, 6)) # => Vector2d(3,6)
-    #   vector.clamp(3, 6)                           # => Vector2d(3,6)
-    #
-    # The bounds can also be given as a single range, which may be
-    # beginless or endless to clamp only one side.
-    #
-    #   vector.clamp(3..6) # => Vector2d(3,6)
-    #   vector.clamp(..6)  # => Vector2d(2,6)
-    #   vector.clamp(3..)  # => Vector2d(3,8)
-    #
-    # The range must not exclude its end, as with Comparable#clamp.
-    #
-    #   vector.clamp(3...6) # => ArgumentError
-    #
-    def clamp(min, max = nil)
-      min_v, max_v = clamp_bounds(min, max)
-      build(
-        x.clamp(Range.new(min_v&.x, max_v&.x)),
-        y.clamp(Range.new(min_v&.y, max_v&.y))
-      )
-    end
-
-    # Clamps the length of the vector, scaling it down if it is longer
-    # than max.
-    #
-    #   vector = Vector2d(2.0, 3.0)
-    #   vector.clamp_length(5.0) # => Vector2d(2.0, 3.0)
-    #   vector.clamp_length(1.0) # => Vector2d(0.5547.., 0.8320..)
-    #
-    # The zero vector has no direction, and is returned unchanged.
-    #
-    #   Vector2d(0, 0).clamp_length(1.0) # => Vector2d(0,0)
-    #
-    # The max length can't be negative.
-    #
-    #   Vector2d(2, 3).clamp_length(-1.0) # => ArgumentError
-    #
-    def clamp_length(max)
-      raise ArgumentError, "negative max length: #{max}" if coordinate(max).negative?
-
-      resize([max, length].min)
-    end
-
     # Rounds vector down to nearest integer.
     #
     #   Vector2d(2.4, 3.6).floor        # => Vector2d(2,3)
@@ -199,6 +152,24 @@ class Vector2d
       build(x.round(digits), y.round(digits))
     end
 
+    # Returns the sign of each axis, -1, 0 or 1.
+    #
+    #   Vector2d(-2, 3).sign # => Vector2d(-1,1)
+    #   Vector2d(0, -3).sign # => Vector2d(0,-1)
+    #
+    # The signs are integers, whatever the coordinates were. There are
+    # only three of them, and they are exact.
+    #
+    #   Vector2d(-2.5, 0.0).sign # => Vector2d(-1,0)
+    #
+    # NaN has no sign, so ArgumentError is raised.
+    #
+    #   Vector2d(Float::NAN, 3).sign # => ArgumentError
+    #
+    def sign
+      build(coordinate_sign(x), coordinate_sign(y))
+    end
+
     # @deprecated Use #clamp_length instead. The name belongs to the
     # #ceil/#floor/#round family, which maps Numeric over both
     # coordinates.
@@ -232,7 +203,41 @@ class Vector2d
       build(snap_coordinate(x, v.x), snap_coordinate(y, v.y))
     end
 
+    # Returns the vector with x replaced.
+    #
+    #   Vector2d(2, 3).with_x(5) # => Vector2d(5,3)
+    #
+    # Vectors are immutable, so this is how a single axis is changed.
+    # The value is a coordinate, not a vector, and is not coerced.
+    #
+    #   Vector2d(2, 3).with_x("5") # => ArgumentError
+    #
+    def with_x(value)
+      build(value, y)
+    end
+
+    # Returns the vector with y replaced.
+    #
+    #   Vector2d(2, 3).with_y(5) # => Vector2d(2,5)
+    #
+    # The value is a coordinate, not a vector, and is not coerced.
+    #
+    #   Vector2d(2, 3).with_y(nil) # => ArgumentError
+    #
+    def with_y(value)
+      build(x, value)
+    end
+
     private
+
+    # The sign of a coordinate. Comparing to zero gives one of -1, 0
+    # and 1, or nothing at all for NaN.
+    def coordinate_sign(value)
+      sign = value <=> 0
+      raise ArgumentError, "NaN has no sign" if sign.nil?
+
+      sign
+    end
 
     # Rounds a coordinate to the nearest multiple of a step. A step of
     # zero has no multiples, and the coordinate is left alone.
@@ -240,24 +245,6 @@ class Vector2d
       return value if step.zero?
 
       (value / step.to_f).round * step
-    end
-
-    def clamp_bounds(min, max)
-      if min.is_a?(Range)
-        raise ArgumentError, "wrong number of arguments (given 2, expected 1)" unless max.nil?
-
-        return range_bounds(min)
-      end
-
-      raise ArgumentError, "wrong number of arguments (given 1, expected 2)" if max.nil?
-
-      [coerce_vector(min), coerce_vector(max)]
-    end
-
-    def range_bounds(range)
-      raise ArgumentError, "cannot clamp with an exclusive range" if range.exclude_end?
-
-      [range.begin && coerce_vector(range.begin), range.end && coerce_vector(range.end)]
     end
   end
 end

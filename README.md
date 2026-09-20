@@ -42,6 +42,18 @@ Vector2d.parse("x70")     # => Vector2d(0,70)
 
 Anything else raises `ArgumentError`.
 
+## Changing one axis
+
+Vectors are immutable, so an axis is changed by building a new vector.
+`#with_x` and `#with_y` do that without repeating the other one.
+
+```ruby
+vector = Vector2d(50, 70)
+
+vector.with_x(100) # => Vector2d(100,70)
+vector.with_y(100) # => Vector2d(50,100)
+```
+
 ## Dimensions
 
 Vector2d grew out of handling image dimensions, and a few properties
@@ -144,6 +156,113 @@ coerced like any other argument, and a vector gives each axis its own.
 Vector2d(23, 47).snap(10)              # => Vector2d(20,50)
 Vector2d(23, 47).snap(Vector2d(10, 5)) # => Vector2d(20,45)
 Vector2d(2.3, 3.7).snap(0.5)           # => Vector2d(2.5,3.5)
+```
+
+`#sign` reduces each axis to -1, 0 or 1. The signs are integers,
+whatever the coordinates were.
+
+```ruby
+Vector2d(-2.5, 3.5).sign # => Vector2d(-1,1)
+Vector2d(0, -3).sign     # => Vector2d(0,-1)
+```
+
+## Lengths
+
+`#resize` scales a vector to a given length, and `#normalize` scales it
+to one.
+
+```ruby
+vector = Vector2d(2.0, 3.0)
+
+vector.length     # => 3.605551275463989
+vector.resize(2)  # => Vector2d(1.1094003924504583,1.6641005886756874)
+vector.normalize  # => Vector2d(0.5547001962252291,0.8320502943378437)
+```
+
+`#clamp_length` constrains the length while keeping the direction. A
+single argument is a maximum; two, or a range, bound it at both ends,
+scaling a short vector up to the minimum.
+
+```ruby
+vector = Vector2d(2.0, 3.0)
+
+vector.clamp_length(1.0)       # => Vector2d(0.5547001962252291,0.8320502943378437)
+vector.clamp_length(5.0, 10.0) # => Vector2d(2.773500981126146,4.160251471689219)
+vector.clamp_length(1.0..10.0) # => Vector2d(2.0,3.0)
+```
+
+The zero vector has no direction to keep, and all of these return it
+unchanged.
+
+## Comparing vectors
+
+`#==` compares coordinates exactly, and it has to: `#hash` and `#eql?`
+depend on it. Floating point arithmetic rarely lands exactly where the
+arithmetic says it should, so exact comparison of computed vectors
+usually disappoints.
+
+```ruby
+v = Vector2d(0.1, 0.2) + Vector2d(0.2, 0.4)
+
+v                                   # => Vector2d(0.30000000000000004,0.6000000000000001)
+v == Vector2d(0.3, 0.6)             # => false
+v.approx_equal?(Vector2d(0.3, 0.6)) # => true
+```
+
+The default tolerance is a few ulps scaled by the magnitude of the
+vectors, the same one `#parallel?` and `#perpendicular_to?` use. It
+covers rounding error and nothing more. Pass a tolerance of your own
+for anything looser; that one is an absolute distance between the two
+vectors, and is not scaled.
+
+```ruby
+Vector2d(2, 3).approx_equal?(Vector2d(2, 4), 1.5) # => true
+Vector2d(1e-17, 0).approx_zero?                   # => true
+```
+
+Approximate equality is not transitive, and approximately equal
+vectors don't share a `#hash`, so it is no substitute for `#==`.
+
+`#finite?` and `#nan?` guard against coordinates that arithmetic has
+taken out of range.
+
+```ruby
+Vector2d(2, Float::INFINITY).finite? # => false
+Vector2d(2, Float::NAN).nan?         # => true
+```
+
+## Interpolation
+
+`#lerp` moves along the straight line between two vectors, `#slerp`
+along the arc between them. Both take a fraction of the way there, and
+neither is clamped to `0..1`.
+
+```ruby
+v1 = Vector2d(2, 0)
+v2 = Vector2d(0, 4)
+
+v1.lerp(v2, 0.5)         # => Vector2d(1.0,2.0)
+v1.slerp(v2, 0.5)        # => Vector2d(2.121320343559643,2.1213203435596424)
+
+v1.lerp(v2, 0.5).length  # => 2.23606797749979
+v1.slerp(v2, 0.5).length # => 3.0
+```
+
+`#lerp` cuts the corner, so the intermediate vectors are shorter than
+the two end points. `#slerp` turns instead, interpolating the angle
+and the length separately.
+
+`#move_toward` takes a distance rather than a fraction, and stops at
+the target instead of overshooting it. `#direction_to` is the unit
+vector it moves along.
+
+```ruby
+origin = Vector2d(0, 0)
+
+origin.move_toward(Vector2d(10, 0), 2)  # => Vector2d(2.0,0.0)
+origin.move_toward(Vector2d(10, 0), 20) # => Vector2d(10,0)
+
+Vector2d(2, 3).direction_to(Vector2d(2, 6)) # => Vector2d(0.0,1.0)
 ```
 
 ## Angles

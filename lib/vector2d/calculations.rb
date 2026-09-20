@@ -100,79 +100,25 @@ class Vector2d
       (self - other).abs.to_a.max
     end
 
-    # Linearly interpolates between this vector and another vector.
+    # Unit vector pointing from this vector to another vector, the
+    # direction a step from here to there would take. The other vector
+    # is coerced, so scalars work too.
     #
-    #   v1 = Vector2d(0, 0)
-    #   v2 = Vector2d(10, 20)
-    #   v1.lerp(v2, 0.0)  # => Vector2d(0.0,0.0)
-    #   v1.lerp(v2, 0.25) # => Vector2d(2.5,5.0)
-    #   v1.lerp(v2, 1.0)  # => Vector2d(10.0,20.0)
+    #   v1 = Vector2d(2, 3)
+    #   v1.direction_to(Vector2d(2, 6)) # => Vector2d(0.0,1.0)
+    #   v1.direction_to(Vector2d(5, 7)) # => Vector2d(0.6000..,0.8)
     #
-    # The amount is not clamped to 0..1. Values outside that range
-    # extrapolate past the end points.
+    # This is (other - self).normalize. #distance measures the same
+    # step, and #move_toward takes it.
     #
-    #   v1.lerp(v2, 2.0)  # => Vector2d(20.0,40.0)
-    #   v1.lerp(v2, -0.5) # => Vector2d(-5.0,-10.0)
+    # There is no direction to where you already are. The zero vector
+    # has no direction, and is returned.
     #
-    # Raises ArgumentError unless the amount is a real number. One
-    # amount applies to both axes.
+    #   v1.direction_to(v1) # => Vector2d(0,0)
     #
-    #   v1.lerp(v2, Vector2d(0.25, 0.5)) # => ArgumentError
-    #
-    def lerp(other, amount)
+    def direction_to(other)
       v = coerce_vector(other)
-      amount = coordinate(amount)
-      build(interpolate(x, v.x, amount), interpolate(y, v.y, amount))
-    end
-
-    # Returns the amount #lerp would need to land on a value, the
-    # position of that value along the segment from this vector to
-    # another one. This is the inverse of #lerp.
-    #
-    #   v1 = Vector2d(0, 0)
-    #   v2 = Vector2d(10, 20)
-    #   v1.inverse_lerp(v2, Vector2d(2.5, 5.0)) # => 0.25
-    #   v1.inverse_lerp(v2, v1)                 # => 0.0
-    #   v1.inverse_lerp(v2, v2)                 # => 1.0
-    #
-    # The result is a scalar, one amount for both axes, matching the
-    # single amount #lerp takes.
-    #
-    #   v1.lerp(v2, v1.inverse_lerp(v2, Vector2d(2.5, 5.0))) # => Vector2d(2.5,5.0)
-    #
-    # The value does not have to lie on the segment. Anything off it is
-    # projected onto the line through the end points first, so the
-    # result is the position of the nearest point on that line.
-    #
-    #   v1.inverse_lerp(v2, Vector2d(5, 0)) # => 0.1
-    #
-    # The result is not clamped to 0..1, the same way the amount #lerp
-    # takes is not. Values beyond the end points fall outside it.
-    #
-    #   v1.inverse_lerp(v2, Vector2d(20, 40))  # => 2.0
-    #   v1.inverse_lerp(v2, Vector2d(-5, -10)) # => -0.5
-    #
-    # A segment between two identical vectors has no length to measure
-    # along, and no amount reaches anything but its own end point. Zero
-    # is returned.
-    #
-    #   v1.inverse_lerp(v1, Vector2d(2.5, 5.0)) # => 0.0
-    #
-    def inverse_lerp(other, value)
-      segment = coerce_vector(other) - self
-      return 0.0 if segment.zero?
-
-      (coerce_vector(value) - self).dot_product(segment).to_f / segment.length_squared
-    end
-
-    # Returns the point halfway between this vector and another vector.
-    #
-    #   v1 = Vector2d(0, 0)
-    #   v2 = Vector2d(10, 20)
-    #   v1.midpoint(v2) # => Vector2d(5.0,10.0)
-    #
-    def midpoint(other)
-      lerp(other, 0.5)
+      build(v.x - x, v.y - y).normalize
     end
 
     # Dot product of this vector and another vector.
@@ -297,10 +243,6 @@ class Vector2d
     end
 
     private
-
-    def interpolate(start, finish, amount)
-      start + ((finish - start) * amount)
-    end
 
     # Is the value a number both coordinates can be combined with
     # directly? Complex is Numeric, but it is not a coordinate.

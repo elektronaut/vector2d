@@ -315,170 +315,36 @@ describe Vector2d::Calculations do
     end
   end
 
-  describe "#lerp" do
-    subject(:vector) { Vector2d.new(0, 0) }
+  describe "#direction_to" do
+    subject(:vector) { Vector2d.new(2, 3) }
 
-    let(:comp) { Vector2d.new(10, 20) }
+    let(:comp) { Vector2d.new(5, 7) }
 
-    it "returns this vector at zero" do
-      expect(vector.lerp(comp, 0)).to eq(Vector2d.new(0, 0))
+    it "points at the other vector" do
+      expect(vector.direction_to(comp).round(3)).to eq(Vector2d.new(0.6, 0.8))
     end
 
-    it "returns the other vector at one" do
-      expect(vector.lerp(comp, 1)).to eq(Vector2d.new(10, 20))
+    it "returns a unit vector" do
+      expect(vector.direction_to(comp).length).to be_within(0.0001).of(1.0)
     end
 
-    it "interpolates between the vectors" do
-      expect(vector.lerp(comp, 0.25)).to eq(Vector2d.new(2.5, 5.0))
+    it "matches the normalized difference" do
+      expect(vector.direction_to(comp)).to eq((comp - vector).normalize)
     end
 
-    it "extrapolates past the other vector" do
-      expect(vector.lerp(comp, 2.0)).to eq(Vector2d.new(20.0, 40.0))
-    end
-
-    it "extrapolates behind this vector" do
-      expect(vector.lerp(comp, -0.5)).to eq(Vector2d.new(-5.0, -10.0))
-    end
-
-    it "interpolates from negative coordinates" do
-      expect(Vector2d.new(-4, 6).lerp(Vector2d.new(4, -2), 0.5))
-        .to eq(Vector2d.new(0.0, 2.0))
+    it "points the other way around" do
+      expect(vector.direction_to(comp))
+        .to eq(comp.direction_to(vector).reverse)
     end
 
     it "coerces the argument" do
-      expect(vector.lerp([10, 20], 0.5)).to eq(Vector2d.new(5.0, 10.0))
+      expect(vector.direction_to([5, 7])).to eq(vector.direction_to(comp))
     end
 
-    context "with a complex amount" do
-      it "raises an error" do
-        expect { vector.lerp(comp, Complex(1, 2)) }.to(
-          raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
-        )
+    context "when the other vector is this one" do
+      it "returns the zero vector" do
+        expect(vector.direction_to(vector)).to eq(Vector2d.new(0, 0))
       end
-    end
-
-    context "with a vector amount" do
-      it "raises an error" do
-        expect { vector.lerp(comp, Vector2d.new(0.25, 0.5)) }.to(
-          raise_error(ArgumentError, "not a valid coordinate: Vector2d(0.25,0.5)")
-        )
-      end
-    end
-
-    context "with a string amount" do
-      it "raises an error" do
-        expect { vector.lerp(comp, "2x3") }.to(
-          raise_error(ArgumentError, 'not a valid coordinate: "2x3"')
-        )
-      end
-    end
-  end
-
-  describe "#inverse_lerp" do
-    subject(:vector) { Vector2d.new(0, 0) }
-
-    let(:comp) { Vector2d.new(10, 20) }
-
-    it "returns zero at this vector" do
-      expect(vector.inverse_lerp(comp, vector)).to eq(0.0)
-    end
-
-    it "returns one at the other vector" do
-      expect(vector.inverse_lerp(comp, comp)).to eq(1.0)
-    end
-
-    it "returns the position of a value on the segment" do
-      expect(vector.inverse_lerp(comp, Vector2d.new(2.5, 5.0))).to eq(0.25)
-    end
-
-    it "returns a scalar" do
-      expect(vector.inverse_lerp(comp, Vector2d.new(2.5, 5.0))).to be_a(Float)
-    end
-
-    it "returns a float for integer coordinates" do
-      expect(Vector2d.new(0, 0).inverse_lerp(Vector2d.new(4, 0),
-                                             Vector2d.new(1, 0))).to eq(0.25)
-    end
-
-    it "projects a value off the segment onto the line" do
-      expect(vector.inverse_lerp(comp, Vector2d.new(5, 0))).to eq(0.1)
-    end
-
-    it "extrapolates past the other vector" do
-      expect(vector.inverse_lerp(comp, Vector2d.new(20, 40))).to eq(2.0)
-    end
-
-    it "extrapolates behind this vector" do
-      expect(vector.inverse_lerp(comp, Vector2d.new(-5, -10))).to eq(-0.5)
-    end
-
-    it "inverts #lerp" do
-      amount = vector.inverse_lerp(comp, Vector2d.new(2.5, 5.0))
-
-      expect(vector.lerp(comp, amount)).to eq(Vector2d.new(2.5, 5.0))
-    end
-
-    it "inverts #lerp from a non-zero origin" do
-      v1 = Vector2d.new(-4, 6)
-      v2 = Vector2d.new(4, -2)
-
-      expect(v1.inverse_lerp(v2, v1.lerp(v2, 0.3))).to be_within(1e-12).of(0.3)
-    end
-
-    it "coerces the other vector" do
-      expect(vector.inverse_lerp([10, 20], Vector2d.new(2.5, 5.0))).to eq(0.25)
-    end
-
-    it "coerces the value" do
-      expect(vector.inverse_lerp(comp, "2.5x5.0")).to eq(0.25)
-    end
-
-    context "when the segment has no length along an axis" do
-      let(:comp) { Vector2d.new(10, 0) }
-
-      it "returns a finite amount" do
-        expect(vector.inverse_lerp(comp, Vector2d.new(2.5, 99))).to eq(0.25)
-      end
-    end
-
-    context "when the vectors are identical" do
-      it "returns zero" do
-        expect(vector.inverse_lerp(vector, Vector2d.new(2.5, 5.0))).to eq(0.0)
-      end
-
-      it "returns zero for a non-zero vector" do
-        expect(comp.inverse_lerp(comp, Vector2d.new(2.5, 5.0))).to eq(0.0)
-      end
-    end
-
-    context "with an unparseable value" do
-      it "raises an error" do
-        expect { vector.inverse_lerp(comp, nil) }.to(
-          raise_error(TypeError, "NilClass can't be coerced into Vector2d")
-        )
-      end
-    end
-  end
-
-  describe "#midpoint" do
-    subject(:vector) { Vector2d.new(0, 0) }
-
-    let(:comp) { Vector2d.new(10, 20) }
-
-    it "returns the point halfway between the vectors" do
-      expect(vector.midpoint(comp)).to eq(Vector2d.new(5.0, 10.0))
-    end
-
-    it "is symmetric" do
-      expect(comp.midpoint(vector)).to eq(vector.midpoint(comp))
-    end
-
-    it "matches #lerp at one half" do
-      expect(vector.midpoint(comp)).to eq(vector.lerp(comp, 0.5))
-    end
-
-    it "coerces the argument" do
-      expect(vector.midpoint([10, 20])).to eq(Vector2d.new(5.0, 10.0))
     end
   end
 
