@@ -5,6 +5,7 @@ source "https://rubygems.org"
 gemspec
 
 group :development, :test do
+  gem "bigdecimal"
   gem "matrix"
   gem "rake"
   gem "rspec", "~> 3.8"

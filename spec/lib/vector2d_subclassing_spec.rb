@@ -86,10 +86,13 @@ describe Vector2d do
       end)
     end
 
+    it { is_expected.to be_frozen }
+
     describe "#abs" do
       subject { vector.abs }
 
       it { is_expected.to be_an_instance_of(labeled) }
+      it { is_expected.to be_frozen }
       its(:label) { is_expected.to eq("point") }
     end
 
