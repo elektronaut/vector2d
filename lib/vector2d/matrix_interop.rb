@@ -40,7 +40,7 @@ class Vector2d
     #   Vector[1, 2] + Vector2d(3, 4) # => Vector2d(4,6)
     #
     # @!macro coercible
-    # @return [Array(::Matrix, ::Vector), Array(Vector2d, self)] the other
+    # @return [Array(::Matrix, ::Vector), Array(self, self)] the other
     #   operand and this vector, converted to a Vector when the other
     #   operand is a Matrix
     def coerce(other)
