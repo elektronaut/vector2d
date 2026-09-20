@@ -301,6 +301,92 @@ describe Vector2d::Properties do
     end
   end
 
+  describe "#opposite?" do
+    subject { vector.opposite?(other) }
+
+    context "when the other vector points the opposite way" do
+      let(:other) { Vector2d.new(-2, -3) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when the other vector is a negative multiple" do
+      let(:other) { Vector2d.new(-4, -6) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when the other vector points the same way" do
+      let(:other) { Vector2d.new(4, 6) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "when the vectors aren't parallel" do
+      let(:other) { Vector2d.new(3, 2) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "when the other vector is perpendicular" do
+      let(:other) { Vector2d.new(-3, 2) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "with the zero vector" do
+      let(:other) { Vector2d.new(0, 0) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "when the receiver is zero" do
+      let(:vector) { Vector2d.new(0, 0) }
+      let(:other) { Vector2d.new(2, 3) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "when both vectors are zero" do
+      let(:vector) { Vector2d.new(0, 0) }
+      let(:other) { Vector2d.new(0, 0) }
+
+      it { is_expected.to be(false) }
+    end
+
+    it "coerces the argument" do
+      expect(vector.opposite?("-2x-3")).to be(true)
+    end
+
+    it "ignores the magnitude of the vectors" do
+      expect(vector.opposite?(vector * -1e9)).to be(true)
+    end
+
+    it "is true for any vector and a negative multiple of it" do
+      vectors = (1..50).flat_map do |x|
+        (1..50).map { |y| Vector2d.new(x, y) }
+      end
+
+      expect(vectors).to all(satisfy { |v| v.opposite?(v * -3.7) })
+    end
+
+    it "is true for the reverse of the vector" do
+      expect(vector.opposite?(vector.reverse)).to be(true)
+    end
+
+    context "with large vectors" do
+      let(:vector) { Vector2d.new(1.3e8, 7.7e8) }
+
+      it "is true for a negative multiple of itself" do
+        expect(vector.opposite?(vector * -Math::PI)).to be(true)
+      end
+
+      it "is false for a vector that is barely off" do
+        expect(vector.opposite?(Vector2d.new(-1.3e8, -7.7e8 - 1))).to be(false)
+      end
+    end
+  end
+
   describe "#perpendicular_to?" do
     subject { vector.perpendicular_to?(other) }
 

@@ -166,6 +166,33 @@ class Vector2d
       !parallel?(other)
     end
 
+    # Do the two vectors point in opposite directions? Only the
+    # directions matter, not the magnitudes.
+    #
+    #   v = Vector2d(2, 3)
+    #   v.opposite?(Vector2d(-2, -3)) # => true
+    #   v.opposite?(Vector2d(-4, -6)) # => true
+    #   v.opposite?(Vector2d(4, 6))   # => false
+    #   v.opposite?(Vector2d(3, 2))   # => false
+    #
+    # Opposite vectors are parallel, but #parallel? does not care which
+    # way along the line the other vector points.
+    #
+    #   v.parallel?(Vector2d(-4, -6)) # => true
+    #
+    # The zero vector has no direction to be the opposite of, so unlike
+    # #parallel? and #perpendicular_to?, which it satisfies trivially,
+    # it is opposite to nothing.
+    #
+    #   v.opposite?(Vector2d(0, 0)) # => false
+    #
+    def opposite?(other)
+      v = coerce_vector(other)
+      return false if zero? || v.zero?
+
+      parallel?(v) && dot_product(v).negative?
+    end
+
     # Are the two vectors perpendicular to each other?
     #
     #   v = Vector2d(2, 3)

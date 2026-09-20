@@ -17,6 +17,7 @@ describe Vector2d do
   it_behaves_like "a class preserving method", :project, 2
   it_behaves_like "a class preserving method", :reflect, 2
   it_behaves_like "a class preserving method", :reject, 2
+  it_behaves_like "a class preserving method", :refract, 2, 0.5
 
   it_behaves_like "a class preserving method", :transform,
                   Matrix[[0, -1], [1, 0]]
@@ -53,6 +54,22 @@ describe Vector2d do
     it "returns an instance of the receiver's class" do
       expect(subclass.from_angle(Math::PI / 2))
         .to be_an_instance_of(subclass)
+    end
+  end
+
+  describe ".random" do
+    it "returns an instance of the receiver's class" do
+      expect(subclass.random).to be_an_instance_of(subclass)
+    end
+  end
+
+  describe "the direction constants" do
+    %i[zero one up down left right].each do |name|
+      describe ".#{name}" do
+        it "returns an instance of the receiver's class" do
+          expect(subclass.public_send(name)).to be_an_instance_of(subclass)
+        end
+      end
     end
   end
 
@@ -124,6 +141,24 @@ describe Vector2d do
       subject { labeled.from_angle(0) }
 
       its(:label) { is_expected.to eq("unlabeled") }
+    end
+
+    describe ".random" do
+      subject { labeled.random }
+
+      its(:label) { is_expected.to eq("unlabeled") }
+    end
+
+    describe ".up" do
+      subject { labeled.up }
+
+      its(:label) { is_expected.to eq("unlabeled") }
+    end
+
+    describe "#refract" do
+      subject { vector.refract(Vector2d(0, 1), 0.5) }
+
+      its(:label) { is_expected.to eq("point") }
     end
   end
 end
