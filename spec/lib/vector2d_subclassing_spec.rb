@@ -73,6 +73,16 @@ describe Vector2d do
     end
   end
 
+  describe "#coerce" do
+    it "builds the other operand as the receiver's class" do
+      expect(vector.coerce(2).first).to be_an_instance_of(subclass)
+    end
+
+    it "keeps the class when the vector is the right hand operand" do
+      expect(2 * vector).to be_an_instance_of(subclass)
+    end
+  end
+
   describe ".from_angle" do
     it "returns an instance of the receiver's class" do
       expect(subclass.from_angle(Math::PI / 2))
@@ -150,6 +160,12 @@ describe Vector2d do
 
     describe "#transform" do
       subject { vector.transform(Matrix[[0, -1], [1, 0]]) }
+
+      its(:label) { is_expected.to eq("point") }
+    end
+
+    describe "#coerce" do
+      subject { 2 * vector }
 
       its(:label) { is_expected.to eq("point") }
     end

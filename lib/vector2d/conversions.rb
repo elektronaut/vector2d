@@ -10,13 +10,17 @@ class Vector2d
     #
     #   2 * Vector2d(3, 4) # => Vector2d(6,8)
     #
+    # The operand is built through #build, so a subclass is the result
+    # on either side of the operator.
+    #
     # Matrices are coerced the other way around, see
     # Vector2d::MatrixInterop#coerce.
     #
     # @!macro coercible
-    # @return [Array(Vector2d, self)] the coerced operand and this vector
+    # @return [Array(self, self)] the coerced operand and this vector
     def coerce(other)
-      [coerce_vector(other), self]
+      v = coerce_vector(other)
+      [build(v.x, v.y), self]
     end
 
     # Returns the components as an array, so a vector can be matched
