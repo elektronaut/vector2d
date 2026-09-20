@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "ripper"
+
 # Extracts the runnable examples from the doc comments in lib/.
 #
 # An example is an indented line inside a comment. Lines carrying a
@@ -11,11 +13,12 @@
 #
 # A marker on a line of its own applies to the line above it. A
 # trailing ".." stands in for any digits, and an exception class means
-# the expression is expected to raise.
+# the expression is expected to raise. An example spanning several
+# lines, like a class definition, is evaluated as one expression.
 module DocExamples
   ROOT = File.expand_path("../..", __dir__)
   COMMENT = /\A\s*#(?:\s|\z)/
-  INDENTED = /\A\s*#\s{3}(\S.*)\z/
+  INDENTED = /\A\s*#\s{3}(\s*\S.*)\z/
   MARKER = /\A(.*?)\s*#\s*=>\s*(.+)\z/
   DEFINITION = /\A\s*def\s+(self\.)?([^\s(]+)/
   EXCEPTION = /\A(?:[A-Z]\w*::)*[A-Z]\w*Error\z/
@@ -24,6 +27,12 @@ module DocExamples
   # A single line of an example. Setup lines have no expectation.
   Example = Struct.new(:location, :code, :expected) do
     def expectation? = !expected.nil?
+
+    # Appends a line to an example that is not a complete expression yet.
+    def continue(line, expected)
+      self.code = "#{code}\n#{line}"
+      self.expected = expected
+    end
 
     def raises? = expected.match?(EXCEPTION)
 
@@ -75,16 +84,24 @@ module DocExamples
     def extract(file, lines)
       lines.each_with_object([]) do |(line, index), found|
         body = line[INDENTED, 1]
-        next unless body
-
-        expression, expected = body.match(MARKER)&.captures
-        if expected && expression.empty?
-          found.last.expected = expected
-        else
-          found << Example.new("#{file}:#{index + 1}", expression || body, expected)
-        end
+        append(found, "#{file}:#{index + 1}", body) if body
       end
     end
+
+    def append(found, location, body)
+      expression, expected = body.match(MARKER)&.captures
+      if expected && expression.empty?
+        found.last.expected = expected
+      elsif continues?(found.last)
+        found.last.continue(expression || body, expected)
+      else
+        found << Example.new(location, expression || body, expected)
+      end
+    end
+
+    def continues?(example) = example && !complete?(example.code)
+
+    def complete?(code) = !Ripper.sexp(code).nil?
 
     # The method a doc comment sits above, for naming the example.
     def name(following)
