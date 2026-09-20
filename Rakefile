@@ -12,3 +12,8 @@ task default: :spec
 
 desc "Run tests"
 task test: :spec
+
+desc "Benchmark against the standard library Vector"
+task :benchmark do
+  ruby "benchmark/vector_comparison.rb"
+end
