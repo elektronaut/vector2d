@@ -1,5 +1,12 @@
 # frozen_string_literal: true
 
+# The one place the types Vector2d.parse accepts are written out. Every
+# parameter that is coerced into a vector takes this union.
+#
+# @!macro [new] coercible
+#  @param $1 [Vector2d, Array, String, Hash, Integer, Float, Rational,
+#    BigDecimal, ::Vector, ::Matrix] anything Vector2d.parse accepts
+
 require_relative "vector2d/angles"
 require_relative "vector2d/arithmetic"
 require_relative "vector2d/comparison"
@@ -15,6 +22,25 @@ require_relative "vector2d/matrix_interop"
 require_relative "vector2d/projection"
 require_relative "vector2d/version"
 
+# An immutable two dimensional vector.
+#
+# Coordinates are real numbers, and keep the type they were given.
+# Integer coordinates stay exact through arithmetic with integers, and
+# widen to floats when a float is involved.
+#
+#   Vector2d(2, 3) * 2   # => Vector2d(4,6)
+#   Vector2d(2, 3) * 0.5 # => Vector2d(1.0,1.5)
+#
+# Instances are frozen, so every operation returns a new vector instead
+# of changing the receiver. New vectors are built through #build, which
+# a subclass overrides to carry its own state across operations.
+#
+# .parse is the permissive constructor, and Vector2d() is shorthand for
+# it. .new takes exactly two coordinates.
+#
+#   Vector2d("2x3")    # => Vector2d(2,3)
+#   Vector2d.new(2, 3) # => Vector2d(2,3)
+#
 class Vector2d
   extend Vector2d::Angles::ClassMethods
   extend Vector2d::Constructors
@@ -69,6 +95,9 @@ class Vector2d
     #
     #   Labeled.parse("2x3").label # => "unlabeled"
     #
+    # @param x [Integer, Float, Rational, BigDecimal] the x coordinate
+    # @param y [Integer, Float, Rational, BigDecimal] the y coordinate
+    # @return [Vector2d] a vector of this class
     def build(x, y)
       new(x, y)
     end
@@ -102,6 +131,14 @@ class Vector2d
     #
     #   Vector2d.parse(150, nil)         # => ArgumentError
     #   Vector2d.parse(Complex(1, 2), 3) # => ArgumentError
+    #
+    # @param arg [Vector2d, Array, String, Hash, Integer, Float,
+    #   Rational, BigDecimal, ::Vector, ::Matrix] the vector, in any of
+    #   the forms above, or its x coordinate
+    # @param second_arg [Integer, Float, Rational, BigDecimal]
+    #   the y coordinate, when the first argument is the x coordinate
+    # @return [Vector2d] a vector of this class, unless the argument is
+    #   already a vector, which is returned as it is
     def parse(arg, second_arg = NO_ARGUMENT)
       return parse_single_arg(arg) if NO_ARGUMENT.equal?(second_arg)
 
@@ -167,6 +204,12 @@ class Vector2d
     end
   end
 
+  # The coordinates.
+  #
+  #   Vector2d(2, 3).x # => 2
+  #   Vector2d(2, 3).y # => 3
+  #
+  # @return [Integer, Float, Rational, BigDecimal]
   attr_reader :x, :y
 
   # Creates a vector from two coordinates, which must be real numbers.
@@ -178,6 +221,8 @@ class Vector2d
   #   Vector2d.new(2, 3).frozen?            # => true
   #   Ractor.shareable?(Vector2d.new(2, 3)) # => true
   #
+  # @param x [Integer, Float, Rational, BigDecimal] the x coordinate
+  # @param y [Integer, Float, Rational, BigDecimal] the y coordinate
   def initialize(x, y)
     @x = coordinate(x)
     @y = coordinate(y)
@@ -188,6 +233,8 @@ class Vector2d
   #
   #   Vector2d(2, 3).dup.frozen? # => true
   #
+  # @param other [Vector2d] the vector being copied
+  # @return [void]
   def initialize_copy(other)
     super
     freeze
@@ -199,6 +246,8 @@ class Vector2d
   #   Vector2d(2, 3) == Vector2d(1, 0) # => false
   #   Vector2d(2, 3) == [2, 3]         # => false
   #
+  # @param other [Object] any object
+  # @return [Boolean]
   def ==(other)
     other.is_a?(Vector2d) && other.x == x && other.y == y
   end
@@ -210,6 +259,8 @@ class Vector2d
   #   Vector2d(2, 3).eql?(Vector2d(2, 3))     # => true
   #   Vector2d(2, 3).eql?(Vector2d(2.0, 3.0)) # => false
   #
+  # @param other [Object] any object
+  # @return [Boolean]
   def eql?(other)
     other.instance_of?(self.class) && x.eql?(other.x) && y.eql?(other.y)
   end
@@ -218,6 +269,7 @@ class Vector2d
   #
   #   Vector2d(2, 3).hash == Vector2d(2, 3).hash # => true
   #
+  # @return [Integer]
   def hash
     [self.class, x, y].hash
   end
@@ -242,6 +294,10 @@ class Vector2d
   #
   # Class level constructors have no instance to carry state from, and
   # use .build instead.
+  #
+  # @param x [Integer, Float, Rational, BigDecimal] the x coordinate
+  # @param y [Integer, Float, Rational, BigDecimal] the y coordinate
+  # @return [self]
   def build(x, y)
     self.class.build(x, y)
   end
@@ -253,6 +309,8 @@ end
 #   Vector2d("2x3")   # => Vector2d(2,3)
 #   Vector2d([2, 3])  # => Vector2d(2,3)
 #
+# @return [Vector2d]
+# @see Vector2d.parse for the arguments
 def Vector2d(*)
   Vector2d.parse(*)
 end

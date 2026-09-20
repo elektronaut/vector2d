@@ -10,11 +10,17 @@ class Vector2d
   module MatrixInterop
     class << self
       # Is the object a Matrix?
+      #
+      # @param object [Object] any object
+      # @return [Boolean]
       def matrix?(object)
         defined?(::Matrix) && object.is_a?(::Matrix)
       end
 
       # Is the object a Vector?
+      #
+      # @param object [Object] any object
+      # @return [Boolean]
       def vector?(object)
         defined?(::Vector) && object.is_a?(::Vector)
       end
@@ -33,6 +39,10 @@ class Vector2d
     #
     #   Vector[1, 2] + Vector2d(3, 4) # => Vector2d(4,6)
     #
+    # @!macro coercible
+    # @return [Array(::Matrix, ::Vector), Array(Vector2d, self)] the other
+    #   operand and this vector, converted to a Vector when the other
+    #   operand is a Matrix
     def coerce(other)
       return [other, to_vector] if MatrixInterop.matrix?(other)
 
@@ -44,6 +54,7 @@ class Vector2d
     #
     #   Vector2d(2, 3).to_matrix # => Matrix[[2], [3]]
     #
+    # @return [::Matrix] a 2x1 column matrix
     def to_matrix
       require "matrix"
       ::Matrix[[x], [y]]
@@ -55,6 +66,7 @@ class Vector2d
     #
     #   Vector2d(2, 3).to_vector # => Vector[2, 3]
     #
+    # @return [::Vector]
     def to_vector
       require "matrix"
       ::Vector[x, y]
@@ -69,6 +81,8 @@ class Vector2d
     # Raises TypeError unless the argument is a Matrix, and
     # ErrDimensionMismatch unless it has two columns.
     #
+    # @param matrix [::Matrix] a matrix with two columns
+    # @return [self]
     def transform(matrix)
       raise TypeError, "#{matrix.class} is not a Matrix" unless MatrixInterop.matrix?(matrix)
 

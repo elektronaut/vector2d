@@ -1,0 +1,11 @@
+--markup rdoc
+--readme README.md
+--title "Vector2d"
+--output-dir doc
+lib/vector2d.rb
+lib/vector2d/**/*.rb
+-
+CHANGELOG.md
+CONTRIBUTING.md
+CODE_OF_CONDUCT.md
+LICENSE

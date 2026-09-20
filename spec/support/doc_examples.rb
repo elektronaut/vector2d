@@ -15,12 +15,18 @@ require "ripper"
 # trailing ".." stands in for any digits, and an exception class means
 # the expression is expected to raise. An example spanning several
 # lines, like a class definition, is evaluated as one expression.
+#
+# Tag blocks are skipped. A block runs from the first tag at the left
+# margin of the comment to the next blank comment line, so the type
+# lists in @param and @return are not mistaken for examples.
 module DocExamples
   ROOT = File.expand_path("../..", __dir__)
   COMMENT = /\A\s*#(?:\s|\z)/
   INDENTED = /\A\s*#\s{3}(\s*\S.*)\z/
   MARKER = /\A(.*?)\s*#\s*=>\s*(.+)\z/
   DEFINITION = /\A\s*def\s+(self\.)?([^\s(]+)/
+  TAG = /\A\s*#\s@/
+  BLANK = /\A\s*#\s*\z/
   EXCEPTION = /\A(?:[A-Z]\w*::)*[A-Z]\w*Error\z/
   HASH_ROCKET = /:(\w+)=>/
 
@@ -82,7 +88,7 @@ module DocExamples
     end
 
     def extract(file, lines)
-      lines.each_with_object([]) do |(line, index), found|
+      untagged(lines).each_with_object([]) do |(line, index), found|
         body = line[INDENTED, 1]
         append(found, "#{file}:#{index + 1}", body) if body
       end
@@ -96,6 +102,16 @@ module DocExamples
         found.last.continue(expression || body, expected)
       else
         found << Example.new(location, expression || body, expected)
+      end
+    end
+
+    # Drops the tag blocks, each running from its first tag to the
+    # next blank comment line.
+    def untagged(lines)
+      tagged = false
+      lines.reject do |line, _|
+        tagged = true if line.match?(TAG)
+        tagged &&= !line.match?(BLANK)
       end
     end
 

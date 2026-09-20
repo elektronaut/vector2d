@@ -1,3 +1,5 @@
+.yardoc
 coverage
-rdoc
+doc
 pkg
+rdoc

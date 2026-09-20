@@ -10,6 +10,7 @@ class Vector2d
     #   Vector2d(-2, 3).abs  # => Vector2d(2,3)
     #   Vector2d(-2, -3).abs # => Vector2d(2,3)
     #
+    # @return [self]
     def abs
       build(x.abs, y.abs)
     end
@@ -19,6 +20,8 @@ class Vector2d
     #   Vector2d(2.4, 3.6).ceil        # => Vector2d(3,4)
     #   Vector2d(2.441, 3.666).ceil(2) # => Vector2d(2.45,3.67)
     #
+    # @param digits [Integer] the number of decimal places to keep
+    # @return [self]
     def ceil(digits = 0)
       build(x.ceil(digits), y.ceil(digits))
     end
@@ -28,6 +31,8 @@ class Vector2d
     #   Vector2d(2.4, 3.6).floor        # => Vector2d(2,3)
     #   Vector2d(2.444, 3.669).floor(2) # => Vector2d(2.44,3.66)
     #
+    # @param digits [Integer] the number of decimal places to keep
+    # @return [self]
     def floor(digits = 0)
       build(x.floor(digits), y.floor(digits))
     end
@@ -37,6 +42,8 @@ class Vector2d
     #   Vector2d(2.4, 3.6).round         # => Vector2d(2,4)
     #   Vector2d(2.4444, 3.666).round(2) # => Vector2d(2.44,3.67)
     #
+    # @param digits [Integer] the number of decimal places to keep
+    # @return [self]
     def round(digits = 0)
       build(x.round(digits), y.round(digits))
     end
@@ -44,6 +51,9 @@ class Vector2d
     # @deprecated Use #clamp_length instead. The name belongs to the
     # #ceil/#floor/#round family, which maps Numeric over both
     # coordinates.
+    #
+    # @param max [Integer, Float, Rational, BigDecimal] the maximum length
+    # @return [self]
     def truncate(max)
       warn_deprecated("Vector2d#truncate is deprecated. Use #clamp_length instead.")
       clamp_length(max)
@@ -63,6 +73,7 @@ class Vector2d
     #
     #   Vector2d(Float::NAN, 3).sign # => ArgumentError
     #
+    # @return [self] a vector of -1, 0 and 1
     def sign
       build(coordinate_sign(x), coordinate_sign(y))
     end
@@ -87,6 +98,8 @@ class Vector2d
     #   vector.snap(0)               # => Vector2d(23,47)
     #   vector.snap(Vector2d(10, 0)) # => Vector2d(20,47)
     #
+    # @!macro coercible
+    # @return [self]
     def snap(step)
       v = coerce_vector(step)
       build(snap_coordinate(x, v.x), snap_coordinate(y, v.y))
@@ -99,6 +112,8 @@ class Vector2d
     #   vector.max(Vector2d(5, 5)) # => Vector2d(5,8)
     #   vector.max(5)              # => Vector2d(5,8)
     #
+    # @!macro coercible
+    # @return [self]
     def max(other)
       v = coerce_vector(other)
       build([x, v.x].max, [y, v.y].max)
@@ -111,6 +126,8 @@ class Vector2d
     #   vector.min(Vector2d(5, 5)) # => Vector2d(2,5)
     #   vector.min(5)              # => Vector2d(2,5)
     #
+    # @!macro coercible
+    # @return [self]
     def min(other)
       v = coerce_vector(other)
       build([x, v.x].min, [y, v.y].min)
@@ -134,6 +151,15 @@ class Vector2d
     #
     #   vector.clamp(3...6) # => ArgumentError
     #
+    # @overload clamp(min, max)
+    #   @param min [Vector2d, Array, String, Hash, Integer, Float, Rational,
+    #     BigDecimal, ::Vector, ::Matrix] the lower bound, anything
+    #     Vector2d.parse accepts
+    #   @param max [Vector2d, Array, String, Hash, Integer, Float, Rational,
+    #     BigDecimal, ::Vector, ::Matrix] the upper bound
+    # @overload clamp(range)
+    #   @param range [Range] both bounds, and may be beginless or endless
+    # @return [self]
     def clamp(min, max = nil)
       min_v, max_v = clamp_bounds(min, max)
       build(
@@ -151,6 +177,8 @@ class Vector2d
     #
     #   Vector2d(2, 3).with_x("5") # => ArgumentError
     #
+    # @param value [Integer, Float, Rational, BigDecimal] the new x coordinate
+    # @return [self]
     def with_x(value)
       build(value, y)
     end
@@ -163,6 +191,8 @@ class Vector2d
     #
     #   Vector2d(2, 3).with_y(nil) # => ArgumentError
     #
+    # @param value [Integer, Float, Rational, BigDecimal] the new y coordinate
+    # @return [self]
     def with_y(value)
       build(x, value)
     end

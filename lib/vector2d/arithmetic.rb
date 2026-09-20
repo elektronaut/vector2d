@@ -10,6 +10,8 @@ class Vector2d
     #   Vector2d(1, 2) * Vector2d(2, 3) # => Vector2d(2, 6)
     #   Vector2d(1, 2) * 2              # => Vector2d(2, 4)
     #
+    # @!macro coercible
+    # @return [self]
     def *(other)
       calculate_each(:*, other)
     end
@@ -19,6 +21,8 @@ class Vector2d
     #   Vector2d(4, 2) / Vector2d(2, 1) # => Vector2d(2, 2)
     #   Vector2d(4, 2) / 2              # => Vector2d(2, 1)
     #
+    # @!macro coercible
+    # @return [self]
     def /(other)
       calculate_each(:/, other)
     end
@@ -28,6 +32,8 @@ class Vector2d
     #   Vector2d(1, 2) + Vector2d(2, 3) # => Vector2d(3, 5)
     #   Vector2d(1, 2) + 2              # => Vector2d(3, 4)
     #
+    # @!macro coercible
+    # @return [self]
     def +(other)
       calculate_each(:+, other)
     end
@@ -37,6 +43,8 @@ class Vector2d
     #   Vector2d(2, 3) - Vector2d(2, 1) # => Vector2d(0, 2)
     #   Vector2d(4, 3) - 1              # => Vector2d(3, 2)
     #
+    # @!macro coercible
+    # @return [self]
     def -(other)
       calculate_each(:-, other)
     end
@@ -45,6 +53,7 @@ class Vector2d
     #
     #   -Vector2d(2, 3) # => Vector2d(-2,-3)
     #
+    # @return [self]
     def -@
       reverse
     end
@@ -53,6 +62,7 @@ class Vector2d
     #
     #   +Vector2d(2, 3) # => Vector2d(2,3)
     #
+    # @return [self]
     def +@
       self
     end
@@ -61,6 +71,7 @@ class Vector2d
     #
     #   Vector2d(2, 3).reverse # => Vector2d(-2,-3)
     #
+    # @return [self]
     def reverse
       build(-x, -y)
     end

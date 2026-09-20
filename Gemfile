@@ -6,6 +6,7 @@ gemspec
 
 group :development, :test do
   gem "bigdecimal"
+  gem "irb"
   gem "matrix"
   gem "rake"
   gem "rspec", "~> 3.8"
@@ -14,4 +15,5 @@ group :development, :test do
   gem "rubocop-rake", require: false
   gem "rubocop-rspec", require: false
   gem "simplecov", "~> 1.2.0"
+  gem "yard", require: false
 end
