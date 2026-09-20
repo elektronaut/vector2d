@@ -195,6 +195,15 @@ class Vector2d
     freeze
   end
 
+  # Copies are frozen too.
+  #
+  #   Vector2d(2, 3).dup.frozen? # => true
+  #
+  def initialize_copy(other)
+    super
+    freeze
+  end
+
   # Compares two vectors
   #
   #   Vector2d(2, 3) == Vector2d(2, 3) # => true

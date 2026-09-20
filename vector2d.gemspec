@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
                     .map { |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.required_ruby_version = ">= 3.2.0"
+  s.required_ruby_version = ">= 3.4.0"
 
   s.metadata = {
     "bug_tracker_uri" => "https://github.com/elektronaut/vector2d/issues",

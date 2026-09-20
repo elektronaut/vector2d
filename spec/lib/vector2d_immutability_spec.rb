@@ -2,6 +2,7 @@
 
 require "spec_helper"
 require "bigdecimal"
+require "matrix"
 
 describe Vector2d do
   subject(:vector) { described_class.new(2, 3) }
@@ -67,6 +68,18 @@ describe Vector2d do
       it { is_expected.to be(true) }
     end
 
+    context "with a clone that asks not to be frozen" do
+      let(:vector) { described_class.new(2, 3).clone(freeze: false) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "with a dup" do
+      let(:vector) { described_class.new(2, 3).dup }
+
+      it { is_expected.to be(true) }
+    end
+
     context "with a subclass" do
       let(:vector) { Class.new(described_class).new(2, 3) }
 
@@ -78,6 +91,40 @@ describe Vector2d do
     it "raises FrozenError" do
       expect { vector.instance_variable_set(:@x, 5) }
         .to raise_error(FrozenError)
+    end
+
+    it "raises FrozenError on a dup" do
+      expect { vector.dup.instance_variable_set(:@x, 5) }
+        .to raise_error(FrozenError)
+    end
+  end
+
+  describe "#dup" do
+    subject(:duped) { vector.dup }
+
+    it { is_expected.to eq(vector) }
+    it { is_expected.to eql(vector) }
+
+    it "is shareable" do
+      expect(Ractor.shareable?(duped)).to be(true)
+    end
+
+    context "with a subclass carrying extra state" do
+      subject(:duped) { labeled.new(2, 3, "point").dup }
+
+      let(:labeled) do
+        stub_const("DupLabeled", Class.new(described_class) do
+          attr_reader :label
+
+          def initialize(x, y, label = "unlabeled")
+            @label = label
+            super(x, y)
+          end
+        end)
+      end
+
+      it { is_expected.to be_frozen }
+      its(:label) { is_expected.to eq("point") }
     end
   end
 
@@ -113,8 +160,6 @@ describe Vector2d do
   end
 
   describe "sharing a vector with a ractor" do
-    before { skip("Ractor is not available") unless defined?(Ractor) }
-
     it "arrives frozen and unchanged" do
       result = in_ractor(vector) { |v| [v.frozen?, v.to_a] }
 
@@ -149,6 +194,18 @@ describe Vector2d do
       result = in_ractor(vector, &:reverse)
 
       expect(result).to eq(described_class.new(-2, -3))
+    end
+
+    it "transforms through a matrix" do
+      result = in_ractor(vector) { |v| v.transform(Matrix[[0, -1], [1, 0]]).to_a }
+
+      expect(result).to eq([-3, 2])
+    end
+
+    it "converts to a stdlib vector" do
+      result = in_ractor(vector, &:to_vector)
+
+      expect(result).to eq(Vector[2, 3])
     end
   end
 
