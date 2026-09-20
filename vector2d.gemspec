@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
 
   s.metadata = {
     "bug_tracker_uri" => "https://github.com/elektronaut/vector2d/issues",
+    "changelog_uri" => "https://github.com/elektronaut/vector2d/blob/main/CHANGELOG.md",
     "documentation_uri" => "https://www.rubydoc.info/gems/vector2d",
     "rubygems_mfa_required" => "true",
     "source_code_uri" => "https://github.com/elektronaut/vector2d"
