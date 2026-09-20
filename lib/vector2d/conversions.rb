@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 class Vector2d
-  module Coercions
+  # Conversions to and from other Ruby objects, including the coercion
+  # protocol and pattern matching. Conversions to the standard library
+  # Matrix and Vector are in Vector2d::MatrixInterop.
+  module Conversions
     # Implements Ruby's coercion protocol, so a vector can be the right
     # hand operand of a scalar.
     #
@@ -67,7 +70,9 @@ class Vector2d
       { x: x, y: y }
     end
 
-    # Converts vector to fixnums.
+    # Converts the coordinates to integers. The result is still a
+    # vector of this class, unlike #to_vector, which converts to the
+    # standard library Vector.
     #
     #   Vector2d(2.0, 3.0).to_i_vector # => Vector2d(2,3)
     #
@@ -75,7 +80,8 @@ class Vector2d
       build(x.to_i, y.to_i)
     end
 
-    # Converts vector to floats.
+    # Converts the coordinates to floats. As with #to_i_vector, the
+    # result is a vector of this class.
     #
     #   Vector2d(2, 3).to_f_vector # => Vector2d(2.0,3.0)
     #

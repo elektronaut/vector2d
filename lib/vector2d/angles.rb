@@ -1,19 +1,17 @@
 # frozen_string_literal: true
 
 class Vector2d
-  # Degrees, for code that thinks in them. Radians are the native unit
-  # of this library: every other angle method takes and returns them,
-  # and none of them change behaviour because this module exists. The
-  # methods here are conversions layered on top, not a second angle
-  # API.
+  # The angle API. Radians are the native unit: every angle is measured
+  # counterclockwise from the positive x axis, and every method takes
+  # and returns radians unless its name says degrees.
   #
-  # Two general converters, .radians and .degrees, do the arithmetic
-  # once. Three degree variants build on them, each one the radian
-  # method with the angle converted: .from_degrees is .from_angle,
-  # #angle_in_degrees is #angle, and #rotate_degrees is #rotate.
-  #
-  # The rest of the angle API stays radians only. Convert at the call
-  # site for those.
+  # The degree methods are conversions layered on top, not a second
+  # angle API. Two general converters, .radians and .degrees, do the
+  # arithmetic once. Three degree variants build on them, each one the
+  # radian method with the angle converted: .from_degrees is
+  # .from_angle, #angle_in_degrees is #angle, and #rotate_degrees is
+  # #rotate. The rest of the angle API stays radians only. Convert at
+  # the call site for those.
   #
   #   Vector2d(2, 3).rotate_around(Vector2d(1, 1), Vector2d.radians(90))
   #   # => Vector2d(-1.0,2.0)
@@ -27,6 +25,44 @@ class Vector2d
   # over unconverted.
   module Angles
     module ClassMethods
+      # Calculates the signed angle in radians from the first vector to
+      # the second, in the range -PI..PI. The angle is positive when the
+      # second vector is counterclockwise from the first, and reversing
+      # the arguments flips its sign.
+      #
+      #   v1 = Vector2d(2, 3)
+      #   v2 = Vector2d(4, 5)
+      #   Vector2d.angle_to(v1, v2) # => -0.0867..
+      #   Vector2d.angle_to(v2, v1) # => 0.0867..
+      #
+      # Only the directions matter, not the magnitudes. The zero vector
+      # has no direction, and the angle to or from it is zero.
+      #
+      #   Vector2d.angle_to(v1, Vector2d(0, 0)) # => 0.0
+      #
+      def angle_to(vector1, vector2)
+        Math.atan2(cross_product(vector1, vector2),
+                   dot_product(vector1, vector2))
+      end
+
+      # Calculates the unsigned angle between two vectors in radians, in
+      # the range 0..PI. This is the magnitude of .angle_to, so the
+      # order of the arguments does not matter.
+      #
+      #   v1 = Vector2d(2, 3)
+      #   v2 = Vector2d(4, 5)
+      #   Vector2d.angle_between(v1, v2) # => 0.0867..
+      #   Vector2d.angle_between(v2, v1) # => 0.0867..
+      #
+      # Only the directions matter, not the magnitudes. The zero vector
+      # has no direction, and the angle between it and anything is zero.
+      #
+      #   Vector2d.angle_between(v1, Vector2d(0, 0)) # => 0.0
+      #
+      def angle_between(vector1, vector2)
+        angle_to(vector1, vector2).abs
+      end
+
       # Converts an angle from degrees to radians, the unit the rest of
       # the library speaks. The result is always a float.
       #
@@ -90,6 +126,112 @@ class Vector2d
       def from_degrees(angle, length = 1.0)
         from_angle(radians(angle), length)
       end
+    end
+
+    # Angle of vector.
+    #
+    #   Vector2d(2, 3).angle # => 0.9827..
+    #
+    def angle
+      Math.atan2(y, x)
+    end
+
+    # Signed angle in radians from this vector to another vector, in the
+    # range -PI..PI. The angle is positive when the other vector is
+    # counterclockwise from this one.
+    #
+    #   v1 = Vector2d(2, 3)
+    #   v2 = Vector2d(4, 5)
+    #   v1.angle_to(v2) # => -0.0867..
+    #   v2.angle_to(v1) # => 0.0867..
+    #
+    # Only the directions matter, not the magnitudes. The zero vector
+    # has no direction, and the angle to or from it is zero.
+    #
+    #   v1.angle_to(Vector2d(0, 0)) # => 0.0
+    #
+    def angle_to(other)
+      v = coerce_vector(other)
+      self.class.angle_to(self, v)
+    end
+
+    # Unsigned angle in radians between this vector and another vector,
+    # in the range 0..PI. This is the magnitude of #angle_to, so it is
+    # the same in either direction.
+    #
+    #   v1 = Vector2d(2, 3)
+    #   v2 = Vector2d(4, 5)
+    #   v1.angle_between(v2) # => 0.0867..
+    #   v2.angle_between(v1) # => 0.0867..
+    #
+    # Only the directions matter, not the magnitudes. The zero vector
+    # has no direction, and the angle between it and anything is zero.
+    #
+    #   v1.angle_between(Vector2d(0, 0)) # => 0.0
+    #
+    def angle_between(other)
+      angle_to(other).abs
+    end
+    alias angle_with angle_between
+
+    # Polar coordinates of vector, as a [length, angle] array.
+    #
+    #   Vector2d(2, 3).to_polar # => [3.6055.., 0.9827..]
+    #
+    # Vector2d.from_angle takes the same pair back.
+    #
+    #   length, angle = Vector2d(2, 3).to_polar
+    #   Vector2d.from_angle(angle, length) # => Vector2d(2.0,3.0)
+    #
+    def to_polar
+      [length, angle]
+    end
+
+    # Rotates the vector around the origin. The angle is in radians, and
+    # a positive angle turns counterclockwise.
+    #
+    #   Vector2d(2, 3).rotate(Math::PI / 2) # => Vector2d(-3.0,2.0)
+    #
+    # Raises ArgumentError unless the angle is a real number.
+    #
+    #   Vector2d(2, 3).rotate(Complex(1, 2)) # => ArgumentError
+    #
+    def rotate(angle)
+      angle = coordinate(angle)
+      cos = Math.cos(angle)
+      sin = Math.sin(angle)
+      build((x * cos) - (y * sin), (x * sin) + (y * cos))
+    end
+
+    # Rotates the vector around another point. The center is coerced, so
+    # scalars work too. The angle is in radians, and a positive angle
+    # turns counterclockwise.
+    #
+    #   Vector2d(2, 1).rotate_around(Vector2d(1, 1), Math::PI / 2)
+    #   # => Vector2d(1.0,2.0)
+    #
+    def rotate_around(center, angle)
+      center_v = coerce_vector(center)
+      (self - center_v).rotate(angle) + center_v
+    end
+
+    # Returns the vector rotated a quarter turn counterclockwise.
+    #
+    #   Vector2d(2, 3).perpendicular # => Vector2d(-3,2)
+    #
+    # Counterclockwise is the same positive direction #rotate turns in.
+    # Use #perpendicular_cw for the other one.
+    #
+    def perpendicular
+      build(-y, x)
+    end
+
+    # Returns the vector rotated a quarter turn clockwise.
+    #
+    #   Vector2d(2, 3).perpendicular_cw # => Vector2d(3,-2)
+    #
+    def perpendicular_cw
+      build(y, -x)
     end
 
     # Angle of the vector in degrees. This is #angle put through

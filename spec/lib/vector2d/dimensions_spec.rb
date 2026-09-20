@@ -2,8 +2,143 @@
 
 require "spec_helper"
 
-describe Vector2d::Fitting do
+describe Vector2d::Dimensions do
+  subject(:vector) { Vector2d.new(2, 3) }
+
   let(:original) { Vector2d.new(300, 300) }
+
+  describe "#area" do
+    it "multiplies the coordinates" do
+      expect(vector.area).to eq(6)
+    end
+
+    it "is never negative" do
+      expect(Vector2d.new(-2, 3).area).to eq(6)
+    end
+
+    it "is zero without width or height" do
+      expect(Vector2d.new(2, 0).area).to eq(0)
+    end
+  end
+
+  describe "#aspect_ratio" do
+    it "returns the aspect_ratio" do
+      expect(vector.aspect_ratio).to be_within(0.0001).of(0.6667)
+    end
+
+    context "when y is zero" do
+      let(:vector) { Vector2d.new(2, 0) }
+
+      it "raises an ArgumentError" do
+        expect { vector.aspect_ratio }
+          .to raise_error(ArgumentError,
+                          "Vector2d(2,0) has no aspect ratio, y is zero")
+      end
+    end
+
+    context "with the zero vector" do
+      let(:vector) { Vector2d.new(0, 0) }
+
+      it "raises an ArgumentError" do
+        expect { vector.aspect_ratio }
+          .to raise_error(ArgumentError,
+                          "the zero vector has no aspect ratio")
+      end
+    end
+  end
+
+  describe "#landscape?" do
+    subject { vector.landscape? }
+
+    context "when the vector is wider than it is tall" do
+      let(:vector) { Vector2d.new(3, 2) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when the vector is taller than it is wide" do
+      let(:vector) { Vector2d.new(2, 3) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "when the vector is square" do
+      let(:vector) { Vector2d.new(2, 2) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "when the coordinates are negative" do
+      let(:vector) { Vector2d.new(-3, -2) }
+
+      it { is_expected.to be(true) }
+    end
+  end
+
+  describe "#portrait?" do
+    subject { vector.portrait? }
+
+    context "when the vector is taller than it is wide" do
+      let(:vector) { Vector2d.new(2, 3) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when the vector is wider than it is tall" do
+      let(:vector) { Vector2d.new(3, 2) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "when the vector is square" do
+      let(:vector) { Vector2d.new(2, 2) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "when the coordinates are negative" do
+      let(:vector) { Vector2d.new(-2, -3) }
+
+      it { is_expected.to be(true) }
+    end
+  end
+
+  describe "#square?" do
+    subject { vector.square? }
+
+    context "when the coordinates are equal" do
+      let(:vector) { Vector2d.new(2, 2) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when the coordinates differ" do
+      let(:vector) { Vector2d.new(2, 3) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "when the coordinates differ only in sign" do
+      let(:vector) { Vector2d.new(-2, 2) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "with the zero vector" do
+      let(:vector) { Vector2d.new(0, 0) }
+
+      it { is_expected.to be(true) }
+    end
+  end
+
+  describe "the shape predicates" do
+    it "are exclusive" do
+      [Vector2d.new(3, 2), Vector2d.new(2, 3), Vector2d.new(2, 2),
+       Vector2d.new(0, 0)].each do |v|
+        expect([v.landscape?, v.portrait?, v.square?].count(true)).to eq(1)
+      end
+    end
+  end
 
   describe "#fit" do
     subject(:vector) { original.fit(comp) }
@@ -489,9 +624,18 @@ describe Vector2d::Fitting do
   end
 
   describe "#fit_either" do
-    it "is an alias of #cover" do
-      expect(original.fit_either(Vector2d.new(200, 150)))
-        .to eq(Vector2d.new(200, 200))
+    subject(:vector) { original.fit_either(comp) }
+
+    it_behaves_like "a deprecated method", "fit_either", "#cover" do
+      let(:comp) { Vector2d.new(200, 150) }
+    end
+
+    context "when width is largest" do
+      let(:comp) { Vector2d.new(200, 150) }
+
+      it "matches #cover" do
+        expect(vector).to eq(original.cover(comp))
+      end
     end
   end
 

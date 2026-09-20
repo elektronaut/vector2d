@@ -39,8 +39,8 @@ class Vector2d
       super
     end
 
-    # Converts vector to a 2x1 column Matrix, the same shape
-    # Vector#to_matrix returns.
+    # Converts vector to a 2x1 column Matrix from the standard library,
+    # the same shape Vector#to_matrix returns.
     #
     #   Vector2d(2, 3).to_matrix # => Matrix[[2], [3]]
     #
@@ -49,7 +49,9 @@ class Vector2d
       ::Matrix[[x], [y]]
     end
 
-    # Converts vector to a Vector.
+    # Converts vector to a Vector from the standard library. This is
+    # the only to_* method that leaves the class behind, #to_f_vector
+    # and #to_i_vector return a vector of this class.
     #
     #   Vector2d(2, 3).to_vector # => Vector[2, 3]
     #

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Vector2d::Coercions do
+describe Vector2d::Conversions do
   subject(:vector) { Vector2d.new(2, 3) }
 
   describe "#coerce" do
@@ -192,13 +192,6 @@ describe Vector2d::Coercions do
     end
   end
 
-  describe "#to_f_vector" do
-    subject { vector.to_f_vector }
-
-    its(:x) { is_expected.to be_a(Float) }
-    its(:y) { is_expected.to be_a(Float) }
-  end
-
   describe "#to_hash" do
     it "returns a hash" do
       expect(vector.to_hash).to eq(x: 2, y: 3)
@@ -212,6 +205,13 @@ describe Vector2d::Coercions do
 
     its(:x) { is_expected.to be_a(Integer) }
     its(:y) { is_expected.to be_a(Integer) }
+  end
+
+  describe "#to_f_vector" do
+    subject { vector.to_f_vector }
+
+    its(:x) { is_expected.to be_a(Float) }
+    its(:y) { is_expected.to be_a(Float) }
   end
 
   describe "#to_s" do

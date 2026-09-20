@@ -1,7 +1,91 @@
 # frozen_string_literal: true
 
 class Vector2d
-  module Fitting
+  # The vector as a rectangle. Vector2d grew out of handling image
+  # dimensions, and these methods describe a size and fit one inside
+  # another. All of them compare coordinates by magnitude, so a
+  # negative vector describes the same rectangle as its positive twin.
+  module Dimensions
+    # Area covered by the vector, the product of its coordinates.
+    # Coordinates are taken by magnitude, as in #aspect_ratio, so the
+    # area is never negative.
+    #
+    #   Vector2d(2, 3).area  # => 6
+    #   Vector2d(-2, 3).area # => 6
+    #
+    # A vector without width or height covers nothing.
+    #
+    #   Vector2d(2, 0).area # => 0
+    #
+    def area
+      (x * y).abs
+    end
+
+    # Aspect ratio of vector.
+    #
+    #   Vector2d(2, 3).aspect_ratio # => 0.6666..
+    #
+    # A vector without height has no aspect ratio, so ArgumentError is
+    # raised.
+    #
+    #   Vector2d(2, 0).aspect_ratio # => ArgumentError
+    #   Vector2d(0, 0).aspect_ratio # => ArgumentError
+    #
+    def aspect_ratio
+      raise ArgumentError, "the zero vector has no aspect ratio" if zero?
+      raise ArgumentError, "#{inspect} has no aspect ratio, y is zero" if y.zero?
+
+      (x.to_f / y).abs
+    end
+
+    # Is the vector wider than it is tall?
+    #
+    #   Vector2d(3, 2).landscape? # => true
+    #   Vector2d(2, 3).landscape? # => false
+    #   Vector2d(2, 2).landscape? # => false
+    #
+    # Coordinates are compared by magnitude, as in #aspect_ratio.
+    #
+    #   Vector2d(-3, 2).landscape? # => true
+    #
+    def landscape?
+      x.abs > y.abs
+    end
+
+    # Is the vector taller than it is wide?
+    #
+    #   Vector2d(2, 3).portrait? # => true
+    #   Vector2d(3, 2).portrait? # => false
+    #   Vector2d(2, 2).portrait? # => false
+    #
+    # Coordinates are compared by magnitude, as in #aspect_ratio.
+    #
+    #   Vector2d(2, -3).portrait? # => true
+    #
+    def portrait?
+      x.abs < y.abs
+    end
+
+    # Is the vector as wide as it is tall?
+    #
+    #   Vector2d(2, 2).square? # => true
+    #   Vector2d(2, 3).square? # => false
+    #
+    # Coordinates are compared by magnitude, as in #aspect_ratio.
+    # Exactly one of #square?, #landscape? and #portrait? holds for any
+    # vector.
+    #
+    #   Vector2d(-2, 2).square? # => true
+    #
+    # Unlike #aspect_ratio, these three don't single out the zero
+    # vector. It is square.
+    #
+    #   Vector2d(0, 0).square? # => true
+    #
+    def square?
+      x.abs == y.abs
+    end
+
     # Scales the vector to fit inside another vector, retaining the
     # aspect ratio.
     #
@@ -96,7 +180,6 @@ class Vector2d
     def cover(other, upscale: true)
       scale_by(fit_factors(coerce_vector(other)).max, upscale: upscale)
     end
-    alias fit_either cover
 
     # Does the vector already cover another vector? True whenever
     # #cover would shrink the vector or leave it alone, rather than
@@ -120,6 +203,12 @@ class Vector2d
     def covers?(other)
       factor = fit_factors(coerce_vector(other)).max
       factor.nil? || factor <= 1
+    end
+
+    # @deprecated Use #cover instead.
+    def fit_either(other)
+      warn_deprecated("Vector2d#fit_either is deprecated. Use #cover instead.")
+      cover(other)
     end
 
     # @deprecated Use <tt>other.fit(self, upscale: false)</tt> instead.

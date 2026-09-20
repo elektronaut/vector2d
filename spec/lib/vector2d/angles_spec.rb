@@ -76,6 +76,101 @@ describe Vector2d::Angles do
     end
   end
 
+  describe ".angle_to" do
+    let(:v1) { Vector2d.new(2, 3) }
+    let(:v2) { Vector2d.new(4, 5) }
+
+    it "calculates the angle from one vector to another" do
+      expect(Vector2d.angle_to(v1, v2)).to be_within(0.0001).of(-0.0867)
+    end
+
+    it "signs the angle by direction of rotation" do
+      expect(Vector2d.angle_to(v2, v1)).to be_within(0.0001).of(0.0867)
+    end
+
+    it "ignores the magnitude of the vectors" do
+      expect(
+        Vector2d.angle_to(v1 * 1000, v2 * 0.001)
+      ).to be_within(0.0001).of(-0.0867)
+    end
+
+    it "returns zero for identical vectors" do
+      expect(Vector2d.angle_to(v1, v1)).to eq(0.0)
+    end
+
+    it "returns zero for parallel vectors" do
+      expect(Vector2d.angle_to(v1, v1 * 2.3)).to eq(0.0)
+    end
+
+    it "returns PI for antiparallel vectors" do
+      expect(Vector2d.angle_to(v1, v1 * -2.3)).to eq(Math::PI)
+    end
+
+    it "returns zero for a zero length vector" do
+      expect(Vector2d.angle_to(v1, Vector2d.new(0, 0))).to eq(0.0)
+    end
+
+    it "stays within -PI..PI" do
+      angles = 360.times.map do |i|
+        Vector2d.angle_to(v1, v1.rotate(i * Math::PI / 180))
+      end
+      expect(angles).to all(be_between(-Math::PI, Math::PI))
+    end
+
+    it "handles parallel vectors of any magnitude" do
+      angles = 1000.times.map do |i|
+        v = Vector2d.new((i + 1) * 0.37, (i + 1) * -1.13)
+        Vector2d.angle_to(v, v * ((i % 7) + 1))
+      end
+      expect(angles).to all(be_within(1e-12).of(0.0))
+    end
+  end
+
+  describe ".angle_between" do
+    let(:v1) { Vector2d.new(2, 3) }
+    let(:v2) { Vector2d.new(4, 5) }
+
+    it "calculates the unsigned angle between two vectors" do
+      expect(Vector2d.angle_between(v1, v2)).to be_within(0.0001).of(0.0867)
+    end
+
+    it "ignores the order of the arguments" do
+      expect(Vector2d.angle_between(v2, v1))
+        .to eq(Vector2d.angle_between(v1, v2))
+    end
+
+    it "ignores the magnitude of the vectors" do
+      expect(
+        Vector2d.angle_between(v1 * 1000, v2 * 0.001)
+      ).to be_within(0.0001).of(0.0867)
+    end
+
+    it "returns zero for parallel vectors" do
+      expect(Vector2d.angle_between(v1, v1 * 2.3)).to eq(0.0)
+    end
+
+    it "returns PI for antiparallel vectors" do
+      expect(Vector2d.angle_between(v1, v1 * -2.3)).to eq(Math::PI)
+    end
+
+    it "returns zero for a zero length vector" do
+      expect(Vector2d.angle_between(v1, Vector2d.new(0, 0))).to eq(0.0)
+    end
+
+    it "stays within 0..PI" do
+      angles = 360.times.map do |i|
+        Vector2d.angle_between(v1, v1.rotate(i * Math::PI / 180))
+      end
+      expect(angles).to all(be_between(0, Math::PI))
+    end
+  end
+
+  describe "#angle" do
+    it "returns the angle" do
+      expect(vector.angle).to be_within(0.0001).of(0.9827)
+    end
+  end
+
   describe "#angle_in_degrees" do
     it "returns the angle in degrees" do
       expect(vector.angle_in_degrees).to be_within(0.0001).of(56.3099)
@@ -91,6 +186,105 @@ describe Vector2d::Angles do
 
     it "is zero for the zero vector" do
       expect(Vector2d.new(0, 0).angle_in_degrees).to eq(0.0)
+    end
+  end
+
+  describe "#angle_to" do
+    let(:comp) { Vector2d.new(3, 4) }
+
+    it "calculates the angle to the other vector" do
+      expect(
+        vector.angle_to(comp)
+      ).to eq(Vector2d.angle_to(vector, comp))
+    end
+
+    it "coerces the argument" do
+      expect(vector.angle_to([3, 4])).to eq(vector.angle_to(comp))
+    end
+  end
+
+  describe "#angle_between" do
+    let(:comp) { Vector2d.new(3, 4) }
+
+    it "calculates the angle between vectors" do
+      expect(
+        vector.angle_between(comp)
+      ).to eq(Vector2d.angle_between(vector, comp))
+    end
+
+    it "coerces the argument" do
+      expect(vector.angle_between([3, 4])).to eq(vector.angle_between(comp))
+    end
+  end
+
+  describe "#angle_with" do
+    let(:comp) { Vector2d.new(3, 4) }
+
+    it "is an alias of #angle_between" do
+      expect(vector.angle_with(comp)).to eq(vector.angle_between(comp))
+    end
+  end
+
+  describe "#to_polar" do
+    it "returns the length first" do
+      expect(vector.to_polar.first).to be_within(0.0001).of(3.6055)
+    end
+
+    it "returns the angle second" do
+      expect(vector.to_polar.last).to be_within(0.0001).of(0.9827)
+    end
+
+    it "is the inverse of Vector2d.from_angle" do
+      length, angle = vector.to_polar
+
+      expect(Vector2d.from_angle(angle, length))
+        .to eq(Vector2d.new(2.0, 3.0))
+    end
+
+    context "with the zero vector" do
+      let(:vector) { Vector2d.new(0, 0) }
+
+      it "returns zero length and angle" do
+        expect(vector.to_polar).to eq([0.0, 0.0])
+      end
+    end
+  end
+
+  describe "#rotate" do
+    subject { vector.rotate(rotation).round(3) }
+
+    let(:vector) { Vector2d.new(1, 0) }
+
+    context "when roating by PI" do
+      let(:rotation) { Math::PI }
+
+      it { is_expected.to eq(Vector2d.new(-1, 0)) }
+    end
+
+    context "when roating by PI/2" do
+      let(:rotation) { Math::PI / 2 }
+
+      it { is_expected.to eq(Vector2d.new(0, 1)) }
+    end
+
+    context "when roating by -PI/2" do
+      let(:rotation) { -Math::PI / 2 }
+
+      it { is_expected.to eq(Vector2d.new(0, -1)) }
+    end
+
+    context "when roating by PI/4" do
+      let(:rotation) { Math::PI / 4 }
+
+      it { is_expected.to eq(Vector2d.new(0.707, 0.707)) }
+    end
+
+    context "with a complex angle" do
+      it "raises an error" do
+        expect { vector.rotate(Complex(1, 2)) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
+        )
+      end
     end
   end
 
@@ -114,6 +308,54 @@ describe Vector2d::Angles do
     it "raises an ArgumentError unless the angle is a real number" do
       expect { vector.rotate_degrees(Complex(1, 2)) }
         .to raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
+    end
+  end
+
+  describe "#rotate_around" do
+    subject { vector.rotate_around(center, Math::PI / 2).round(3) }
+
+    let(:vector) { Vector2d.new(2, 1) }
+    let(:center) { Vector2d.new(1, 1) }
+
+    it { is_expected.to eq(Vector2d.new(1, 2)) }
+
+    context "when the center is the origin" do
+      let(:center) { Vector2d.new(0, 0) }
+
+      it { is_expected.to eq(vector.rotate(Math::PI / 2).round(3)) }
+    end
+
+    context "when the center is the vector itself" do
+      let(:center) { vector }
+
+      it { is_expected.to eq(vector) }
+    end
+
+    context "with a coercible center" do
+      let(:center) { [1, 1] }
+
+      it { is_expected.to eq(Vector2d.new(1, 2)) }
+    end
+  end
+
+  describe "#perpendicular" do
+    it "returns a perpendicular vector" do
+      expect(vector.perpendicular).to eq(Vector2d.new(-3, 2))
+    end
+
+    it "turns the same way as #rotate" do
+      expect(vector.perpendicular.round(3))
+        .to eq(vector.rotate(Math::PI / 2).round(3))
+    end
+  end
+
+  describe "#perpendicular_cw" do
+    it "returns a perpendicular vector" do
+      expect(vector.perpendicular_cw).to eq(Vector2d.new(3, -2))
+    end
+
+    it "turns the opposite way from #perpendicular" do
+      expect(vector.perpendicular_cw).to eq(vector.perpendicular.reverse)
     end
   end
 end

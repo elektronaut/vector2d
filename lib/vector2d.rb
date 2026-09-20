@@ -1,37 +1,37 @@
 # frozen_string_literal: true
 
 require_relative "vector2d/angles"
-require_relative "vector2d/calculations"
-require_relative "vector2d/clamping"
-require_relative "vector2d/coercions"
+require_relative "vector2d/arithmetic"
+require_relative "vector2d/comparison"
+require_relative "vector2d/componentwise"
 require_relative "vector2d/constructors"
+require_relative "vector2d/conversions"
 require_relative "vector2d/coordinates"
 require_relative "vector2d/deprecation"
-require_relative "vector2d/fitting"
+require_relative "vector2d/dimensions"
 require_relative "vector2d/interpolation"
+require_relative "vector2d/lengths"
 require_relative "vector2d/matrix_interop"
-require_relative "vector2d/optics"
-require_relative "vector2d/properties"
-require_relative "vector2d/transformations"
+require_relative "vector2d/projection"
 require_relative "vector2d/version"
 
 class Vector2d
   extend Vector2d::Angles::ClassMethods
-  extend Vector2d::Calculations::ClassMethods
   extend Vector2d::Constructors
   extend Vector2d::Coordinates
+  extend Vector2d::Projection::ClassMethods
   include Vector2d::Angles
-  include Vector2d::Calculations
-  include Vector2d::Clamping
-  include Vector2d::Coercions
+  include Vector2d::Arithmetic
+  include Vector2d::Comparison
+  include Vector2d::Componentwise
+  include Vector2d::Conversions
   include Vector2d::Coordinates
   include Vector2d::Deprecation
-  include Vector2d::Fitting
+  include Vector2d::Dimensions
   include Vector2d::Interpolation
+  include Vector2d::Lengths
   include Vector2d::MatrixInterop
-  include Vector2d::Optics
-  include Vector2d::Properties
-  include Vector2d::Transformations
+  include Vector2d::Projection
 
   # Matches a single coordinate in a string, with an optional sign and
   # an optional fractional part.
@@ -73,8 +73,9 @@ class Vector2d
       new(x, y)
     end
 
-    # Creates a new vector.
-    # The following examples are all valid:
+    # Parses a vector out of any of the forms below, and is the
+    # permissive counterpart to .new, which takes exactly two
+    # coordinates. Vector2d() is shorthand for this method.
     #
     #   Vector2d.parse(150, 100)
     #   Vector2d.parse(150.0, 100.0)
@@ -246,9 +247,11 @@ class Vector2d
   end
 end
 
-# Instantiates a Vector2d
+# Shorthand for Vector2d.parse, and takes the same arguments.
 #
-#   Vector2d(2, 3) # => Vector2d(2,3)
+#   Vector2d(2, 3)    # => Vector2d(2,3)
+#   Vector2d("2x3")   # => Vector2d(2,3)
+#   Vector2d([2, 3])  # => Vector2d(2,3)
 #
 def Vector2d(*)
   Vector2d.parse(*)
