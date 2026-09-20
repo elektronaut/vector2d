@@ -125,6 +125,46 @@ class Vector2d
       build(interpolate(x, v.x, amount), interpolate(y, v.y, amount))
     end
 
+    # Returns the amount #lerp would need to land on a value, the
+    # position of that value along the segment from this vector to
+    # another one. This is the inverse of #lerp.
+    #
+    #   v1 = Vector2d(0, 0)
+    #   v2 = Vector2d(10, 20)
+    #   v1.inverse_lerp(v2, Vector2d(2.5, 5.0)) # => 0.25
+    #   v1.inverse_lerp(v2, v1)                 # => 0.0
+    #   v1.inverse_lerp(v2, v2)                 # => 1.0
+    #
+    # The result is a scalar, one amount for both axes, matching the
+    # single amount #lerp takes.
+    #
+    #   v1.lerp(v2, v1.inverse_lerp(v2, Vector2d(2.5, 5.0))) # => Vector2d(2.5,5.0)
+    #
+    # The value does not have to lie on the segment. Anything off it is
+    # projected onto the line through the end points first, so the
+    # result is the position of the nearest point on that line.
+    #
+    #   v1.inverse_lerp(v2, Vector2d(5, 0)) # => 0.1
+    #
+    # The result is not clamped to 0..1, the same way the amount #lerp
+    # takes is not. Values beyond the end points fall outside it.
+    #
+    #   v1.inverse_lerp(v2, Vector2d(20, 40))  # => 2.0
+    #   v1.inverse_lerp(v2, Vector2d(-5, -10)) # => -0.5
+    #
+    # A segment between two identical vectors has no length to measure
+    # along, and no amount reaches anything but its own end point. Zero
+    # is returned.
+    #
+    #   v1.inverse_lerp(v1, Vector2d(2.5, 5.0)) # => 0.0
+    #
+    def inverse_lerp(other, value)
+      segment = coerce_vector(other) - self
+      return 0.0 if segment.zero?
+
+      (coerce_vector(value) - self).dot_product(segment).to_f / segment.length_squared
+    end
+
     # Returns the point halfway between this vector and another vector.
     #
     #   v1 = Vector2d(0, 0)
