@@ -100,10 +100,12 @@ class Vector2d
       raise TypeError, "#{other.class} can't be coerced into #{self.class}"
     end
 
-    # Can the object be parsed into a vector?
+    # Can the object be parsed into a vector? Complex numbers are
+    # Numeric, but they are not coordinates.
     def parseable?(other)
       case other
-      when Vector2d, Array, Numeric, String, Hash then true
+      when Vector2d, Array, String, Hash then true
+      when Numeric then other.real?
       else MatrixInterop.vector?(other) || MatrixInterop.matrix?(other)
       end
     end

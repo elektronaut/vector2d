@@ -25,6 +25,22 @@ describe Vector2d::Coercions do
         )
       end
     end
+
+    context "when the other operand is complex" do
+      it "raises a TypeError" do
+        expect { vector.coerce(Complex(1, 2)) }.to(
+          raise_error(TypeError, "Complex can't be coerced into Vector2d")
+        )
+      end
+    end
+
+    context "when a complex number is the left hand operand" do
+      it "raises a TypeError" do
+        expect { Complex(1, 2) * vector }.to(
+          raise_error(TypeError, "Complex can't be coerced into Vector2d")
+        )
+      end
+    end
   end
 
   describe "#deconstruct" do

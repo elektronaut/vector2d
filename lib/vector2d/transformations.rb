@@ -63,7 +63,7 @@ class Vector2d
     #   Vector2d(2, 3).clamp_length(-1.0) # => ArgumentError
     #
     def clamp_length(max)
-      raise ArgumentError, "negative max length: #{max}" if max.negative?
+      raise ArgumentError, "negative max length: #{max}" if coordinate(max).negative?
 
       resize([max, length].min)
     end
@@ -148,6 +148,7 @@ class Vector2d
     #   Vector2d(2, 3).resize(-1.0) # => Vector2d(-0.5547..,-0.8320..)
     #
     def resize(new_length)
+      new_length = coordinate(new_length)
       return self if zero?
 
       self * (new_length / length)
@@ -166,11 +167,15 @@ class Vector2d
     #
     #   Vector2d(2, 3).rotate(Math::PI / 2) # => Vector2d(-3.0,2.0)
     #
+    # Raises ArgumentError unless the angle is a real number.
+    #
+    #   Vector2d(2, 3).rotate(Complex(1, 2)) # => ArgumentError
+    #
     def rotate(angle)
-      build(
-        (x * Math.cos(angle)) - (y * Math.sin(angle)),
-        (x * Math.sin(angle)) + (y * Math.cos(angle))
-      )
+      angle = coordinate(angle)
+      cos = Math.cos(angle)
+      sin = Math.sin(angle)
+      build((x * cos) - (y * sin), (x * sin) + (y * cos))
     end
 
     # Rotates the vector around another point. The center is coerced, so

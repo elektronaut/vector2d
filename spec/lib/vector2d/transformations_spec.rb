@@ -227,6 +227,24 @@ describe Vector2d::Transformations do
       end
     end
 
+    context "with a complex length" do
+      it "raises an error" do
+        expect { vector.resize(Complex(1, 2)) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
+        )
+      end
+    end
+
+    context "with a complex length and the zero vector" do
+      subject(:vector) { Vector2d.new(0, 0) }
+
+      it "raises an error" do
+        expect { vector.resize(Complex(1, 2)) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
+        )
+      end
+    end
+
     context "with a negative length" do
       subject(:resized) { vector.resize(-2.0) }
 
@@ -277,6 +295,14 @@ describe Vector2d::Transformations do
       let(:rotation) { Math::PI / 4 }
 
       it { is_expected.to eq(Vector2d.new(0.707, 0.707)) }
+    end
+
+    context "with a complex angle" do
+      it "raises an error" do
+        expect { vector.rotate(Complex(1, 2)) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
+        )
+      end
     end
   end
 
@@ -359,6 +385,14 @@ describe Vector2d::Transformations do
 
       it "raises an error" do
         expect { vector.clamp_length(-1.0) }.to raise_error(ArgumentError)
+      end
+    end
+
+    context "when argument is complex" do
+      it "raises an error" do
+        expect { vector.clamp_length(Complex(1, 2)) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
+        )
       end
     end
   end

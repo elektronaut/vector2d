@@ -128,6 +128,14 @@ describe Vector2d::Calculations do
         expect(vector).to eq(Vector2d.new(6, 9))
       end
     end
+
+    context "with a complex number" do
+      it "raises a TypeError" do
+        expect { Vector2d.new(2, 3) * Complex(1, 2) }.to(
+          raise_error(TypeError, "Complex can't be coerced into Vector2d")
+        )
+      end
+    end
   end
 
   describe "/" do

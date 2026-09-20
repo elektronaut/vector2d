@@ -80,5 +80,13 @@ describe Vector2d::MatrixInterop do
         )
       end
     end
+
+    context "when the matrix holds a complex" do
+      it "raises an error" do
+        expect { vector.transform(Matrix[[Complex(0, 1), 0], [0, 1]]) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: (0+2i)")
+        )
+      end
+    end
   end
 end
