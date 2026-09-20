@@ -27,6 +27,133 @@ describe Vector2d::Coercions do
     end
   end
 
+  describe "#deconstruct" do
+    it "returns an array" do
+      expect(vector.deconstruct).to eq([2, 3])
+    end
+  end
+
+  describe "#deconstruct_keys" do
+    it "returns a hash" do
+      expect(vector.deconstruct_keys(nil)).to eq(x: 2, y: 3)
+    end
+
+    context "when only one key is requested" do
+      it "returns both components" do
+        expect(vector.deconstruct_keys([:x])).to eq(x: 2, y: 3)
+      end
+    end
+  end
+
+  describe "pattern matching" do
+    def classify(vector)
+      case vector
+      in [0, 0] then :origin
+      in [Integer => a, Integer => b] then a + b
+      end
+    end
+
+    def axis_of(vector)
+      case vector
+      in { x: 0, y: 0 } then :origin
+      in { x: 0 } then :on_y_axis
+      in { y: 0 } then :on_x_axis
+      else :off_axis
+      end
+    end
+
+    def orientation_of(vector)
+      case vector
+      in [x, y] if x < y then :portrait
+      in [x, y] if x > y then :landscape
+      else :square
+      end
+    end
+
+    def contains?(vector, value)
+      case vector
+      in [*, ^value, *] then true
+      else false
+      end
+    end
+
+    it "destructures into an array" do
+      vector => [x, y]
+
+      expect([x, y]).to eq([2, 3])
+    end
+
+    it "destructures into keys" do
+      vector => { x:, y: }
+
+      expect([x, y]).to eq([2, 3])
+    end
+
+    it "binds the components of an array pattern" do
+      expect(classify(vector)).to eq(5)
+    end
+
+    it "matches a hash pattern" do
+      expect(axis_of(vector)).to eq(:off_axis)
+    end
+
+    it "matches a guarded pattern" do
+      expect(orientation_of(vector)).to eq(:portrait)
+    end
+
+    it "matches a find pattern" do
+      expect(contains?(vector, 3)).to be(true)
+    end
+
+    it "doesn't match a find pattern on a missing component" do
+      expect(contains?(vector, 4)).to be(false)
+    end
+
+    it "destructures a vector nested in an array" do
+      [Vector2d.new(0, 0), vector] => [[0, 0], [x, y]]
+
+      expect([x, y]).to eq([2, 3])
+    end
+
+    it "destructures a vector nested in a hash" do
+      { size: vector } => { size: { x:, y: } }
+
+      expect([x, y]).to eq([2, 3])
+    end
+
+    context "when the vector is the origin" do
+      subject(:vector) { Vector2d.new(0, 0) }
+
+      it "matches the leading array pattern" do
+        expect(classify(vector)).to eq(:origin)
+      end
+
+      it "matches the leading hash pattern" do
+        expect(axis_of(vector)).to eq(:origin)
+      end
+    end
+
+    context "when the vector is on an axis" do
+      subject(:vector) { Vector2d.new(0, 3) }
+
+      it "matches on the partial hash pattern" do
+        expect(axis_of(vector)).to eq(:on_y_axis)
+      end
+    end
+
+    context "when the components are floats" do
+      subject(:vector) { Vector2d.new(2.0, 3.0) }
+
+      it "raises NoMatchingPatternError" do
+        expect { classify(vector) }.to raise_error(NoMatchingPatternError)
+      end
+
+      it "still matches an untyped pattern" do
+        expect(orientation_of(vector)).to eq(:portrait)
+      end
+    end
+  end
+
   describe "#inspect" do
     it "renders a string representation" do
       expect(vector.inspect).to eq("Vector2d(2,3)")

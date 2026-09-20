@@ -14,6 +14,35 @@ class Vector2d
       [coerce_vector(other), self]
     end
 
+    # Returns the components as an array, so a vector can be matched
+    # against an array pattern.
+    #
+    #   Vector2d(3, 4).deconstruct # => [3,4]
+    #
+    #   case Vector2d(3, 4)
+    #   in [0, 0] then :origin
+    #   in [Integer => a, Integer => b] then a + b
+    #   end # => 7
+    #
+    def deconstruct
+      to_a
+    end
+
+    # Returns the components as a hash, so a vector can be matched
+    # against a hash pattern. Both components are always returned,
+    # whichever keys the pattern asks for.
+    #
+    #   Vector2d(3, 4).deconstruct_keys([:x]) # => {x: 3, y: 4}
+    #
+    #   case Vector2d(0, 4)
+    #   in {x: 0} then :on_y_axis
+    #   in {y: 0} then :on_x_axis
+    #   end # => :on_y_axis
+    #
+    def deconstruct_keys(_keys)
+      to_hash
+    end
+
     # Renders vector as a pretty string.
     #
     #   Vector2d(2, 3).inspect # => "Vector2d(2,3)"
