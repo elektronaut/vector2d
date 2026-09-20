@@ -67,7 +67,6 @@ class Vector2d
 
       resize([max, length].min)
     end
-    alias truncate clamp_length
 
     # Rounds vector down to nearest integer.
     #
@@ -193,6 +192,14 @@ class Vector2d
     #
     def round(digits = 0)
       build(x.round(digits), y.round(digits))
+    end
+
+    # @deprecated Use #clamp_length instead. The name belongs to the
+    # #ceil/#floor/#round family, which maps Numeric over both
+    # coordinates.
+    def truncate(max)
+      warn_deprecated("Vector2d#truncate is deprecated. Use #clamp_length instead.")
+      clamp_length(max)
     end
 
     private

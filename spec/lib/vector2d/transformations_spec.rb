@@ -364,8 +364,12 @@ describe Vector2d::Transformations do
   end
 
   describe "#truncate" do
-    it "is an alias of #clamp_length" do
-      expect(vector.truncate(2.5).length).to be_within(0.0001).of(2.5)
+    subject(:vector) { Vector2d.new(2, 3).truncate(2.5) }
+
+    it_behaves_like "a deprecated method", "truncate", "#clamp_length"
+
+    it "clamps the length, as #clamp_length does" do
+      expect(vector.length).to be_within(0.0001).of(2.5)
     end
   end
 end
