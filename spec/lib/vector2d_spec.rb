@@ -22,6 +22,36 @@ describe Vector2d do
     end
   end
 
+  describe ".new" do
+    it "creates a vector from two coordinates" do
+      expect(described_class.new(2, 3).to_a).to eq([2, 3])
+    end
+
+    context "with a complex x" do
+      it "raises an error" do
+        expect { described_class.new(Complex(1, 2), 3) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
+        )
+      end
+    end
+
+    context "with a complex y" do
+      it "raises an error" do
+        expect { described_class.new(2, Complex(1, 2)) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
+        )
+      end
+    end
+
+    context "with a non-numeric coordinate" do
+      it "raises an error" do
+        expect { described_class.new(2, nil) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: nil")
+        )
+      end
+    end
+  end
+
   describe ".from_angle" do
     context "with an angle of zero" do
       subject(:vector) { described_class.from_angle(0) }
@@ -86,6 +116,22 @@ describe Vector2d do
       it "raises an error" do
         expect { described_class.from_angle(0, nil) }.to(
           raise_error(ArgumentError, "not a valid coordinate: nil")
+        )
+      end
+    end
+
+    context "with a complex angle" do
+      it "raises an error" do
+        expect { described_class.from_angle(Complex(1, 2)) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
+        )
+      end
+    end
+
+    context "with a complex length" do
+      it "raises an error" do
+        expect { described_class.from_angle(0, Complex(1, 2)) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
         )
       end
     end
@@ -265,6 +311,22 @@ describe Vector2d do
       end
     end
 
+    context "with a Vector argument holding a complex" do
+      it "raises an error" do
+        expect { described_class.parse(Vector[Complex(1, 2), 3]) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
+        )
+      end
+    end
+
+    context "with a Matrix argument holding a complex" do
+      it "raises an error" do
+        expect { described_class.parse(Matrix[[Complex(1, 2)], [3]]) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
+        )
+      end
+    end
+
     context "with nil argument" do
       it "raises an error" do
         expect { described_class.parse(nil) }.to(
@@ -277,6 +339,52 @@ describe Vector2d do
       it "raises an error" do
         expect { described_class.parse(:foo) }.to(
           raise_error(ArgumentError, "not a valid coordinate: :foo")
+        )
+      end
+    end
+
+    context "with rational argument" do
+      subject(:vector) { described_class.parse(Rational(1, 2), 3) }
+
+      it_behaves_like "a parsed vector", [Rational(1, 2), 3]
+    end
+
+    context "with complex argument" do
+      it "raises an error" do
+        expect { described_class.parse(Complex(1, 2)) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
+        )
+      end
+    end
+
+    context "with a complex coordinate among two arguments" do
+      it "raises an error" do
+        expect { described_class.parse(Complex(1, 2), 3) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
+        )
+      end
+    end
+
+    context "with complex argument that has a zero imaginary part" do
+      it "raises an error" do
+        expect { described_class.parse(Complex(1, 0)) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: (1+0i)")
+        )
+      end
+    end
+
+    context "with array argument holding a complex" do
+      it "raises an error" do
+        expect { described_class.parse([Complex(1, 2), 3]) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
+        )
+      end
+    end
+
+    context "with hash argument holding a complex" do
+      it "raises an error" do
+        expect { described_class.parse(x: Complex(1, 2), y: 3) }.to(
+          raise_error(ArgumentError, "not a valid coordinate: (1+2i)")
         )
       end
     end

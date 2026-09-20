@@ -2,6 +2,7 @@
 
 require_relative "vector2d/calculations"
 require_relative "vector2d/coercions"
+require_relative "vector2d/coordinates"
 require_relative "vector2d/deprecation"
 require_relative "vector2d/fitting"
 require_relative "vector2d/matrix_interop"
@@ -11,8 +12,10 @@ require_relative "vector2d/version"
 
 class Vector2d
   extend Vector2d::Calculations::ClassMethods
+  extend Vector2d::Coordinates
   include Vector2d::Calculations
   include Vector2d::Coercions
+  include Vector2d::Coordinates
   include Vector2d::Deprecation
   include Vector2d::Fitting
   include Vector2d::MatrixInterop
@@ -72,7 +75,10 @@ class Vector2d
     #   length, angle = Vector2d(2, 3).to_polar
     #   Vector2d.from_angle(angle, length) # => Vector2d(2.0,3.0)
     #
-    # Raises ArgumentError unless both arguments are numbers.
+    # Raises ArgumentError unless both arguments are real numbers.
+    # Complex numbers are not coordinates, and are rejected.
+    #
+    #   Vector2d.from_angle(Complex(1, 2)) # => ArgumentError
     def from_angle(angle, length = 1.0)
       angle = coordinate(angle)
       length = coordinate(length)
@@ -102,9 +108,11 @@ class Vector2d
     #   Vector2d.parse("150, 100") # => Vector2d(150,100)
     #   Vector2d.parse("x100")     # => Vector2d(0,100)
     #
-    # Raises ArgumentError unless both coordinates resolve to numbers.
+    # Raises ArgumentError unless both coordinates resolve to real
+    # numbers. Complex numbers are not coordinates, and are rejected.
     #
-    #   Vector2d.parse(150, nil) # => ArgumentError
+    #   Vector2d.parse(150, nil)         # => ArgumentError
+    #   Vector2d.parse(Complex(1, 2), 3) # => ArgumentError
     def parse(arg, second_arg = NO_ARGUMENT)
       return parse_single_arg(arg) if NO_ARGUMENT.equal?(second_arg)
 
@@ -156,12 +164,6 @@ class Vector2d
       build(coordinate(vector[0]), coordinate(vector[1]))
     end
 
-    def coordinate(value)
-      raise ArgumentError, "not a valid coordinate: #{value.inspect}" unless value.is_a?(Numeric)
-
-      value
-    end
-
     def parse_str(str)
       match = STRING_EXPRESSION.match(str)
       raise ArgumentError, "not a valid string input: #{str.inspect}" unless match
@@ -178,9 +180,16 @@ class Vector2d
 
   attr_reader :x, :y
 
+  # Creates a vector from two coordinates, which must be real numbers.
+  # Every vector is constructed through here, so this is what keeps a
+  # coordinate from being anything else.
+  #
+  #   Vector2d.new(2, 3)             # => Vector2d(2,3)
+  #   Vector2d.new(Complex(1, 2), 3) # => ArgumentError
+  #
   def initialize(x, y)
-    @x = x
-    @y = y
+    @x = coordinate(x)
+    @y = coordinate(y)
   end
 
   # Compares two vectors
