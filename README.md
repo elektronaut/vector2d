@@ -347,8 +347,8 @@ The `matrix` library is a bundled gem, so applications using these methods need 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on [GitHub](https://github.com/elektronaut/vector2d).
-See [CONTRIBUTING.md](CONTRIBUTING.md) for how to run the tests and how commits are formatted, and note that this project ships with a [code of conduct](CODE_OF_CONDUCT.md).
+Bug reports, feature requests, and pull requests are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) first. Report security vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
+CONTRIBUTING.md also covers how to run the tests and how commits are formatted, and note that this project ships with a [code of conduct](CODE_OF_CONDUCT.md).
 
 ## License
 

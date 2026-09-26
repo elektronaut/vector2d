@@ -1,0 +1,44 @@
+name: Bug report
+description: Something doesn't behave as expected.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Report only what you observed or verified, and leave out theories about the cause. The [contributing guidelines](https://github.com/elektronaut/vector2d/blob/main/CONTRIBUTING.md) explain why.
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should happen.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What happened instead, as observed. Include the error message, if any. Put the full stack trace or logs under Error output.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Minimal, numbered steps you actually ran.
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Error output
+      description: Raw output, not a paraphrase. Stack trace or relevant log lines.
+      render: shell
+  - type: textarea
+    id: ruled-out
+    attributes:
+      label: Ruled out
+      description: Negative results only, e.g. "Still happens with caching disabled." No theories about the cause.
