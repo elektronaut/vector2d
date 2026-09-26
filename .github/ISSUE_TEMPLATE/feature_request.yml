@@ -1,0 +1,21 @@
+name: Feature request
+description: A problem you'd like the project to solve.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What you're trying to do, and what's blocking you.
+    validations:
+      required: true
+  - type: textarea
+    id: workaround
+    attributes:
+      label: Current workaround
+      description: How you get around it today, if at all.
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: Optional, and brief. The problem above matters more.
