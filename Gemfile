@@ -14,6 +14,6 @@ group :development, :test do
   gem "rubocop", require: false
   gem "rubocop-rake", require: false
   gem "rubocop-rspec", require: false
-  gem "simplecov", "~> 1.3.1"
+  gem "simplecov", "~> 1.3.2"
   gem "yard", require: false
 end
